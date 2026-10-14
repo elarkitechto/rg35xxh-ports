@@ -1,6 +1,6 @@
 # Portadas de Ports en KNULLI
 
-La colección de esta consola usa **box art 2D vertical**. La resolución del panel (640×480) y el formato horizontal de la captura de PortMaster no definen la portada del catálogo.
+Las portadas del catálogo usan **box art 2D vertical**. La resolución de pantalla 640×480 y la captura horizontal de PortMaster no determinan el formato de la portada.
 
 ## Parámetros
 
@@ -21,10 +21,6 @@ La colección de esta consola usa **box art 2D vertical**. La resolución del pa
 5. Documentar fuente, dimensiones y hash del arte; mantener archivos privados fuera de Git según CONTRIBUTING.md.
 
 El empaquetador de Alto ejecuta `tools/validate-port-media.py`: rechaza portada horizontal/cuadrada, captura que no sea 4:3 de al menos 640×480 y el mismo archivo usado para ambos fines. Esto no sustituye la revisión visual.
-
-## Procedencia del criterio
-
-Recuperado del chat **Investigate Knulli port loading and**, del mismo proyecto: revisión de ScreenScraper (box art 2D), homologación de Marvel Cosmic Invasion y Streets of Rage 4 (600×900), Threes! (528×704), portada de 2048 Plus (2:3) y cierre de Crossy Road (portada vertical preservada al empaquetar). Los 640×480 mencionados posteriormente para Triples se referían a su presentación dentro del juego; no sustituyen el criterio de caja vertical del catálogo.
 
 ## Alto’s Adventure
 
