@@ -1,5 +1,11 @@
 # Atribuciones y procedencia
 
+## Alto's Adventure
+
+Alto's Adventure and its game assets belong to Snowman. The user supplies the Android APK; this repository does not distribute it or extracted game files. The Android compatibility framework retains its Apache-2.0 license and upstream notices in [ports/altosadventure/LICENSE](ports/altosadventure/LICENSE) and [ports/altosadventure/NOTICE](ports/altosadventure/NOTICE). [elarkitechto](https://github.com/elarkitechto) adapted and packaged this port. It is independent of Snowman and PortMaster.
+
+## Crossy Road
+
 | Componente | Autor / titular | Procedencia y condiciones |
 | --- | --- | --- |
 | Crossy Road, personajes, nombres, imágenes y recursos del juego | Hipster Whale | [Sitio oficial](https://www.crossyroad.com/). El APK y sus recursos no se incluyen aquí. |

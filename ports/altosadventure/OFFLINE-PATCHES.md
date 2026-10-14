@@ -15,9 +15,9 @@ Esta revisión desactiva servicios Android que el port no proporciona y conserva
 
 ## Reproducibilidad
 
-`policy-patches.json` contiene 37 entradas con RVA e instrucciones originales; `tools/generate-policy-table.py` valida el hash de IL2CPP y genera `src/alto_policy_patches.h`. `src/alto_policy.c` comprueba las instrucciones antes de reemplazarlas. Tres cambios de instrucciones adicionales conservan la caché IAP, evitan la construcción de mediadores y fijan el tipo de mando. El APK y las bibliotecas en disco no se modifican: los parches se aplican en memoria.
+`policy-patches.json` contiene las entradas con RVA e instrucciones originales; `src/alto_policy.c` comprueba las instrucciones antes de reemplazarlas. El APK y las bibliotecas en disco no se modifican: los parches se aplican en memoria.
 
-`configure-offline.sh` aplica la configuración Analytics antes de arrancar. Los eventos antiguos se movieron a `/userdata/system/alto-lab/analytics-archive.before-offline` como respaldo; no se tocaron los archivos del perfil. El ejecutable anterior está en `alto-loader.before-offline` y el perfil previo en `prefs.before-offline.tar.gz`.
+El instalador aplica la configuración local de Analytics antes del arranque. Los datos de progreso se conservan al actualizar.
 
 ## Validación
 

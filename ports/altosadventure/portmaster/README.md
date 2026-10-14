@@ -1,9 +1,24 @@
-# Alto's Adventure — RG35XX-H / KNULLI
+# Alto's Adventure
 
-Copy your Alto 1.8.8 APK to `ports/altosadventure/altos-adventure-1-8-8.apk` and launch **Alto's Adventure** from Ports. The launcher verifies, extracts and installs all game data and the compiled runtime automatically, then starts the game. No command line, second launcher, compiler or Crossy Road installation is required on the handheld.
+## Installation
 
-Only the exact APK SHA-256 `efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0` works. APK not supplied. Wrong/missing APK errors go to `altosadventure/install.log` and the console. Keep saves in `/userdata/system/alto`; runtime/logs are in `/userdata/system/alto-lab`.
+Copy the Android **Alto's Adventure 1.8.8** APK to `ports/altosadventure/` and name it `altos-adventure-1-8-8.apk`. Launch **Alto's Adventure** from Ports. The first launch verifies the APK and prepares the game files automatically. Keep the APK in place for future reinstalls.
 
-B confirms/jumps; hold B for backflips. Y goes back/cancels; Start pauses/resumes; F+Start saves and quits. D-pad navigates; left/right adjusts a selected slider; L/R changes Settings pages. Google Play, ads, purchases and telemetry are disabled. Local progress remains enabled.
+The supported APK has SHA-256 `efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0`. Other releases have not been tested. If installation fails, check `ports/altosadventure/install.log`.
 
-Tested only on RG35XX-H with KNULLI at 640×480. Short gameplay samples improved from 28–29 to 47–50 FPS after fixing an extra frame delay; sustained FPS varies. Jump/landing haptics are wired, but physical feedback still needs extended validation.
+## Controls
+
+| Button | Action |
+| --- | --- |
+| D-pad | Navigate menus |
+| B | Select / jump; hold for a backflip |
+| Y | Back / cancel |
+| Start | Pause / resume |
+| L / R | Change Settings page |
+| F + Start | Save and quit |
+
+Left/right adjusts the selected Settings slider. Progress is saved locally. Online services, ads and purchases are unavailable in this port.
+
+## Notes
+
+Tested on RG35XX-H with KNULLI at 640×480. Thanks to the authors of the Android compatibility framework credited in `NOTICE`. Port adaptation and packaging by [elarkitechto](https://github.com/elarkitechto). Alto's Adventure belongs to Snowman; this is an unofficial port.

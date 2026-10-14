@@ -1,25 +1,21 @@
-# Alto's Adventure
+# Alto's Adventure for RG35XX-H / KNULLI
 
-Native ARM64 adaptation of Android Alto 1.8.8 (Unity 2019.4.35f1), tested on RG35XX-H / KNULLI. Uses the existing Android Unity ELF/JNI/OpenSL/SDL framework, with game-specific offline patches and NGUI controller navigation. No dependency on Crossy Road at runtime.
+This port runs the Android 1.8.8 release using an ARM64 compatibility layer. Supply your own APK; game assets are not included. See the [installation notes and controls](portmaster/README.md).
 
-## Build and install
+## Build
 
-On the development computer: install Zig 0.13.0, SDL2 development headers, Python3, zip and pkg-config. Supply the KNULLI ARM64 link libraries `libSDL2.so`, `libmali.so`, `libz.so` in an external directory. They are only link inputs, not redistributed in the package. Set `ZIG_BIN` if Zig is not in PATH and `SDL_INCLUDE_DIR` to the parent of SDL2 headers if needed.
+The build requires Zig 0.13.0, Python 3, SDL2 headers, `pkg-config`, `zip`, and link libraries from the target KNULLI firmware (`libSDL2.so`, `libmali.so`, `libz.so`). Point `ALTO_LINK_LIBS` to the directory holding those libraries. Set `ZIG_BIN` and `SDL_INCLUDE_DIR` if they are outside the normal search path.
 
-Run **one command** from the repository root:
+Supply `ALTO_MEDIA_DIR` with a distinct 4:3 `screenshot.png` (at least 640×480) and vertical box-art `cover.png`. See [cover guidelines](../../docs/COVERS.md). Then run from the repository root:
 
 ```sh
-ALTO_LINK_LIBS=/path/to/knulli-libraries ALTO_MEDIA_DIR=/path/to/private-media sh tools/build-alto-local.sh
+ALTO_LINK_LIBS=/path/to/knulli-libraries ALTO_MEDIA_DIR=/path/to/media sh tools/build-alto-local.sh
 ```
 
-`ALTO_MEDIA_DIR` must contain a 4:3 gameplay capture of at least 640×480 named `screenshot.png` and distinct vertical 2D box art named `cover.png` (prefer 2:3 / 600×900; preserve suitable original artwork proportions). See [cover standards](../../docs/COVERS.md). The build validates both files before compiling. This single command compiles the loader and OpenSL bridge, verifies metadata, stages licenses and runtime hashes, and produces `.local/releases/altosadventure.zip`. No precompiled loader or manual subfolder build is required.
+The output is `.local/releases/altosadventure.zip`. Extract it into the handheld's Ports directory, add the APK as described above, and launch the game.
 
-Extract that ZIP into the handheld's Ports directory, copy your APK into `altosadventure/`, and launch **Alto's Adventure**. All handheld preparation is automatic; [user instructions](portmaster/README.md).
+## Source and status
 
-## Implementation and validation
+`source/` contains the loader, input integration and audio bridge. `policy-patches.json` records the guarded changes for the pinned APK. [Validation](VALIDATION.md) records the tested device and remaining limits; [offline patches](OFFLINE-PATCHES.md) records disabled online services.
 
-`source/src/main_alto.c` loads the original IL2CPP/Unity libraries and hooks input/haptics; `alto_ui.c` navigates the original NGUI and modal controls; `alto_policy.c` checks original instructions before applying the 45 offline patches. `policy-patches.json` records original opcodes. Generic runtime remains under Apache-2.0 with upstream notices. Game assets, original IL2CPP metadata dumps, APK, proprietary libraries, captures and saves are excluded from Git.
-
-Gameplay, local save/reload, audio PCM, menu navigation, sliders, Settings tabs and Google Play suppression were tested. Frame pacing targets a total frame budget of 16.667ms instead of adding that delay after render. Short separate-profile samples measured 28.36/28.98 FPS with the old pacing and 47.15/50.03 FPS with the fix; scenes differ, so these are indicative rather than minimum FPS promises. Long sessions and physical haptic response remain less tested.
-
-No claim of official PortMaster catalogue acceptance. Packaging follows https://portmaster.games/packaging.html. Alto's Adventure belongs to its creators; this project is unaffiliated.
+This build has been tested on RG35XX-H / KNULLI for gameplay, menu navigation, audio output and local save/reload. Extended play and physical vibration need further testing. The original game and its assets belong to Snowman. The framework's upstream copyright and license notices are in `NOTICE` and `LICENSE`; port adaptation by [elarkitechto](https://github.com/elarkitechto).
