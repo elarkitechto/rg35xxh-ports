@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+root=$(git rev-parse --show-toplevel)
+sh "$root/tools/check-public-tree.sh"
+sh -n "$root/ports/crossyroad/portmaster/Crossy Road.sh" "$root/ports/crossyroad/portmaster/crossyroad/install.sh" "$root/ports/crossyroad/source/build_native.sh" "$root/tools/build-crossyroad-local.sh"
+python3 -m json.tool "$root/ports/crossyroad/portmaster/port.json" >/dev/null
