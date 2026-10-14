@@ -96,7 +96,6 @@ bool App::initialize() {
 
     store_ = platform::make_store();
     if (auto saved = store_->read("settings")) settings_ = Settings::parse(*saved);
-    if (!settings_.tips_seen) tutorial_page_ = 0;
     mixer_.set_volume(settings_.volume);
 
     // Try to restore the saved game state. Fall back to a fresh start if any
@@ -118,7 +117,9 @@ bool App::initialize() {
     load_highscores_();
     recompute_best_();
 
-    game_over_ = state_.is_game_over();
+    if (tate_ && !settings_.tips_seen) begin_tutorial_();
+
+    game_over_ = tutorial_step_ >= 0 ? false : state_.is_game_over();
     if (game_over_) {
         // If we resumed a game that was already over, replay the tally so the
         // user can see their final-score breakdown without having to play
@@ -144,12 +145,56 @@ bool App::initialize() {
     return true;
 }
 
-void App::advance_tutorial_() {
-    if (tutorial_page_ < 0) return;
-    if (++tutorial_page_ < 3) return;
-    tutorial_page_ = -1;
+void App::begin_tutorial_() {
+    if (!tate_) return;
+    if (tutorial_step_ < 0) tutorial_return_state_ = state_;
+    state_ = game::GameState{};
+    state_.board.set(1, 1, 1);
+    state_.board.set(2, 2, 2);
+    state_.max_rank_seen = 2;
+    state_.next.rank = 0; // tutorial moves do not draw from the normal deck
+    tutorial_step_ = 0;
+    game_over_ = false;
+    anims_.clear();
+    drag_ = input::DragController{};
+}
+
+void App::finish_tutorial_() {
+    state_ = tutorial_return_state_;
+    tutorial_step_ = -1;
     settings_.tips_seen = true;
     save_settings_();
+    game_over_ = state_.is_game_over();
+    anims_.clear();
+    drag_ = input::DragController{};
+}
+
+void App::apply_tutorial_move_() {
+    const auto dry = drag_.dry;
+    if (!dry.any_change) return;
+    state_.board = dry.new_board;
+    state_.score = game::score_board(state_.board);
+    state_.max_rank_seen = std::max(state_.max_rank_seen, state_.board.max_rank());
+    int merged_rank = 0;
+    for (int i = 0; i < 16; ++i)
+        if (dry.merge_partner_origin[i] >= 0)
+            merged_rank = std::max(merged_rank, int(state_.board.cells[i]));
+    mixer_.play(merged_rank ? audio::merge_sfx_for_rank(merged_rank) : audio::Sfx::Whoosh, 0.7f);
+    auto add_card = [&](std::uint8_t rank) {
+        for (int i : {15, 12, 3, 0, 11, 8, 7, 4, 14, 13, 2, 1})
+            if (state_.board.cells[i] == 0) { state_.board.cells[i] = rank; anims_.add_spawn_fade(i); break; }
+        state_.score = game::score_board(state_.board);
+        state_.max_rank_seen = std::max(state_.max_rank_seen, rank);
+    };
+    if (tutorial_step_ >= 8 && merged_rank >= 5) tutorial_step_ = 10;
+    else if (tutorial_step_ >= 5 && tutorial_step_ <= 6 && merged_rank >= 4) tutorial_step_ = 7;
+    else if (tutorial_step_ <= 3 && merged_rank >= 3) tutorial_step_ = 4;
+    else if (tutorial_step_ < 3) ++tutorial_step_;
+    else if (tutorial_step_ == 4) { tutorial_step_ = 5; add_card(3); }
+    else if (tutorial_step_ == 5) tutorial_step_ = 6;
+    else if (tutorial_step_ == 7) { tutorial_step_ = 8; add_card(3); }
+    else if (tutorial_step_ == 8) { tutorial_step_ = 9; add_card(4); }
+    else if (tutorial_step_ == 10) finish_tutorial_();
 }
 
 void App::init_audio_now() {
@@ -217,23 +262,12 @@ void App::handle_event_(const SDL_Event& e) {
             if (e.key.repeat) return;
             const SDL_Keycode key = tate_ ? rotate_tate_key(e.key.keysym.sym) : e.key.keysym.sym;
             if (splash_open_) { splash_open_ = false; return; }
-            if (tutorial_page_ >= 0) {
-                if (key == SDLK_ESCAPE || key == SDLK_BACKSPACE || key == SDLK_TAB) {
-                    tutorial_page_ = -1; settings_.tips_seen = true; save_settings_();
-                } else if (key == SDLK_RETURN || key == SDLK_SPACE ||
-                           key == SDLK_RIGHT || key == SDLK_DOWN) {
-                    advance_tutorial_();
-                } else if (key == SDLK_LEFT || key == SDLK_UP) {
-                    tutorial_page_ = std::max(0, tutorial_page_ - 1);
-                }
-                return;
-            }
             if (menu_.open) { menu_key_(key); return; }
             if (key == SDLK_TAB || key == SDLK_RETURN) {
                 menu_.open = true; menu_.credits = false; menu_.selected = 0; return;
             }
             if (key == SDLK_ESCAPE) { running_ = false; return; }
-            if (key == SDLK_r && !anims_.restart_flip.active) { restart_with_flip_(); return; }
+            if (tutorial_step_ < 0 && key == SDLK_r && !anims_.restart_flip.active) { restart_with_flip_(); return; }
             // Mid-flip the board is changing under the player's feet — no
             // sense letting them spam input until the cascade finishes.
             if (anims_.restart_flip.active) return;
@@ -335,6 +369,7 @@ void App::on_pointer_down_(float x, float y, input::PointerEvent::Source src) {
     // Restart button takes precedence over board input at any time — pressing
     // it always restarts. The drag controller stays Idle (no Down dispatched),
     // so the gesture's subsequent move/up events are silently dropped.
+    if (tutorial_step_ >= 0) return;
     if (renderer_.restart_button_contains(x, y)) {
         // Mobile web delivers one touch as FINGER_DOWN → FINGER_UP →
         // synthesized MOUSE_BUTTON_DOWN → MOUSE_BUTTON_UP (not nested),
@@ -369,6 +404,7 @@ void App::on_pointer_up_(float x, float y, input::PointerEvent::Source src) {
 }
 
 void App::apply_commit_() {
+    if (tutorial_step_ >= 0) { apply_tutorial_move_(); return; }
     const auto pre_max = state_.max_rank_seen;
     const auto dry = drag_.dry;
 
@@ -495,6 +531,7 @@ void App::restart_with_flip_() {
 }
 
 void App::save_state_() {
+    if (tutorial_step_ >= 0) return;
     if (!store_) return;
     store_->write(kKeyState, game::serialize_state(state_));
 }
@@ -605,8 +642,9 @@ void App::menu_key_(int key) {
         if (key == SDLK_RETURN || key == SDLK_SPACE) menu_.credits = false;
         return;
     }
-    if (key == SDLK_UP) menu_.selected = (menu_.selected + 6) % 7;
-    if (key == SDLK_DOWN) menu_.selected = (menu_.selected + 1) % 7;
+    const int menu_rows = tate_ ? 7 : 6;
+    if (key == SDLK_UP) menu_.selected = (menu_.selected + menu_rows - 1) % menu_rows;
+    if (key == SDLK_DOWN) menu_.selected = (menu_.selected + 1) % menu_rows;
     bool accept = key == SDLK_RETURN || key == SDLK_SPACE;
     int direction = key == SDLK_LEFT ? -1 : key == SDLK_RIGHT ? 1 : 0;
     if (menu_.selected == 1 && (direction || accept)) {
@@ -620,9 +658,9 @@ void App::menu_key_(int key) {
     if (menu_.selected == 3 && (direction || accept)) {
         settings_.dark = !settings_.dark; save_settings_();
     }
-    if (accept && menu_.selected == 4) { menu_.open = false; tutorial_page_ = 0; }
-    if (accept && menu_.selected == 5) { menu_.credits = true; menu_.credit_page = 0; }
-    if (accept && menu_.selected == 6) { save_state_(); running_ = false; }
+    if (accept && tate_ && menu_.selected == 4) { menu_.open = false; begin_tutorial_(); }
+    if (accept && menu_.selected == (tate_ ? 5 : 4)) { menu_.credits = true; menu_.credit_page = 0; }
+    if (accept && menu_.selected == (tate_ ? 6 : 5)) { save_state_(); running_ = false; }
 }
 
 bool App::tick() {
@@ -659,22 +697,22 @@ bool App::tick() {
     if (dt > 0.1f) dt = 0.1f;  // cap to keep animations sane on tab-resume
     last_tick_ms_ = now_ms;
 
-    if (!menu_.open && !splash_open_ && tutorial_page_ < 0) drag_.step(dt);
+    if (!menu_.open && !splash_open_) drag_.step(dt);
     if (drag_.commit_ready) {
         drag_.commit_ready = false;
         apply_commit_();
     }
-    if (!menu_.open && !splash_open_ && tutorial_page_ < 0) anims_.step(dt);
+    if (!menu_.open && !splash_open_) anims_.step(dt);
     mixer_.poll();
 
-    if (best_score_ < state_.score) best_score_ = state_.score;
+    if (tutorial_step_ < 0 && best_score_ < state_.score) best_score_ = state_.score;
     std::uint64_t game_over_age_ms =
         (game_over_ && game_over_at_ms_ > 0 && now_ms >= game_over_at_ms_)
             ? (now_ms - game_over_at_ms_) : 0;
     renderer_.settings = settings_;
     renderer_.menu = menu_;
     renderer_.splash_open = splash_open_;
-    renderer_.tutorial_page = tutorial_page_;
+    renderer_.tutorial_step = tutorial_step_;
     renderer_.draw(state_, drag_, anims_, best_score_, game_over_, game_over_age_ms);
 
     // Hand cursor when the mouse is over the restart button. The default

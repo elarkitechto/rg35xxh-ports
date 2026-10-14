@@ -49,7 +49,7 @@ public:
     Settings settings;
     Menu menu;
     bool splash_open = false;
-    int tutorial_page = -1;
+    int tutorial_step = -1;
 
     // Create window + renderer. Returns false on failure.
     bool initialize(const char* title, int initial_w, int initial_h);
@@ -95,6 +95,8 @@ private:
     SDL_Window*   window_       = nullptr;
     SDL_Renderer* sdl_renderer_ = nullptr;
     SDL_Texture*  tate_target_  = nullptr;
+    SDL_Texture*  splash_landscape_ = nullptr;
+    SDL_Texture*  splash_tate_ = nullptr;
     bool          tate_         = false;
     int           output_w_     = 0;
     int           output_h_     = 0;
@@ -118,7 +120,7 @@ private:
     void draw_background_();
     void draw_menu_();
     void draw_splash_();
-    void draw_tutorial_();
+    void draw_tutorial_ribbon_();
     void present_();
     void draw_empty_slots_();
     void draw_tiles_(const game::GameState& state, const input::DragController& drag,
