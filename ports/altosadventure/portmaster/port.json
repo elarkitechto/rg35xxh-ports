@@ -1,0 +1,37 @@
+{
+  "version": 4,
+  "name": "altosadventure.zip",
+  "items": [
+    "Alto's Adventure.sh",
+    "altosadventure/"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Alto's Adventure",
+    "porter": [
+      "elarkitechto"
+    ],
+    "desc": "Snowboard through the original Android game on RG35XX-H / KNULLI. Offline controller adaptation with local saves.",
+    "inst": "Copy your exact Alto 1.8.8 APK as altos-adventure-1-8-8.apk into ports/altosadventure, then launch Alto's Adventure. First launch verifies and installs everything automatically; no terminal or second script is needed. APK SHA-256: efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0.",
+    "genres": [
+      "arcade"
+    ],
+    "image": {
+      "screenshot": "screenshot.png",
+      "covers": [
+        "cover.png"
+      ],
+      "thumbnail": null,
+      "video": null
+    },
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "reqs": [],
+    "arch": [
+      "aarch64"
+    ],
+    "min_glibc": "",
+    "availability": "partial"
+  }
+}
