@@ -12,7 +12,7 @@ Run **one command** from the repository root:
 ALTO_LINK_LIBS=/path/to/knulli-libraries ALTO_MEDIA_DIR=/path/to/private-media sh tools/build-alto-local.sh
 ```
 
-`ALTO_MEDIA_DIR` must contain a real 640×480 gameplay capture named `screenshot.png` and `cover.png` (the gameplay capture may serve as the cover). This single command compiles the loader and OpenSL bridge, verifies metadata, stages licenses and runtime hashes, and produces `.local/releases/altosadventure.zip`. No precompiled loader or manual subfolder build is required.
+`ALTO_MEDIA_DIR` must contain a 4:3 gameplay capture of at least 640×480 named `screenshot.png` and distinct vertical 2D box art named `cover.png` (prefer 2:3 / 600×900; preserve suitable original artwork proportions). See [cover standards](../../docs/COVERS.md). The build validates both files before compiling. This single command compiles the loader and OpenSL bridge, verifies metadata, stages licenses and runtime hashes, and produces `.local/releases/altosadventure.zip`. No precompiled loader or manual subfolder build is required.
 
 Extract that ZIP into the handheld's Ports directory, copy your APK into `altosadventure/`, and launch **Alto's Adventure**. All handheld preparation is automatic; [user instructions](portmaster/README.md).
 
