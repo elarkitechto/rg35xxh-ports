@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameList>
+  <game>
+    <path>./Crossy Road.sh</path>
+    <name>Crossy Road</name>
+    <desc>Guide your character across roads, rivers and train tracks.</desc>
+    <developer>Hipster Whale</developer>
+    <publisher>Hipster Whale</publisher>
+    <genre>Arcade</genre>
+    <image>./crossyroad/cover.png</image>
+  </game>
+</gameList>
