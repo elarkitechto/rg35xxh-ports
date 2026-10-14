@@ -46,10 +46,47 @@ int main(int /*argc*/, char* /*argv*/[]) {
     const bool smoke = SDL_getenv("THREES_SMOKE") != nullptr;
     const bool menu_smoke = SDL_getenv("THREES_MENU_SMOKE") != nullptr;
     const bool theme_smoke = SDL_getenv("THREES_THEME_SMOKE") != nullptr;
+    const bool tate_menu_smoke = SDL_getenv("THREES_TATE_MENU_SMOKE") != nullptr;
+    const bool tate_off_smoke = SDL_getenv("THREES_TATE_OFF_SMOKE") != nullptr;
+    const bool sound_smoke = SDL_getenv("THREES_SOUND_SMOKE") != nullptr;
+    const bool hotkey_smoke = SDL_getenv("THREES_HOTKEY_SMOKE") != nullptr;
+    const bool stick_smoke = SDL_getenv("THREES_STICK_SMOKE") != nullptr;
     while (app.tick()) {
         if (smoke) {
             ++frame;
-            if (theme_smoke) {
+            if (stick_smoke) {
+                if (frame == 10 || frame == 20 || frame == 30) {
+                    SDL_Event e{};
+                    e.type = SDL_JOYAXISMOTION;
+                    e.jaxis.axis = 0; // left X on the raw joystick
+                    e.jaxis.value = frame == 20 ? 0 : 24000;
+                    SDL_PushEvent(&e);
+                }
+            } else if (hotkey_smoke) {
+                if (frame == 10 || frame == 20) {
+                    SDL_Event e{};
+                    e.type = SDL_CONTROLLERBUTTONDOWN;
+                    e.cbutton.button = frame == 10 ? SDL_CONTROLLER_BUTTON_GUIDE : SDL_CONTROLLER_BUTTON_START;
+                    SDL_PushEvent(&e);
+                }
+            } else if (tate_off_smoke || sound_smoke) {
+                SDL_Keycode key = 0;
+                switch (frame) {
+                    case 10: key = SDLK_TAB; break;
+                    case 20: case 25: case 30: case 35: if (tate_off_smoke || frame == 20) key = SDLK_DOWN; break;
+                    case 40: key = SDLK_RETURN; break;
+                }
+                if (key) { SDL_Event e{}; e.type = SDL_KEYDOWN; e.key.keysym.sym = key; SDL_PushEvent(&e); }
+            } else if (tate_menu_smoke) {
+                SDL_Keycode key = 0;
+                switch (frame) {
+                    case 10: key = SDLK_TAB; break;
+                    case 20: case 25: case 30: case 35: key = SDLK_DOWN; break;
+                    case 40: key = SDLK_RETURN; break;
+                    case 50: key = SDLK_LEFT; break;
+                }
+                if (key) { SDL_Event e{}; e.type = SDL_KEYDOWN; e.key.keysym.sym = key; SDL_PushEvent(&e); }
+            } else if (theme_smoke) {
                 SDL_Keycode key = 0;
                 switch (frame) {
                     case 10: key = SDLK_TAB; break;
@@ -80,6 +117,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
                 SDL_PushEvent(&e);
             }
             SDL_Delay(16);
+            if (hotkey_smoke && frame >= 30) return 2;
             if (frame >= 90) break;
         }
     }

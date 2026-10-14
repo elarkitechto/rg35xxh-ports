@@ -52,11 +52,13 @@ public:
     int tutorial_step = -1;
 
     // Create window + renderer. Returns false on failure.
-    bool initialize(const char* title, int initial_w, int initial_h);
+    bool initialize(const char* title, int initial_w, int initial_h, bool tate);
 
     // Set the device-pixel logical size (call when window/canvas resizes).
     // For HiDPI, pass the device-pixel dimensions, not the CSS-pixel ones.
     void set_logical_size(int w, int h);
+    bool set_tate(bool enabled);
+    bool tate_enabled() const noexcept { return tate_; }
 
     // Draw a frame. `game_over_age_ms` is milliseconds since the game ended;
     // used to drive the restart button's attention-grabbing shake/pulse.

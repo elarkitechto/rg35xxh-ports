@@ -62,12 +62,20 @@ private:
     bool                        game_over_ = false;
     bool                        audio_initialized_ = false;
     bool                        tate_ = false;
+    int                         stick_x_[2] = {0, 0};
+    int                         stick_y_[2] = {0, 0};
+    bool                        stick_latched_[2] = {false, false};
+    bool                        guide_held_ = false;
+    bool                        start_held_ = false;
     bool                        splash_open_ = true;
     std::uint64_t               splash_until_ms_ = 0;
     int                         tutorial_step_ = -1;
     game::GameState             tutorial_return_state_{};
     void begin_tutorial_();
-    void finish_tutorial_();
+    void finish_tutorial_(bool completed = true);
+    void toggle_tate_();
+    void stick_motion_(bool right, int axis, int value);
+    void request_exit_();
     void apply_tutorial_move_();
     int                         active_touch_fingers_ = 0;
     // Last time the restart button fired, in SDL_GetTicks() ms. Used to

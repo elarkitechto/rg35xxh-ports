@@ -9,7 +9,8 @@ struct Settings {
     bool english = false;
     bool dark = true;
     bool tips_seen = false;
-    std::string serialize() const { return "volume=" + std::to_string(volume) + "\nlanguage=" + (english ? "en" : "es") + "\ntheme=" + (dark ? "dark" : "light") + "\ntips_seen=" + (tips_seen ? "1" : "0") + "\n"; }
+    bool tate = false;
+    std::string serialize() const { return "volume=" + std::to_string(volume) + "\nlanguage=" + (english ? "en" : "es") + "\ntheme=" + (dark ? "dark" : "light") + "\ntips_seen=" + (tips_seen ? "1" : "0") + "\ntate=" + (tate ? "1" : "0") + "\n"; }
     static Settings parse(std::string_view text) {
         Settings result;
         while (!text.empty()) {
@@ -25,6 +26,7 @@ struct Settings {
             if (line == "theme=dark") result.dark = true;
             if (line == "theme=light") result.dark = false;
             if (line == "tips_seen=1") result.tips_seen = true;
+            if (line == "tate=1") result.tate = true;
             if (end == std::string_view::npos) break;
             text.remove_prefix(end + 1);
         }

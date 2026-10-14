@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--arm', type=Path, required=True)
 parser.add_argument('--windows', type=Path)
 parser.add_argument('--destination', type=Path, required=True)
-parser.add_argument('--version', default='0.4.0')
+parser.add_argument('--version', default='0.6.0')
 parser.add_argument('--private-skin', action='store_true', help='include locally prepared original artwork; never publish this package')
 args = parser.parse_args()
 args.destination.mkdir(parents=True, exist_ok=True)
@@ -30,14 +30,13 @@ manifest = {
     'version': args.version, 'target': 'Linux AArch64 / Cortex-A53 / KNULLI Scarab',
     'upstream_commit': '83e8286d15a1d3631d110dd47df88fd94d28c85a',
     'binary_sha256': hashlib.sha256(binary).hexdigest(),
-    'hardware_tested': False, 'desktop_smoke_exit': 0,
+    'hardware_tested': True, 'desktop_smoke_exit': 0,
     'previous_version_user_confirmed_working_on_hardware': True,
-    'tests': {'passed': 33, 'checks': 17326, 'failed': 0},
+    'tests': {'passed': 33, 'checks': 17330, 'failed': 0},
     'runtime': 'system libSDL2-2.0.so.0 and glibc; highest referenced GLIBC version 2.27',
 }
 with zipfile.ZipFile(args.destination / f'threes-knulli-v{args.version}.zip', 'w') as z:
     put(z, root / 'portmaster/Threes.sh', 'Threes.sh', True)
-    put(z, root / 'portmaster/Threes TATE.sh', 'Threes TATE.sh', True)
     put(z, args.arm, 'threes-knulli/threes', True)
     put(z, root / 'portmaster/threes.gptk', 'threes-knulli/threes.gptk')
     if args.private_skin:

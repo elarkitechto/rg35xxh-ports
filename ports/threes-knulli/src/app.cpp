@@ -79,8 +79,13 @@ App::~App() {
 }
 
 bool App::initialize() {
-    tate_ = SDL_getenv("THREES_TATE") != nullptr;
-    if (!renderer_.initialize("Threes - KNULLI prototype", 640, 480)) return false;
+    store_ = platform::make_store();
+    if (auto saved = store_->read("settings")) settings_ = Settings::parse(*saved);
+    settings_.volume = settings_.volume ? 100 : 0;
+    tate_ = settings_.tate;
+    if (!renderer_.initialize("Triples", 640, 480, tate_)) return false;
+    tate_ = renderer_.tate_enabled();
+    settings_.tate = tate_;
     // On web, the AudioContext underlying SDL3's audio device must be created
     // during a real user-gesture activation, or it stays suspended forever on
     // Firefox / mobile Safari. We defer mixer_.initialize() until the first
@@ -94,8 +99,6 @@ bool App::initialize() {
     input::macos_trackpad_init(renderer_.sdl_window());
 #endif
 
-    store_ = platform::make_store();
-    if (auto saved = store_->read("settings")) settings_ = Settings::parse(*saved);
     mixer_.set_volume(settings_.volume);
 
     // Try to restore the saved game state. Fall back to a fresh start if any
@@ -157,14 +160,65 @@ void App::begin_tutorial_() {
     drag_ = input::DragController{};
 }
 
-void App::finish_tutorial_() {
+void App::finish_tutorial_(bool completed) {
     state_ = tutorial_return_state_;
     tutorial_step_ = -1;
-    settings_.tips_seen = true;
-    save_settings_();
+    if (completed) { settings_.tips_seen = true; save_settings_(); }
     game_over_ = state_.is_game_over();
     anims_.clear();
     drag_ = input::DragController{};
+}
+
+void App::toggle_tate_() {
+    const bool next = !tate_;
+    if (!renderer_.set_tate(next)) {
+        SDL_Log("TATE is unavailable with this SDL video driver");
+        return;
+    }
+    if (tutorial_step_ >= 0) finish_tutorial_(false);
+    tate_ = next;
+    settings_.tate = next;
+    save_settings_();
+    menu_.open = false;
+    drag_ = input::DragController{};
+    anims_.clear();
+    for (int i = 0; i < 2; ++i) {
+        stick_x_[i] = stick_y_[i] = 0;
+        stick_latched_[i] = false;
+    }
+    if (tate_ && !settings_.tips_seen) begin_tutorial_();
+}
+
+void App::stick_motion_(bool right, int axis, int value) {
+    const int stick = right ? 1 : 0;
+    if (axis == 0) stick_x_[stick] = value;
+    else if (axis == 1) stick_y_[stick] = value;
+    else return;
+    // The left stick duplicates the D-pad in landscape; the right stick
+    // takes over after the console is turned for TATE.
+    if (right != tate_) return;
+    constexpr int reset = 12000;
+    constexpr int trigger = 19000;
+    if (std::abs(stick_x_[stick]) < reset && std::abs(stick_y_[stick]) < reset) {
+        stick_latched_[stick] = false;
+        return;
+    }
+    if (stick_latched_[stick]) return;
+    int x = stick_x_[stick], y = stick_y_[stick];
+    if (std::max(std::abs(x), std::abs(y)) < trigger) return;
+    stick_latched_[stick] = true;
+    SDL_Keycode key = std::abs(x) >= std::abs(y)
+        ? (x > 0 ? SDLK_RIGHT : SDLK_LEFT)
+        : (y > 0 ? SDLK_DOWN : SDLK_UP);
+    SDL_Event mapped{};
+    mapped.type = SDL_KEYDOWN;
+    mapped.key.keysym.sym = key;
+    handle_event_(mapped);
+}
+
+void App::request_exit_() {
+    save_state_(); // The tutorial guard keeps its temporary board out of the save.
+    running_ = false;
 }
 
 void App::apply_tutorial_move_() {
@@ -226,24 +280,61 @@ void App::handle_event_(const SDL_Event& e) {
     try_init_audio_on_first_gesture_(e);
     switch (e.type) {
         case SDL_CONTROLLERBUTTONDOWN: {
+            if (e.cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE) {
+                guide_held_ = true;
+                if (start_held_) request_exit_();
+                break;
+            }
+            if (e.cbutton.button == SDL_CONTROLLER_BUTTON_START) {
+                start_held_ = true;
+                if (guide_held_) { request_exit_(); break; }
+            }
             SDL_Keycode key = 0;
             switch (e.cbutton.button) {
-                case SDL_CONTROLLER_BUTTON_DPAD_UP: key = SDLK_UP; break;
-                case SDL_CONTROLLER_BUTTON_DPAD_DOWN: key = SDLK_DOWN; break;
-                case SDL_CONTROLLER_BUTTON_DPAD_LEFT: key = SDLK_LEFT; break;
-                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: key = SDLK_RIGHT; break;
+                case SDL_CONTROLLER_BUTTON_DPAD_UP: if (!tate_) key = SDLK_UP; break;
+                case SDL_CONTROLLER_BUTTON_DPAD_DOWN: if (!tate_) key = SDLK_DOWN; break;
+                case SDL_CONTROLLER_BUTTON_DPAD_LEFT: if (!tate_) key = SDLK_LEFT; break;
+                case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: if (!tate_) key = SDLK_RIGHT; break;
                 case SDL_CONTROLLER_BUTTON_START: key = SDLK_TAB; break;
-                case SDL_CONTROLLER_BUTTON_BACK: key = SDLK_ESCAPE; break;
-                case SDL_CONTROLLER_BUTTON_A: key = SDLK_RETURN; break;
-                case SDL_CONTROLLER_BUTTON_B: key = SDLK_BACKSPACE; break;
-                case SDL_CONTROLLER_BUTTON_Y: key = SDLK_r; break;
+                case SDL_CONTROLLER_BUTTON_BACK: break; // Select is free for future actions.
+                case SDL_CONTROLLER_BUTTON_A: key = tate_ ? SDLK_BACKSPACE : SDLK_RETURN; break;
+                case SDL_CONTROLLER_BUTTON_B: key = tate_ ? SDLK_r : SDLK_BACKSPACE; break;
+                case SDL_CONTROLLER_BUTTON_X: if (tate_) key = SDLK_RETURN; break;
+                case SDL_CONTROLLER_BUTTON_Y: if (!tate_) key = SDLK_r; break;
                 default: break;
             }
             if (key) { SDL_Event mapped{}; mapped.type = SDL_KEYDOWN; mapped.key.keysym.sym = key; handle_event_(mapped); }
             break;
         }
+        case SDL_CONTROLLERBUTTONUP:
+            if (e.cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE) guide_held_ = false;
+            if (e.cbutton.button == SDL_CONTROLLER_BUTTON_START) start_held_ = false;
+            break;
+        case SDL_JOYBUTTONDOWN:
+        case SDL_JOYBUTTONUP:
+            // SDL's GameController layer normally handles these. On a raw
+            // joystick, the RG35XX-H reports F/Guide=5 and Start=6.
+            if (!controller_ && (e.jbutton.button == 5 || e.jbutton.button == 6)) {
+                const bool down = e.type == SDL_JOYBUTTONDOWN;
+                if (e.jbutton.button == 5) guide_held_ = down;
+                else start_held_ = down;
+                if (guide_held_ && start_held_) request_exit_();
+            }
+            break;
+        case SDL_CONTROLLERAXISMOTION:
+            if (controller_ && e.caxis.axis <= SDL_CONTROLLER_AXIS_RIGHTY) {
+                if (e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX || e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
+                    stick_motion_(false, e.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX ? 0 : 1, e.caxis.value);
+                if (e.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX || e.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTY)
+                    stick_motion_(true, e.caxis.axis == SDL_CONTROLLER_AXIS_RIGHTX ? 0 : 1, e.caxis.value);
+            }
+            break;
+        case SDL_JOYAXISMOTION:
+            if (!controller_ && e.jaxis.axis <= 3)
+                stick_motion_(e.jaxis.axis >= 2, e.jaxis.axis % 2, e.jaxis.value);
+            break;
         case SDL_JOYHATMOTION: {
-            if (controller_) break;
+            if (controller_ || tate_) break;
             SDL_Keycode key = 0;
             if (e.jhat.value & SDL_HAT_UP) key = SDLK_UP;
             else if (e.jhat.value & SDL_HAT_DOWN) key = SDLK_DOWN;
@@ -278,7 +369,7 @@ void App::handle_event_(const SDL_Event& e) {
             if (key == SDLK_TAB || key == SDLK_RETURN) {
                 menu_.open = true; menu_.credits = false; menu_.selected = 0; return;
             }
-            if (key == SDLK_ESCAPE) { running_ = false; return; }
+            if (key == SDLK_ESCAPE) { request_exit_(); return; }
             if (tutorial_step_ < 0 && key == SDLK_r && !anims_.restart_flip.active) { restart_with_flip_(); return; }
             // Mid-flip the board is changing under the player's feet — no
             // sense letting them spam input until the cascade finishes.
@@ -654,13 +745,13 @@ void App::menu_key_(int key) {
         if (key == SDLK_RETURN || key == SDLK_SPACE) menu_.credits = false;
         return;
     }
-    const int menu_rows = tate_ ? 7 : 6;
+    const int menu_rows = 8;
     if (key == SDLK_UP) menu_.selected = (menu_.selected + menu_rows - 1) % menu_rows;
     if (key == SDLK_DOWN) menu_.selected = (menu_.selected + 1) % menu_rows;
     bool accept = key == SDLK_RETURN || key == SDLK_SPACE;
     int direction = key == SDLK_LEFT ? -1 : key == SDLK_RIGHT ? 1 : 0;
     if (menu_.selected == 1 && (direction || accept)) {
-        settings_.volume = std::clamp(settings_.volume + (direction ? direction * 10 : settings_.volume ? -settings_.volume : 100), 0, 100);
+        settings_.volume = settings_.volume ? 0 : 100;
         save_settings_();
     }
     if (menu_.selected == 2 && (direction || accept)) {
@@ -670,9 +761,10 @@ void App::menu_key_(int key) {
     if (menu_.selected == 3 && (direction || accept)) {
         settings_.dark = !settings_.dark; save_settings_();
     }
-    if (accept && tate_ && menu_.selected == 4) { menu_.open = false; begin_tutorial_(); }
-    if (accept && menu_.selected == (tate_ ? 5 : 4)) { menu_.credits = true; menu_.credit_page = 0; }
-    if (accept && menu_.selected == (tate_ ? 6 : 5)) { save_state_(); running_ = false; }
+    if (menu_.selected == 4 && (direction || accept)) { toggle_tate_(); return; }
+    if (accept && menu_.selected == 5 && tate_) { menu_.open = false; begin_tutorial_(); }
+    if (accept && menu_.selected == 6) { menu_.credits = true; menu_.credit_page = 0; }
+    if (accept && menu_.selected == 7) request_exit_();
 }
 
 bool App::tick() {

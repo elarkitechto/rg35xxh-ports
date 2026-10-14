@@ -121,7 +121,7 @@ Renderer::~Renderer() {
     if (window_)             SDL_DestroyWindow(window_);
 }
 
-bool Renderer::initialize(const char* title, int initial_w, int initial_h) {
+bool Renderer::initialize(const char* title, int initial_w, int initial_h, bool tate) {
     SDL_SetMainReady();
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER)) {
         std::fprintf(stderr, "SDL_Init: %s\n", SDL_GetError());
@@ -171,12 +171,16 @@ bool Renderer::initialize(const char* title, int initial_w, int initial_h) {
     }
     SDL_SetRenderDrawBlendMode(sdl_renderer_, SDL_BLENDMODE_BLEND);
 
-    tate_ = SDL_getenv("THREES_TATE") != nullptr;
+    tate_ = tate;
 
     int w, h;
     SDL_GetWindowSizeInPixels(window_, &w, &h);
     set_logical_size(w, h);
-    if (tate_ && !tate_target_) return false;
+    if (tate_ && !tate_target_) {
+        SDL_Log("TATE unavailable; starting horizontally");
+        tate_ = false;
+        set_logical_size(w, h);
+    }
 
     // Atlas baked at sizes large enough for the typical high-DPI tile —
     // the renderer scales each draw down (or up) to fit the current cell.
@@ -208,12 +212,26 @@ bool Renderer::initialize(const char* title, int initial_w, int initial_h) {
     return true;
 }
 
+bool Renderer::set_tate(bool enabled) {
+    if (tate_ == enabled) return true;
+    tate_ = enabled;
+    int w = 0, h = 0;
+    SDL_GetWindowSizeInPixels(window_, &w, &h);
+    set_logical_size(w, h);
+    if (enabled && !tate_target_) {
+        tate_ = false;
+        set_logical_size(w, h);
+        return false;
+    }
+    return true;
+}
+
 void Renderer::set_logical_size(int w, int h) {
     output_w_ = w;
     output_h_ = h;
     logical_w_ = tate_ ? h : w;
     logical_h_ = tate_ ? w : h;
-    if (tate_target_) { SDL_DestroyTexture(tate_target_); tate_target_ = nullptr; }
+    if (tate_target_) { SDL_SetRenderTarget(sdl_renderer_, nullptr); SDL_DestroyTexture(tate_target_); tate_target_ = nullptr; }
     if (tate_ && sdl_renderer_) {
         tate_target_ = SDL_CreateTexture(sdl_renderer_, SDL_PIXELFORMAT_RGBA8888,
                                           SDL_TEXTUREACCESS_TARGET, logical_w_, logical_h_);
@@ -948,23 +966,24 @@ void Renderer::draw_menu_() {
         line(translate(settings, "Izq./der.: página    B: volver", "Left/right: page    B: back"), 0.86f, 15);
         return;
     }
-    std::string rows[7] = {
+    std::string rows[8] = {
         translate(settings, "Continuar", "Resume"),
-        std::string(translate(settings, "Volumen: ", "Volume: ")) + (settings.volume ? std::to_string(settings.volume) + "%" : translate(settings, "Silencio", "Muted")),
+        settings.volume ? "Sound On" : "Sound Off",
         std::string(translate(settings, "Idioma: ", "Language: ")) + (settings.english ? "English" : "Español"),
         std::string(translate(settings, "Tema: ", "Theme: ")) + (settings.dark ? translate(settings, "Oscuro", "Dark") : translate(settings, "Claro", "Light")),
-        translate(settings, "Cómo jugar", "How to play"),
+        std::string("TATE: ") + (settings.tate ? "On" : "Off"),
+        translate(settings, "Repetir guía TATE", "Replay TATE guide"),
         translate(settings, "Créditos", "Credits"),
         translate(settings, "Salir del juego", "Quit game")
     };
-    for (int i = 0; i < (tate_ ? 7 : 6); ++i) {
-        float y = 0.28f + i * 0.078f;
+    for (int i = 0; i < 8; ++i) {
+        float y = 0.26f + i * 0.071f;
         if (i == menu.selected) {
             SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 205);
             SDL_FRect selected{panel.x + 18, h * y - 26, panel.w - 36, 40};
             SDL_RenderFillRect(sdl_renderer_, &selected);
         }
-        line(rows[i + (!tate_ && i >= 4 ? 1 : 0)], y, 23, i == menu.selected);
+        line(rows[i], y, 22, i == menu.selected);
     }
     line(translate(settings, "Cruceta: ajustar    A: elegir    B: volver", "D-pad: adjust    A: select    B: back"), 0.86f, 14);
 }

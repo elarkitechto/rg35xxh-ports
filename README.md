@@ -5,7 +5,7 @@ Código y recetas de empaquetado para ports de juegos en consolas Linux. Cada ju
 | Port | Estado | Equipo probado |
 | --- | --- | --- |
 | [Crossy Road](ports/crossyroad/README.md) | Jugable, fuente pública; paquete local privado | RG35XX-H, KNULLI, 640×480 |
-| [Threes / fork de Triples](ports/threes-knulli/README.md) | Fork 0.5 en desarrollo; código y herramientas de compilación | RG35XX-H, KNULLI (versión 0.4 instalada) |
+| [Threes / fork de Triples](ports/threes-knulli/README.md) | Fork 0.6 funcional; código y herramientas de compilación | RG35XX-H, KNULLI |
 
 Este repositorio **no contiene juegos ni paquetes listos para distribuir**. No incluye APK, recursos extraídos de juegos, ROMs, partidas, controladores de la consola ni ejecutables compilados. El código de Crossy Road está ligado al APK 4.5.0 indicado en su documentación y aún depende de un loader de investigación que no se puede reconstruir íntegramente desde esta fuente. Por ello, el port no es todavía una propuesta para el catálogo oficial de PortMaster.
 
@@ -13,7 +13,7 @@ Este repositorio **no contiene juegos ni paquetes listos para distribuir**. No i
 
 - `ports/crossyroad/portmaster/`: launcher, instalador y metadatos de PortMaster, sin componentes privados.
 - `ports/crossyroad/source/`: puente JNI específico del juego y notas técnicas.
-- `ports/threes-knulli/`: fuente de Triples adaptada a SDL2, compilación ARM64 y lanzadores horizontal/TATE.
+- `ports/threes-knulli/`: fuente de Triples adaptada a SDL2, compilación ARM64 y un lanzador con TATE seleccionable desde el menú.
 - `tools/`: verificación de publicación y empaquetado **local** con componentes que el usuario proporciona aparte.
 - `docs/WORKFLOW.md`: ramas, commits y preparación de entregas.
 
