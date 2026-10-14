@@ -1,4 +1,4 @@
-# Elarkitechto Ports
+# RG35XX-H Ports
 
 Código y recetas de empaquetado para ports de juegos en consolas Linux. Cada juego vive en `ports/<nombre>/` y se versiona por separado dentro de este repositorio.
 
