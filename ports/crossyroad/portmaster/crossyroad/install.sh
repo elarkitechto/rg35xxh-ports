@@ -8,6 +8,7 @@ APK="$PORTDIR/crossy-road-4-5-0.apk"
 LAB="$SYSTEM_ROOT/crossyroad-lab"
 DATA="$SYSTEM_ROOT/cr"
 EXPECTED=1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb
+BRIDGE_SHA256=6763ad312ebb7cc09cd2a705d6aedf6a98d2e6003728efbbb74bafd892261348
 
 fail() { echo "Crossy Road: $*" >&2; exit 1; }
 mkdir -p "$SYSTEM_ROOT" "$LAB" "$DATA"
@@ -32,6 +33,15 @@ if [ "$(cat "$DATA/.crossyroad-apk.sha256" 2>/dev/null || true)" = "$EXPECTED" ]
    [ -s "$LAB/libmain.so" ] &&
    [ -s "$LAB/libil2cpp.so" ] &&
    [ -s "$LAB/libunity.so" ]; then
+  [ -s "$PORTDIR/libcrossy-jni-native.so" ] || fail 'JNI bridge missing from port package'
+  PACKAGE_BRIDGE_SHA256=$(sha256sum "$PORTDIR/libcrossy-jni-native.so" | cut -d ' ' -f 1)
+  [ "$PACKAGE_BRIDGE_SHA256" = "$BRIDGE_SHA256" ] || fail 'JNI bridge has an unexpected version'
+  RUNTIME_BRIDGE_SHA256=$(sha256sum "$LAB/libcrossy-jni-native.so" | cut -d ' ' -f 1)
+  if [ "$RUNTIME_BRIDGE_SHA256" != "$BRIDGE_SHA256" ]; then
+    cp "$PORTDIR/libcrossy-jni-native.so" "$LAB/.libcrossy-jni-native.so.new"
+    mv "$LAB/.libcrossy-jni-native.so.new" "$LAB/libcrossy-jni-native.so"
+    echo 'Crossy Road: JNI bridge updated.'
+  fi
   configure_analytics
   echo 'Crossy Road: installation already complete.'
   exit 0
@@ -48,7 +58,7 @@ check_port_file() {
   [ "$HASH" = "$2" ] || fail "port file has changed: $1"
 }
 check_port_file crossy-loader-sdl-single 0e611578009776ec0d5f2d309fe333dd3ccc1b81d45bbb179c41e74e6cbcb7b7
-check_port_file libcrossy-jni-native.so 52406e5c69d7614070ab6a71fd311405cae98a470f1da7a78a341e15b69875ba
+check_port_file libcrossy-jni-native.so "$BRIDGE_SHA256"
 check_port_file libOpenSLES.so 6f016fc1ef15d9d6c9594d77b840f15c071e9d66b8a38d4a0fcbcf97d3a0b5ab
 check_port_file libMali.so 08c4c5f65f31a753065cf7332b5596f045a552697cfd9849aef15ea494192b2b
 

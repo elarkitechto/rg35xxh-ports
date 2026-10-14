@@ -19,7 +19,7 @@ check_copy() {
   cp "$components/$name" "$destination"
 }
 check_copy crossy-loader-sdl-single 0e611578009776ec0d5f2d309fe333dd3ccc1b81d45bbb179c41e74e6cbcb7b7 "$stage/crossyroad/"
-check_copy libcrossy-jni-native.so 52406e5c69d7614070ab6a71fd311405cae98a470f1da7a78a341e15b69875ba "$stage/crossyroad/"
+check_copy libcrossy-jni-native.so 6763ad312ebb7cc09cd2a705d6aedf6a98d2e6003728efbbb74bafd892261348 "$stage/crossyroad/"
 check_copy libOpenSLES.so 6f016fc1ef15d9d6c9594d77b840f15c071e9d66b8a38d4a0fcbcf97d3a0b5ab "$stage/crossyroad/"
 check_copy libMali.so 08c4c5f65f31a753065cf7332b5596f045a552697cfd9849aef15ea494192b2b "$stage/crossyroad/"
 check_copy cover.png 227c1360c3893d164fc979f50aa0996368872c782cad3534475b1a5c01f61ed7 "$stage/crossyroad/"
