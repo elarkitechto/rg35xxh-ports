@@ -16,3 +16,7 @@
 - Arte de portada, capturas, partidas y registros personales: no se publican.
 
 La licencia del código del repositorio no concede derechos sobre el juego, el controlador Mali ni otros binarios excluidos. Consulta también [el estado técnico del port](ports/crossyroad/README.md).
+
+## Triples / Threes
+
+El fork `ports/threes-knulli/` parte de [Triples de Christopher Wellons](https://github.com/skeeto/triples), commit `83e8286d15a1d3631d110dd47df88fd94d28c85a`, bajo Unlicense. Las adaptaciones para RG35XX-H son de elarkitechto. Las fuentes Inter y Jua se conservan con licencias OFL en `ports/threes-knulli/licenses/`. Los gráficos originales de Threes no están incluidos en el historial público; sus autores figuran en `ports/threes-knulli/CREDITS.md`.

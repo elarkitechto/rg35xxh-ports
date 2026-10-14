@@ -18,5 +18,11 @@
 **/userdata/
 **/prefs/
 **/assets/
+!ports/threes-knulli/assets/
+ports/threes-knulli/assets/*
+!ports/threes-knulli/assets/fonts/
+ports/threes-knulli/assets/fonts/*
+!ports/threes-knulli/assets/fonts/Inter-Bold.ttf
+!ports/threes-knulli/assets/fonts/Jua-Regular.ttf
 __pycache__/
 .DS_Store
