@@ -3,9 +3,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <link.h>
+#include <linux/input.h>
 #include <pthread.h>
 #include <stdarg.h>
 #include <sys/mman.h>
+#include <sys/ioctl.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -352,6 +354,7 @@ static void crossy_patch_key_method(uintptr_t offset, void *replacement) {
 }
 
 static void (*crossy_original_game_update)(void *, void *);
+static void crossy_haptic_tick(void);
 static unsigned crossy_direct_actions;
 static struct timespec crossy_first_game_update;
 static int crossy_auto_pause_done;
@@ -489,6 +492,7 @@ static void crossy_hide_touch_hints(void *game) {
 
 static void crossy_game_update(void *self, void *method) {
   crossy_original_game_update(self, method);
+  if (getenv("CROSSY_HAPTIC_ENVIRONMENT")) crossy_haptic_tick();
   if (getenv("CROSSY_NATIVE_INPUT")) {
     static unsigned native_frames;
     static int native_init_attempted;
@@ -1057,6 +1061,150 @@ static void crossy_install_game_update_hook(void) {
   *fn = 0x14000000U | (((uint32_t)(forward / 4)) & 0x03ffffffU);
   __builtin___clear_cache((char *)fn, (char *)fn + 4);
   fprintf(stderr, "[CROSSY-DIRECT] hooked GameController.Update\n");
+}
+
+/* Optional, pinned-APK haptics on the playable PlayerController. */
+static void (*crossy_original_did_hop)(void *, void *);
+static void (*crossy_original_do_kill)(void *, void *);
+static void (*crossy_original_spawn_train)(void *, float, void *, void *);
+static void (*crossy_original_camera_shake)(void *, float, float, void *);
+static int crossy_ff_fd = -2;
+static int crossy_ff_effect_id = -1;
+static unsigned long long crossy_impact_until_ms;
+static unsigned long long crossy_death_until_ms;
+static unsigned long long crossy_train_due_ms;
+static unsigned crossy_train_pulse;
+
+static unsigned long long crossy_mono_ms(void) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return (unsigned long long)now.tv_sec * 1000 + now.tv_nsec / 1000000;
+}
+
+static void crossy_rumble(unsigned short strength, unsigned duration_ms) {
+  if (crossy_ff_fd == -2) {
+    crossy_ff_fd = -1;
+    for (int i = 0; i < 16; ++i) {
+      char path[32], name[128] = {0};
+      snprintf(path, sizeof(path), "/dev/input/event%d", i);
+      int fd = open(path, O_RDWR | O_CLOEXEC | O_NONBLOCK);
+      if (fd < 0) continue;
+      if (ioctl(fd, EVIOCGNAME(sizeof(name)), name) >= 0 &&
+          strstr(name, "Anbernic RG35XX-H Controller")) {
+        crossy_ff_fd = fd;
+        break;
+      }
+      close(fd);
+    }
+    fprintf(stderr, "[CROSSY-HAPTIC] evdev available=%d\n", crossy_ff_fd >= 0);
+  }
+  if (crossy_ff_fd < 0) return;
+  struct ff_effect effect = {0};
+  effect.type = FF_RUMBLE;
+  effect.id = crossy_ff_effect_id;
+  effect.u.rumble.strong_magnitude = strength;
+  effect.u.rumble.weak_magnitude = strength;
+  effect.replay.length = duration_ms;
+  if (ioctl(crossy_ff_fd, EVIOCSFF, &effect) < 0) {
+    fprintf(stderr, "[CROSSY-HAPTIC] EVIOCSFF failed: %s\n", strerror(errno));
+    return;
+  }
+  crossy_ff_effect_id = effect.id;
+  struct input_event event = {0};
+  event.type = EV_FF;
+  event.code = effect.id;
+  event.value = 1;
+  if (write(crossy_ff_fd, &event, sizeof(event)) != sizeof(event))
+    fprintf(stderr, "[CROSSY-HAPTIC] play failed: %s\n", strerror(errno));
+}
+
+static void crossy_did_hop(void *self, void *method) {
+  crossy_original_did_hop(self, method);
+  if (getenv("CROSSY_HAPTIC_TRACE")) fprintf(stderr, "[CROSSY-HAPTIC] hop\n");
+  if (crossy_mono_ms() >= crossy_impact_until_ms) crossy_rumble(13000, 40);
+}
+
+static void crossy_do_kill(void *self, void *method) {
+  crossy_original_do_kill(self, method);
+  if (getenv("CROSSY_HAPTIC_TRACE")) fprintf(stderr, "[CROSSY-HAPTIC] death\n");
+  crossy_death_until_ms = crossy_mono_ms() + 220;
+  crossy_impact_until_ms = crossy_death_until_ms;
+  crossy_train_pulse = 0;
+  crossy_rumble(60000, 220);
+}
+
+static void crossy_spawn_train(void *self, float x, void *train_type, void *method) {
+  crossy_original_spawn_train(self, x, train_type, method);
+  if (getenv("CROSSY_HAPTIC_TRACE")) fprintf(stderr, "[CROSSY-HAPTIC] train\n");
+  /* The spawn event precedes the train's visible entrance. Approximate the
+   * first pulse at roughly one third of its crossing, then let it fade. */
+  if (!crossy_train_pulse) {
+    crossy_train_due_ms = crossy_mono_ms() + 300;
+    crossy_train_pulse = 1;
+  }
+}
+
+static void crossy_camera_shake(void *self, float strength, float duration, void *method) {
+  crossy_original_camera_shake(self, strength, duration, method);
+  unsigned long long now = crossy_mono_ms();
+  if (now < crossy_death_until_ms) return;
+  crossy_impact_until_ms = now + 55;
+  if (getenv("CROSSY_HAPTIC_TRACE"))
+    fprintf(stderr, "[CROSSY-HAPTIC] camera shake strength=%f duration=%f\n", strength, duration);
+  crossy_rumble(40000, 55);
+}
+
+static void crossy_haptic_tick(void) {
+  if (!crossy_train_pulse) return;
+  unsigned long long now = crossy_mono_ms();
+  if (now < crossy_train_due_ms || now < crossy_death_until_ms) return;
+  static const unsigned short strengths[] = {35000, 25000, 18000};
+  static const unsigned durations[] = {85, 65, 55};
+  unsigned index = crossy_train_pulse - 1;
+  if (getenv("CROSSY_HAPTIC_TRACE"))
+    fprintf(stderr, "[CROSSY-HAPTIC] train pulse %u\n", crossy_train_pulse);
+  crossy_rumble(strengths[index], durations[index]);
+  crossy_impact_until_ms = now + durations[index];
+  if (++crossy_train_pulse > 3) crossy_train_pulse = 0;
+  else crossy_train_due_ms = now + 150;
+}
+
+static void crossy_install_haptic_event(uintptr_t offset, uint32_t opcode,
+                                        uintptr_t slot, void *replacement,
+                                        void **original) {
+  uint32_t *fn = (uint32_t *)(0x500000000UL + offset);
+  uint32_t *tramp = (uint32_t *)(0x500000000UL + slot);
+  if (*fn != opcode) {
+    fprintf(stderr, "[CROSSY-HAPTIC] opcode mismatch at %lx: %08x\n",
+            (unsigned long)offset, *fn);
+    return;
+  }
+  tramp[0] = *fn;
+  intptr_t back = (char *)(fn + 1) - (char *)(tramp + 1);
+  tramp[1] = 0x14000000U | (((uint32_t)(back / 4)) & 0x03ffffffU);
+  uint32_t *hook = tramp + 8;
+  hook[0] = 0x58000050U;
+  hook[1] = 0xd61f0200U;
+  *(uintptr_t *)&hook[2] = (uintptr_t)replacement;
+  __builtin___clear_cache((char *)tramp, (char *)hook + 16);
+  *original = (void *)tramp;
+  intptr_t forward = (char *)hook - (char *)fn;
+  fn[0] = 0x14000000U | (((uint32_t)(forward / 4)) & 0x03ffffffU);
+  __builtin___clear_cache((char *)fn, (char *)fn + 4);
+  fprintf(stderr, "[CROSSY-HAPTIC] event %lx installed\n", (unsigned long)offset);
+}
+
+static void crossy_install_haptics(void) {
+  /* Opcodes verified against the pinned Crossy Road 4.5.0 ARM64 APK. */
+  crossy_install_haptic_event(0xbb75ccUL, 0xa9be4ff4U, 0x7017000UL,
+                             crossy_did_hop, (void **)&crossy_original_did_hop);
+  crossy_install_haptic_event(0xbb7940UL, 0xa9be4ff4U, 0x7017100UL,
+                             crossy_do_kill, (void **)&crossy_original_do_kill);
+  if (!getenv("CROSSY_HAPTIC_ENVIRONMENT")) return;
+  crossy_install_haptic_event(0x8b152cUL, 0xd10143ffU, 0x7017200UL,
+                             crossy_spawn_train, (void **)&crossy_original_spawn_train);
+  crossy_install_haptic_event(0x96bd64UL, 0xbd406002U, 0x7017300UL,
+                             crossy_camera_shake, (void **)&crossy_original_camera_shake);
 }
 
 /* Diagnose FMOD's Android output selection without changing the result. */
@@ -1726,6 +1874,8 @@ static void *install_override(void *ignored) {
         crossy_install_keyboard_trace();
       if (getenv("CROSSY_DIRECT_GAME_INPUT") || getenv("CROSSY_NATIVE_INPUT"))
         crossy_install_game_update_hook();
+      if (getenv("CROSSY_HAPTICS"))
+        crossy_install_haptics();
       if (getenv("CROSSY_TRACE_AUDIO"))
         crossy_install_audio_probe();
       if (getenv("CROSSY_TRACE_AUDIO") || getenv("CROSSY_FORCE_OPENSL"))
