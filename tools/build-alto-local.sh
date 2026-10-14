@@ -3,6 +3,7 @@
 set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 : "${ALTO_MEDIA_DIR:?Set ALTO_MEDIA_DIR to the private screenshot.png and cover.png directory}"
+python3 "$ROOT/tools/validate-port-media.py" "$ALTO_MEDIA_DIR"
 export ALTO_BUILD_DIR="$ROOT/.local/alto-build"
 sh "$ROOT/ports/altosadventure/source/build.sh"
 STAGE=$(mktemp -d)
