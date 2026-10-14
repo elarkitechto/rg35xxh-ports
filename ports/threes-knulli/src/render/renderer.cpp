@@ -1002,19 +1002,26 @@ void Renderer::draw_tutorial_ribbon_() {
     if (!tate_ || tutorial_step < 0) return;
     struct Message { const char* es1; const char* es2; const char* en1; const char* en2; const char* footer_es; const char* footer_en; };
     static const Message messages[] = {
+        {"TRIPLES", "", "TRIPLES", "", "CRUCETA: COMENZAR", "D-PAD: BEGIN"},
         {"Conoce al 1 y al 2", "", "Meet 1 and 2", "", "CRUCETA: MUÉVELOS", "D-PAD: MOVE THEM"},
-        {"Desliza las fichas", "en cuatro direcciones", "Slide the tiles", "in four directions", "CRUCETA: MUÉVELOS", "D-PAD: MOVE THEM"},
+        {"Un movimiento mueve", "todas las fichas", "One move shifts", "every tile", "MUÉVELOS", "MOVE THEM"},
         {"Ordénalas empujándolas", "contra las paredes", "Arrange them by pushing", "against the walls", "ACERCA EL 1 AL 2", "BRING 1 TO 2"},
-        {"Junta el 1 y el 2", "para crear un 3", "Join 1 and 2", "to make a 3", "1 + 2 = 3", "1 + 2 = 3"},
+        {"Usa las paredes para unir", "el 1 y el 2", "Use the walls to join", "1 and 2", "1 + 2 = 3", "1 + 2 = 3"},
         {"¡Buen comienzo!", "", "A good start!", "", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
         {"Aparecen fichas nuevas", "cuando mueves las demás", "New tiles appear", "when you move the others", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
         {"3 + 3 = 6", "", "3 + 3 = 6", "", "JUNTA LOS DOS 3", "JOIN THE TWO 3S"},
         {"¡Ya le agarraste!", "", "You're getting it!", "", "SIGUE MOVIENDO", "KEEP MOVING"},
         {"Desde el 3, solo se unen", "las fichas gemelas", "From 3 onward, only", "matching tiles combine", "SOLO LOS IGUALES SE DUPLICAN", "ONLY MATCHING TILES DOUBLE"},
-        {"6 + 6 = 12", "", "6 + 6 = 12", "", "FORMA UN 12", "MAKE A 12"},
-        {"¡Ahora a crecer!", "", "Keep growing!", "", "MUEVE PARA EMPEZAR", "MOVE TO START"}
+        {"Desde el 3, solo se unen", "las fichas gemelas", "From 3 onward, only", "matching tiles combine", "FORMA UN 12 PARA CONTINUAR", "MAKE A 12 TO CONTINUE"},
+        {"¡Fantástico!", "", "Fantastic!", "", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
+        {"El 1 solo se une al 2", "y el 2 solo al 1", "1 joins only with 2", "and 2 only with 1", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
+        {"¡Ahora forma un 24!", "", "Now make a 24!", "", "12 + 12 = 24", "12 + 12 = 24"},
+        {"¡Esto es Triples!", "", "This is Triples!", "", "SIGUE CRECIENDO", "KEEP GROWING"},
+        {"Forma el número más alto", "que puedas", "Make the highest number", "you can", "ESE ES EL OBJETIVO", "THAT IS THE GOAL"},
+        {"Mira la próxima ficha", "", "See the upcoming tile", "", "SIGUIENTE: 1", "NEXT: 1"},
+        {"La partida termina", "cuando se llena el tablero", "The game ends", "when the board fills up", "B: SALTAR    CRUCETA: JUGAR", "B: SKIP    D-PAD: PLAY"}
     };
-    const Message& m = messages[std::min(tutorial_step, 10)];
+    const Message& m = messages[std::min(tutorial_step, 17)];
     const float w = layout_.win_w, h = layout_.win_h;
     // Same placement as the online demo: live sentence above the board,
     // short action prompt below it. The middle remains fully playable.
@@ -1032,6 +1039,13 @@ void Renderer::draw_tutorial_ribbon_() {
     };
     line(settings.english ? m.en1 : m.es1, 44.0f, 23.0f, false);
     line(settings.english ? m.en2 : m.es2, 70.0f, 23.0f, false);
+    if (tutorial_step == 16) {
+        SDL_SetRenderDrawColor(sdl_renderer_, 102, 194, 236, 255);
+        SDL_FRect preview{w * 0.5f - 18.0f, 65.0f, 36.0f, 47.0f};
+        SDL_RenderFillRect(sdl_renderer_, &preview);
+        text_digits_.draw_centered(sdl_renderer_, "1", TextAtlas::Size::Body,
+                                   w * 0.5f, 96.0f, 255, 255, 255, 255, 0.55f);
+    }
     line(settings.english ? m.footer_en : m.footer_es, h - 28.0f, 14.0f, true);
 }
 
