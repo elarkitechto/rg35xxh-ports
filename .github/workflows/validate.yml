@@ -1,0 +1,11 @@
+name: Validate public source
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tools/check-public-tree.sh
+      - run: sh -n ports/crossyroad/portmaster/'Crossy Road.sh' ports/crossyroad/portmaster/crossyroad/install.sh ports/crossyroad/source/build_native.sh tools/build-crossyroad-local.sh
+      - run: python3 -m json.tool ports/crossyroad/portmaster/port.json >/dev/null
+      - run: python3 -m py_compile ports/crossyroad/source/patch_loader_sdl.py
