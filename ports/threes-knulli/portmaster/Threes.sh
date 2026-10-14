@@ -15,14 +15,9 @@ mkdir -p saves
 export THREES_SAVE_DIR="$GAMEDIR/saves"
 export THREES_FULLSCREEN=1
 export SDL_GAMECONTROLLERCONFIG="${sdl_controllerconfig:-$SDL_GAMECONTROLLERCONFIG}"
-key_pid=""
-if [ -n "$GPTOKEYB" ] && [ -x "$GPTOKEYB" ]; then
-    export THREES_KEYBOARD_ONLY=1
-    "$GPTOKEYB" threes -c "$GAMEDIR/threes.gptk" &
-    key_pid=$!
-fi
+# Native SDL input handles both sticks and F+Start; avoid a second key mapper.
+# PortMaster still supplies the controller mapping and system environment.
 finish() {
-    [ -n "$key_pid" ] && kill "$key_pid" 2>/dev/null
     if declare -F pm_finish >/dev/null; then pm_finish; fi
 }
 trap finish EXIT

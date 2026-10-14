@@ -2,13 +2,15 @@
 #include "ui.hpp"
 using namespace triples;
 TEST(settings_roundtrip_and_language) {
-    Settings value; value.volume = 40; value.english = true; value.dark = false; value.tips_seen = true;
+    Settings value; value.volume = 40; value.english = true; value.dark = false; value.tips_seen = true; value.tate = true;
     auto loaded = Settings::parse(value.serialize());
     CHECK_EQ(loaded.volume, 40); CHECK(loaded.english);
     CHECK(!loaded.dark);
     CHECK(loaded.tips_seen);
+    CHECK(loaded.tate);
     CHECK(!Settings::parse("volume=90\nlanguage=en\n").tips_seen);
     CHECK(Settings::parse("volume=90\nlanguage=en\n").dark);
+    CHECK(!Settings::parse("volume=90\nlanguage=en\n").tate);
     CHECK_EQ(std::string(translate(loaded, "Continuar", "Resume")), "Resume");
 }
 TEST(settings_corrupt_and_out_of_range) {

@@ -1,6 +1,6 @@
 # Triples para RG35XX H / KNULLI Scarab
 
-El código de esta carpeta está en desarrollo. La instalación privada y funcional de la consola se conserva por separado, fuera de este repositorio; **no sustituyas esa instalación** con una compilación de esta rama hasta verificarla en la consola.
+El código de esta carpeta produjo la versión 0.6, probada en la RG35XX-H con KNULLI. La copia privada de la versión anterior se conserva fuera de este repositorio.
 
 Fork de Triples para Linux ARM64, basado en [Triples](https://github.com/skeeto/triples), commit
 `83e8286d15a1d3631d110dd47df88fd94d28c85a`, con los gráficos de la demo web
@@ -13,23 +13,25 @@ La versión pública usa las fichas originales generadas por el código de Tripl
 
 La variante privada puede usar los gráficos originales que ya tienes localmente en `assets/skin/`. Esos archivos están excluidos de Git. Para copiarlos a una compilación ARM64 local usa `--private-skin` en `tools/build_arm.py`; para empaquetarlos localmente usa `--private-skin` en `tools/package.py`. **No publiques ese ZIP privado.**
 
-## Cambios en desarrollo para 0.5
+## Cambios en 0.6
 
 - Pantalla de inicio con la composición de fichas de Threes y el nombre **Triples** en el paquete privado. La fuente pública dibuja una variante propia con código.
 - Tutorial jugable solo en TATE: texto encima del tablero y una indicación breve debajo, que cambian al mover y combinar fichas. Recorre la misma secuencia conceptual del demo web: movimientos, paredes, 1 + 2 = 3, aparición de fichas, 3 + 3 = 6, parejas iguales, 12, 24, próxima ficha y final del juego. No tapa ni altera la partida guardada.
-- Segundo lanzador TATE para girar físicamente la consola 90° en sentido horario; comparte partida con Horizontal. El menú TATE permite repetir el tutorial.
+- TATE se activa y desactiva dentro del menú y se recuerda para el próximo arranque. La consola se gira 90° en sentido horario; el stick derecho controla los movimientos y los botones frontales se remapean para la nueva orientación. En horizontal, el stick izquierdo duplica la cruceta.
+- F+Start guarda y sale al menú de Ports; Start solo abre o cierra el menú del juego.
+- El volumen del menú se sustituyó por **Sound On / Sound Off**.
 
-Estas funciones tienen pruebas de escritorio. TATE aún necesita confirmación con el controlador de vídeo de la RG35XX-H.
+Estas funciones se probaron en escritorio y en la RG35XX-H con KNULLI.
 
 ## Instalar en la consola
 
 1. Instala PortMaster desde KNULLI si aún no lo tienes.
 2. Extrae el ZIP generado localmente en `/userdata/roms/ports/`.
-   Deben quedar `Threes.sh`, `Threes TATE.sh` y la carpeta `threes-knulli` juntos.
+   Deben quedar `Threes.sh` y la carpeta `threes-knulli` juntos.
    Desde Windows puedes usar el recurso de red de KNULLI, carpeta `share/roms/ports`.
-3. Actualiza la lista de juegos de KNULLI y abre **Ports → Threes** o **Threes TATE**.
+3. Actualiza la lista de juegos de KNULLI y abre **Ports → Threes**.
 
-El segundo lanzador gira la imagen para jugar con la consola rotada 90° en sentido horario. La cruceta se adapta a esa orientación y ambos lanzadores comparten la misma partida. La variante TATE requiere que el controlador SDL2 de KNULLI admita texturas de destino; está pendiente de prueba en el equipo.
+En el menú, cambia **TATE: Off** a **TATE: On** y gira físicamente la consola 90° en sentido horario. El juego conserva el mismo save en ambos modos. Al actualizar desde un preview anterior, elimina el lanzador antiguo `Threes TATE.sh` si está presente.
 
 El ZIP conserva permisos de ejecución. Si tu método de copia los pierde,
 restáuralos en `Threes.sh` y `threes-knulli/threes` con `chmod +x`.
@@ -68,22 +70,16 @@ reemplazando los archivos existentes. La actualización no incluye archivos en
 
 ## Controles
 
-| Control | Acción |
-| --- | --- |
-| Cruceta | Deslizar una casilla |
-| Y | Nueva partida |
-| Start | Abrir o cerrar el menú |
-| A | Elegir opción del menú |
-| B | Volver |
-| Select | Salir |
-| PC: flechas / WASD | Deslizar |
-| PC: R / Esc | Nueva partida / salir; Esc vuelve si hay un menú |
-| PC: Tab / Enter / Retroceso | Menú / elegir / volver |
+| Acción | Horizontal | TATE (consola girada 90° horario) |
+| --- | --- | --- |
+| Mover fichas y navegar el menú | Cruceta o stick izquierdo | Stick derecho, un movimiento por inclinación |
+| Aceptar | A | X físico, a la derecha tras el giro |
+| Volver | B | A físico, abajo tras el giro |
+| Nueva partida | Y | B físico, a la izquierda tras el giro |
+| Menú | Start | Start |
+| Guardar y salir a Ports | F+Start | F+Start |
 
-Y reinicia inmediatamente fuera del menú. Cada movimiento guarda la partida; los archivos
-quedan en `threes-knulli/saves`. El lanzador usa el mapeo de PortMaster y,
-cuando está disponible, gptokeyb. Desactiva entonces la entrada nativa para
-evitar procesar dos veces una pulsación.
+El lanzador usa el mapeo SDL de PortMaster y la entrada nativa del mando para leer ambos sticks y F+Start. **Sound On / Sound Off** corresponde a volumen 100/0; los valores antiguos se normalizan al cargar. Cada movimiento de la partida se guarda en `threes-knulli/saves`. El tablero temporal del tutorial TATE nunca sobrescribe esa partida.
 
 ## Qué está hecho y qué falta validar
 
@@ -93,21 +89,21 @@ evitar procesar dos veces una pulsación.
   rebote de combinaciones y giro de reinicio heredados de Triples.
 - Sonido sintetizado de Triples adaptado a mezcla simultánea con SDL2.
 - Binario Linux AArch64 para Cortex-A53, sin dependencia de libstdc++.
-- 33 pruebas pasan: 17 326 comprobaciones. Prueba de escritorio de 90 fotogramas:
+- 33 pruebas pasan: 17 330 comprobaciones. Prueba de escritorio de 90 fotogramas:
   inicio, tres movimientos, captura visual y salida con código 0.
 
 **El usuario confirmó que la versión 0.1 corre perfectamente en su RG35XX H
 con KNULLI Scarab.** La actualización 0.4 compila para el mismo destino
 y se verificó en escritorio: pausa sin cambios en la partida, ajustes guardados,
-créditos, reinicio con idioma conservado y tres movimientos al volver al juego; falta
-confirmar esta nueva versión en la consola. No se ha medido allí la tasa de fotogramas.
+créditos, reinicio con idioma conservado y tres movimientos al volver al juego. La versión
+0.6 también se probó en la consola: stick izquierdo en horizontal, cambio a TATE, stick derecho y F+Start. No se ha medido allí la tasa de fotogramas.
 El audio, los menús y las animaciones de los rostros no son una reproducción
 completa del original. Las fichas de valores muy altos se ajustan al tamaño de
 la celda; el rango adicional sin recurso original conserva el dibujo de Triples.
 
 Si vuelve al menú o muestra una pantalla negra, recupera
 `threes-knulli/log.txt` para diagnosticarlo. Indica también si se oye sonido
-y si responde Select. No es necesario cambiar de firmware.
+y si responde F+Start. No es necesario cambiar de firmware.
 
 ## Compilar
 
