@@ -1,0 +1,452 @@
+[
+  {
+    "name": "UnityEngine.Analytics.Analytics.Transaction",
+    "rva": 16202896,
+    "expected": [
+      4229631976,
+      2835439608
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "UnityEngine.Analytics.Analytics.SendCustomEventName",
+    "rva": 16203024,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "UnityEngine.Analytics.Analytics.SendCustomEvent",
+    "rva": 16203088,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "UnityEngine.Analytics.Analytics.Transaction",
+    "rva": 16203152,
+    "expected": [
+      4229566440,
+      2835441658
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "UnityEngine.Analytics.Analytics.CustomEvent",
+    "rva": 16203628,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "UnityEngine.Purchasing.UnityPurchasing.Initialize",
+    "rva": 15997256,
+    "expected": [
+      4162588663,
+      2835437558
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "UnityEngine.Purchasing.UnityPurchasing.Initialize",
+    "rva": 15997528,
+    "expected": [
+      2847567868,
+      2835441658
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.startSession",
+    "rva": 14845264,
+    "expected": [
+      3506504703,
+      2835437558
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.logEvent",
+    "rva": 14846200,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.logEvent",
+    "rva": 14846304,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.logEvent",
+    "rva": 14846688,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.logEvent",
+    "rva": 14846808,
+    "expected": [
+      2847758326,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.endTimedEvent",
+    "rva": 14847376,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Prime31.FlurryAnalytics.endTimedEvent",
+    "rva": 14847644,
+    "expected": [
+      2847758326,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleAdManager.get_ShouldInitNoodleNewsSession",
+    "rva": 8677636,
+    "expected": [
+      838861792,
+      3596551104
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleAdManager.ShouldShowBuyPremium",
+    "rva": 8677904,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleAdManager.ShowBuyPremium",
+    "rva": 8678096,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleAdManager.ShouldShowInterstitial",
+    "rva": 8678320,
+    "expected": [
+      3506488319,
+      2835435508
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleAdManager.ShowNoodleNews",
+    "rva": 8679808,
+    "expected": [
+      3506504703,
+      4244638696
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleAdManager.ShowInterstitialAfterScreenshot",
+    "rva": 8680532,
+    "expected": [
+      4162588663,
+      2835437558
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleAdManager.ShowInterstitial",
+    "rva": 8680928,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleAdManager.<Start>d__44.MoveNext",
+    "rva": 8688548,
+    "expected": [
+      3506504703,
+      2835437558
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleAdManager.<NoodleNewsStartSession>d__48.MoveNext",
+    "rva": 8686208,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleNewsClient.StartSession",
+    "rva": 8686804,
+    "expected": [
+      3506521087,
+      2835439608
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "ShowGdprPrompt.<Start>d__3.MoveNext",
+    "rva": 8369988,
+    "expected": [
+      2847758326,
+      2835435508
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "ShowGdprPrompt.<ShowPrompt>d__5.MoveNext",
+    "rva": 8369040,
+    "expected": [
+      3506504703,
+      2835437558
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "InputManager.ControllerInput",
+    "rva": 7820880,
+    "expected": [
+      3506521087,
+      4177529847
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "NoodleFlurryManager.<Start>d__20.MoveNext",
+    "rva": 8695864,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "RemoteSettingsManager.Start",
+    "rva": 7124252,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "RemoteSettingsManager.HandleRemoteUpdate",
+    "rva": 7124836,
+    "expected": [
+      402653068,
+      2854159329
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "RemoteSettingsManager.ImportRemoteSettings",
+    "rva": 7124372,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Noodle.Gdpr.get_IsInitialized",
+    "rva": 8662532,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 1,
+    "void": false
+  },
+  {
+    "name": "Noodle.Gdpr.Initialize",
+    "rva": 8662824,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "Noodle.Gdpr.get_IsGdprApplicable",
+    "rva": 8663624,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "Noodle.Gdpr.get_IsGdprConsentGiven",
+    "rva": 8665084,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "Noodle.Gdpr.get_IsConsentPromptRequired",
+    "rva": 8665316,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "NoodleAdManager.Update",
+    "rva": 8677644,
+    "expected": [
+      4229763048,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "GuiGameOver.get_canWatchVideo",
+    "rva": 7292852,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "OdysseyCrossoverActions.IsAndroidPackageInstalled",
+    "rva": 7618732,
+    "expected": [
+      4162523129,
+      2835439608
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "AchievementManager.get_playerConsentGiven",
+    "rva": 8232976,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "AchievementManager.get_isAuthenticated",
+    "rva": 8233440,
+    "expected": [
+      2847821812,
+      2835446781
+    ],
+    "result": 0,
+    "void": false
+  },
+  {
+    "name": "AchievementManager.AuthenticateAndGiveConsent",
+    "rva": 8233972,
+    "expected": [
+      4162654197,
+      2835435508
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "AchievementManager.AuthenticateIfConsented",
+    "rva": 8234424,
+    "expected": [
+      3506553855,
+      4177535989
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "AchievementManager.ShowAchievementsUI",
+    "rva": 8239128,
+    "expected": [
+      4162719731,
+      2835446781
+    ],
+    "result": 0,
+    "void": true
+  },
+  {
+    "name": "AchievementManager.<ShowConsentDialog>.MoveNext",
+    "rva": 8239404,
+    "expected": [
+      4162588663,
+      2835437558
+    ],
+    "result": 0,
+    "void": false
+  }
+]

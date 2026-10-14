@@ -4,3 +4,10 @@ root=$(git rev-parse --show-toplevel)
 sh "$root/tools/check-public-tree.sh"
 sh -n "$root/ports/crossyroad/portmaster/Crossy Road.sh" "$root/ports/crossyroad/portmaster/crossyroad/install.sh" "$root/ports/crossyroad/source/build_native.sh" "$root/tools/build-crossyroad-local.sh"
 python3 -m json.tool "$root/ports/crossyroad/portmaster/port.json" >/dev/null
+
+sh -n "$root/tools/build-alto-local.sh"
+sh -n "$root/ports/altosadventure/source/build.sh"
+sh -n "$root/ports/altosadventure/portmaster/altosadventure/install.sh"
+bash -n "$root/ports/altosadventure/portmaster/Alto's Adventure.sh"
+python3 -m json.tool "$root/ports/altosadventure/portmaster/port.json" >/dev/null
+python3 -c "import xml.etree.ElementTree as E; E.parse('$root/ports/altosadventure/portmaster/gameinfo.xml')"

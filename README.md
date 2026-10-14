@@ -4,6 +4,7 @@ Código y recetas de empaquetado para ports de juegos en consolas Linux. Cada ju
 
 | Port | Estado | Equipo probado |
 | --- | --- | --- |
+| [Alto's Adventure](ports/altosadventure/README.md) | Jugable; compilación y paquete autónomos, instalación automática del APK | RG35XX-H, KNULLI, 640×480 |
 | [Crossy Road](ports/crossyroad/README.md) | Jugable, fuente pública; paquete local privado | RG35XX-H, KNULLI, 640×480 |
 | [Threes / fork de Triples](ports/threes-knulli/README.md) | Fork 0.6 funcional; código y herramientas de compilación | RG35XX-H, KNULLI |
 
