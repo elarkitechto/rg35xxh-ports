@@ -15,9 +15,9 @@ La variante privada puede usar los gráficos originales que ya tienes localmente
 
 ## Cambios en desarrollo para 0.5
 
-- Pantalla de carga al abrir.
-- Tres páginas de reglas la primera vez que se juega, accesibles después en **Menú → Cómo jugar**.
-- Segundo lanzador TATE para girar físicamente la consola 90° en sentido horario; comparte partida con Horizontal.
+- Pantalla de inicio con la composición de fichas de Threes y el nombre **Triples** en el paquete privado. La fuente pública dibuja una variante propia con código.
+- Tutorial jugable solo en TATE: texto encima del tablero y una indicación breve debajo, que cambian al mover y combinar fichas. Enseña 1 + 2 = 3, aparición de fichas, 3 + 3 = 6 y la regla de las parejas iguales. No tapa ni altera la partida guardada.
+- Segundo lanzador TATE para girar físicamente la consola 90° en sentido horario; comparte partida con Horizontal. El menú TATE permite repetir el tutorial.
 
 Estas funciones tienen pruebas de escritorio. TATE aún necesita confirmación con el controlador de vídeo de la RG35XX-H.
 

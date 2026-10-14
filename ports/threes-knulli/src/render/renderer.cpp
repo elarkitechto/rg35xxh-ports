@@ -107,6 +107,8 @@ std::size_t tile_label(std::uint8_t rank, char* buf, std::size_t buflen) {
 Renderer::Renderer() = default;
 Renderer::~Renderer() {
     if (tate_target_) SDL_DestroyTexture(tate_target_);
+    if (splash_landscape_) SDL_DestroyTexture(splash_landscape_);
+    if (splash_tate_) SDL_DestroyTexture(splash_tate_);
     tiles_.clear();
     text_.clear();
     text_digits_.clear();
@@ -196,6 +198,8 @@ bool Renderer::initialize(const char* title, int initial_w, int initial_h) {
         std::string name = "preview_" + std::to_string(rank);
         previews_[rank] = load_skin(sdl_renderer_, name.c_str());
     }
+    splash_landscape_ = load_skin(sdl_renderer_, "splash_landscape", 640, 480);
+    splash_tate_ = load_skin(sdl_renderer_, "splash_tate", 480, 640);
     board_frame_ = load_skin(sdl_renderer_, "board", 90, 65);
     preview_background_ = load_skin(sdl_renderer_, "preview_bg", 90, 360);
     if (tate_ && tate_target_) SDL_SetRenderTarget(sdl_renderer_, tate_target_);
@@ -415,6 +419,11 @@ int Renderer::cell_for_point(float x, float y) const noexcept {
 }
 
 void Renderer::draw_background_() {
+    if (tate_ && tutorial_step >= 0) {
+        SDL_SetRenderDrawColor(sdl_renderer_, 248, 249, 247, 255);
+        SDL_RenderClear(sdl_renderer_);
+        return;
+    }
     SDL_SetRenderDrawColor(sdl_renderer_, settings.dark ? 0x29 : kBgR,
                            settings.dark ? 0x2D : kBgG, settings.dark ? 0x33 : kBgB, 0xFF);
     SDL_RenderClear(sdl_renderer_);
@@ -948,72 +957,82 @@ void Renderer::draw_menu_() {
         translate(settings, "Créditos", "Credits"),
         translate(settings, "Salir del juego", "Quit game")
     };
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < (tate_ ? 7 : 6); ++i) {
         float y = 0.28f + i * 0.078f;
         if (i == menu.selected) {
             SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 205);
             SDL_FRect selected{panel.x + 18, h * y - 26, panel.w - 36, 40};
             SDL_RenderFillRect(sdl_renderer_, &selected);
         }
-        line(rows[i], y, 23, i == menu.selected);
+        line(rows[i + (!tate_ && i >= 4 ? 1 : 0)], y, 23, i == menu.selected);
     }
     line(translate(settings, "Cruceta: ajustar    A: elegir    B: volver", "D-pad: adjust    A: select    B: back"), 0.86f, 14);
 }
 
 void Renderer::draw_splash_() {
-    SDL_SetRenderDrawColor(sdl_renderer_, 41, 45, 51, 255);
-    SDL_FRect screen{0, 0, layout_.win_w, layout_.win_h};
-    SDL_RenderFillRect(sdl_renderer_, &screen);
     const float w = layout_.win_w, h = layout_.win_h;
-    const float tile = std::min(w * 0.16f, h * 0.20f);
-    const std::uint8_t colors[3][3] = {{105, 184, 202}, {224, 112, 111}, {238, 231, 211}};
-    for (int i = 0; i < 3; ++i) {
+    SDL_Texture* picture = tate_ ? splash_tate_ : splash_landscape_;
+    if (picture) {
+        SDL_FRect dest{0, 0, w, h};
+        SDL_RenderTexture(sdl_renderer_, picture, nullptr, &dest);
+        return;
+    }
+    // Public build: code-drawn title card in the same palette, without the
+    // privately prepared Threes artwork.
+    SDL_SetRenderDrawColor(sdl_renderer_, 255, 91, 120, 255);
+    SDL_RenderClear(sdl_renderer_);
+    const float tile = std::min(w * 0.20f, h * 0.16f);
+    const std::uint8_t colors[4][3] = {{100, 196, 241}, {255, 255, 255}, {255, 116, 145}, {255, 255, 255}};
+    for (int i = 0; i < 4; ++i) {
         SDL_SetRenderDrawColor(sdl_renderer_, colors[i][0], colors[i][1], colors[i][2], 255);
-        SDL_FRect rect{w * 0.5f + (i - 1.5f) * (tile + 7.0f) + 3.5f,
-                       h * 0.32f - tile * 0.5f, tile, tile};
+        SDL_FRect rect{w * (0.12f + 0.19f * i), h * (0.35f + 0.10f * i), tile, tile * 1.15f};
         SDL_RenderFillRect(sdl_renderer_, &rect);
-        char digit_text[2] = {static_cast<char>('1' + i), 0};
-        text_digits_.draw_centered(sdl_renderer_, digit_text, TextAtlas::Size::Large,
-                                   rect.x + rect.w * 0.5f, rect.y + rect.h * 0.68f,
-                                   45, 53, 60, 255, tile / text_digits_.line_height(TextAtlas::Size::Large) * 0.58f);
+        char number[2] = {static_cast<char>('1' + i), 0};
+        text_digits_.draw_centered(sdl_renderer_, number, TextAtlas::Size::Large,
+                                   rect.x + rect.w * 0.5f, rect.y + rect.h * 0.65f,
+                                   i % 2 ? 35 : 255, i % 2 ? 35 : 255, i % 2 ? 35 : 255, 255,
+                                   tile / text_digits_.line_height(TextAtlas::Size::Large) * 0.65f);
     }
     text_.draw_centered(sdl_renderer_, "TRIPLES", TextAtlas::Size::Large,
-                        w * 0.5f, h * 0.58f, 245, 242, 232, 255,
-                        std::min(1.0f, w * 0.70f / text_.measure_width("TRIPLES", TextAtlas::Size::Large)));
-    text_.draw_centered(sdl_renderer_, translate(settings, "Cargando partida...", "Loading game..."),
-                        TextAtlas::Size::Body, w * 0.5f, h * 0.69f, 182, 197, 201, 255, 0.50f);
+                        w * 0.5f, h * 0.20f, 255, 255, 255, 255,
+                        std::min(1.0f, w * 0.80f / text_.measure_width("TRIPLES", TextAtlas::Size::Large)));
 }
 
-void Renderer::draw_tutorial_() {
-    const float w = layout_.win_w, h = layout_.win_h;
-    SDL_SetRenderDrawColor(sdl_renderer_, 24, 31, 35, 228);
-    SDL_FRect screen{0, 0, w, h};
-    SDL_RenderFillRect(sdl_renderer_, &screen);
-    SDL_SetRenderDrawColor(sdl_renderer_, 238, 231, 211, 255);
-    SDL_FRect panel{w * 0.08f, h * 0.13f, w * 0.84f, h * 0.74f};
-    SDL_RenderFillRect(sdl_renderer_, &panel);
-    auto line = [&](std::string_view value, float y, float height, std::uint8_t r, std::uint8_t g, std::uint8_t b) {
-        auto size = TextAtlas::Size::Body;
-        float scale = height / text_.line_height(size);
-        float width = text_.measure_width(value, size, scale);
-        if (width > panel.w - 26.0f) scale *= (panel.w - 26.0f) / width;
-        text_.draw_centered(sdl_renderer_, value, size, w * 0.5f, h * y, r, g, b, 255, scale);
+void Renderer::draw_tutorial_ribbon_() {
+    if (!tate_ || tutorial_step < 0) return;
+    struct Message { const char* es1; const char* es2; const char* en1; const char* en2; const char* footer_es; const char* footer_en; };
+    static const Message messages[] = {
+        {"Conoce al 1 y al 2", "", "Meet 1 and 2", "", "CRUCETA: MUÉVELOS", "D-PAD: MOVE THEM"},
+        {"Desliza las fichas", "en cuatro direcciones", "Slide the tiles", "in four directions", "CRUCETA: MUÉVELOS", "D-PAD: MOVE THEM"},
+        {"Ordénalas empujándolas", "contra las paredes", "Arrange them by pushing", "against the walls", "ACERCA EL 1 AL 2", "BRING 1 TO 2"},
+        {"Junta el 1 y el 2", "para crear un 3", "Join 1 and 2", "to make a 3", "1 + 2 = 3", "1 + 2 = 3"},
+        {"¡Buen comienzo!", "", "A good start!", "", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
+        {"Aparecen fichas nuevas", "cuando mueves las demás", "New tiles appear", "when you move the others", "MUEVE PARA CONTINUAR", "MOVE TO CONTINUE"},
+        {"3 + 3 = 6", "", "3 + 3 = 6", "", "JUNTA LOS DOS 3", "JOIN THE TWO 3S"},
+        {"¡Ya le agarraste!", "", "You're getting it!", "", "SIGUE MOVIENDO", "KEEP MOVING"},
+        {"Desde el 3, solo se unen", "las fichas gemelas", "From 3 onward, only", "matching tiles combine", "SOLO LOS IGUALES SE DUPLICAN", "ONLY MATCHING TILES DOUBLE"},
+        {"6 + 6 = 12", "", "6 + 6 = 12", "", "FORMA UN 12", "MAKE A 12"},
+        {"¡Ahora a crecer!", "", "Keep growing!", "", "MUEVE PARA EMPEZAR", "MOVE TO START"}
     };
-    line(translate(settings, "CÓMO JUGAR", "HOW TO PLAY"), 0.25f, 29.0f, 37, 63, 70);
-    if (tutorial_page == 0) {
-        line("1 + 2 = 3", 0.43f, 38.0f, 41, 84, 91);
-        line(translate(settings, "Une el 1 azul con el 2 rojo.", "Join blue 1 with red 2."), 0.57f, 23.0f, 53, 66, 68);
-    } else if (tutorial_page == 1) {
-        line("3 + 3 = 6", 0.42f, 38.0f, 41, 84, 91);
-        line("6 + 6 = 12", 0.52f, 30.0f, 41, 84, 91);
-        line(translate(settings, "Desde 3, une fichas iguales.", "From 3 onward, join equal tiles."), 0.63f, 22.0f, 53, 66, 68);
-    } else {
-        line(translate(settings, "DESLIZA PARA MOVER", "SWIPE TO MOVE"), 0.43f, 29.0f, 41, 84, 91);
-        line(translate(settings, "La cruceta mueve todas las fichas.", "The D-pad moves every tile."), 0.56f, 21.0f, 53, 66, 68);
-        line(translate(settings, "Planea antes de llenar el tablero.", "Plan before the board fills up."), 0.64f, 21.0f, 53, 66, 68);
-    }
-    line(translate(settings, "A: SIGUIENTE     B: CERRAR", "A: NEXT     B: CLOSE"),
-         0.77f, 17.0f, 62, 79, 83);
+    const Message& m = messages[std::min(tutorial_step, 10)];
+    const float w = layout_.win_w, h = layout_.win_h;
+    // Same placement as the online demo: live sentence above the board,
+    // short action prompt below it. The middle remains fully playable.
+    SDL_SetRenderDrawColor(sdl_renderer_, 213, 230, 225, 255);
+    SDL_FRect border{w * 0.04f, 4.0f, w * 0.92f, h - 8.0f};
+    SDL_RenderDrawRectF(sdl_renderer_, &border);
+    auto line = [&](const char* str, float y, float height, bool footer) {
+        if (!str || !*str) return;
+        auto size = footer ? TextAtlas::Size::Small : TextAtlas::Size::Body;
+        float scale = height / text_.line_height(size);
+        float measured = text_.measure_width(str, size, scale);
+        if (measured > w * 0.86f) scale *= (w * 0.86f) / measured;
+        text_.draw_centered(sdl_renderer_, str, size, w * 0.5f, y,
+                            91, 98, 111, 255, scale);
+    };
+    line(settings.english ? m.en1 : m.es1, 44.0f, 23.0f, false);
+    line(settings.english ? m.en2 : m.es2, 70.0f, 23.0f, false);
+    line(settings.english ? m.footer_en : m.footer_es, h - 28.0f, 14.0f, true);
 }
 
 void Renderer::draw(const game::GameState& state,
@@ -1051,10 +1070,10 @@ void Renderer::draw(const game::GameState& state,
     layout_.board_x -= shake_x;
     layout_.board_y -= shake_y;
 
-    draw_hud_(state, high_score, game_over, game_over_age_ms);
+    if (tate_ && tutorial_step >= 0) draw_tutorial_ribbon_();
+    else draw_hud_(state, high_score, game_over, game_over_age_ms);
 
     if (menu.open) draw_menu_();
-    if (tutorial_page >= 0) draw_tutorial_();
 
     const char* capture = SDL_getenv("THREES_CAPTURE");
     std::string sequence_path;

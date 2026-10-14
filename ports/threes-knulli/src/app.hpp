@@ -64,8 +64,11 @@ private:
     bool                        tate_ = false;
     bool                        splash_open_ = true;
     std::uint64_t               splash_until_ms_ = 0;
-    int                         tutorial_page_ = -1;
-    void advance_tutorial_();
+    int                         tutorial_step_ = -1;
+    game::GameState             tutorial_return_state_{};
+    void begin_tutorial_();
+    void finish_tutorial_();
+    void apply_tutorial_move_();
     int                         active_touch_fingers_ = 0;
     // Last time the restart button fired, in SDL_GetTicks() ms. Used to
     // debounce — mobile web delivers one touch as four events in the order
