@@ -149,9 +149,7 @@ void App::begin_tutorial_() {
     if (!tate_) return;
     if (tutorial_step_ < 0) tutorial_return_state_ = state_;
     state_ = game::GameState{};
-    state_.board.set(1, 1, 1);
-    state_.board.set(2, 2, 2);
-    state_.max_rank_seen = 2;
+    state_.max_rank_seen = 0;
     state_.next.rank = 0; // tutorial moves do not draw from the normal deck
     tutorial_step_ = 0;
     game_over_ = false;
@@ -186,15 +184,21 @@ void App::apply_tutorial_move_() {
         state_.score = game::score_board(state_.board);
         state_.max_rank_seen = std::max(state_.max_rank_seen, rank);
     };
-    if (tutorial_step_ >= 8 && merged_rank >= 5) tutorial_step_ = 10;
-    else if (tutorial_step_ >= 5 && tutorial_step_ <= 6 && merged_rank >= 4) tutorial_step_ = 7;
-    else if (tutorial_step_ <= 3 && merged_rank >= 3) tutorial_step_ = 4;
-    else if (tutorial_step_ < 3) ++tutorial_step_;
-    else if (tutorial_step_ == 4) { tutorial_step_ = 5; add_card(3); }
-    else if (tutorial_step_ == 5) tutorial_step_ = 6;
-    else if (tutorial_step_ == 7) { tutorial_step_ = 8; add_card(3); }
-    else if (tutorial_step_ == 8) { tutorial_step_ = 9; add_card(4); }
-    else if (tutorial_step_ == 10) finish_tutorial_();
+    if (tutorial_step_ <= 4 && merged_rank >= 3) tutorial_step_ = 5;
+    else if (tutorial_step_ >= 6 && tutorial_step_ <= 7 && merged_rank >= 4) tutorial_step_ = 8;
+    else if (tutorial_step_ >= 9 && tutorial_step_ <= 10 && merged_rank >= 5) tutorial_step_ = 11;
+    else if (tutorial_step_ == 13 && merged_rank >= 6) tutorial_step_ = 14;
+    else if (tutorial_step_ < 4) ++tutorial_step_;
+    else if (tutorial_step_ == 5) { tutorial_step_ = 6; add_card(3); }
+    else if (tutorial_step_ == 6) tutorial_step_ = 7;
+    else if (tutorial_step_ == 8) { tutorial_step_ = 9; add_card(3); }
+    else if (tutorial_step_ == 9) { tutorial_step_ = 10; add_card(4); }
+    else if (tutorial_step_ == 11) { tutorial_step_ = 12; add_card(1); add_card(2); }
+    else if (tutorial_step_ == 12) { tutorial_step_ = 13; add_card(5); }
+    else if (tutorial_step_ == 14) tutorial_step_ = 15;
+    else if (tutorial_step_ == 15) { tutorial_step_ = 16; state_.next.rank = 1; }
+    else if (tutorial_step_ == 16) tutorial_step_ = 17;
+    else if (tutorial_step_ == 17) finish_tutorial_();
 }
 
 void App::init_audio_now() {
@@ -263,6 +267,14 @@ void App::handle_event_(const SDL_Event& e) {
             const SDL_Keycode key = tate_ ? rotate_tate_key(e.key.keysym.sym) : e.key.keysym.sym;
             if (splash_open_) { splash_open_ = false; return; }
             if (menu_.open) { menu_key_(key); return; }
+            if (tutorial_step_ >= 0 && key == SDLK_BACKSPACE) { finish_tutorial_(); return; }
+            if (tutorial_step_ == 0 && (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT)) {
+                state_.board.set(1, 1, 1);
+                state_.board.set(2, 2, 2);
+                state_.max_rank_seen = 2;
+                tutorial_step_ = 1;
+                return;
+            }
             if (key == SDLK_TAB || key == SDLK_RETURN) {
                 menu_.open = true; menu_.credits = false; menu_.selected = 0; return;
             }
