@@ -1,45 +1,42 @@
 # Alto’s Adventure
 
-Port comunitario para **RG35XX-H / KNULLI**, con mando y guardado local.
-Requiere PortMaster y tu archivo original de **Alto’s Adventure 1.8.8**.
+Android port for **RG35XX-H running KNULLI**, with controller support and local
+saves. Requires PortMaster and your **Alto’s Adventure 1.8.8** game file.
 
-## Instalar
+## Install
 
-1. Extrae el ZIP del port en **Ports**.
-2. Copia `altos-adventure-1-8-8.apk` dentro de `ports/altosadventure/`.
-3. Abre **Alto’s Adventure** desde Ports. La primera ejecución prepara todo automáticamente.
+1. Extract the port ZIP into **Ports**.
+2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.
+3. Launch **Alto’s Adventure** from Ports. First-run setup is automatic.
 
-No ejecutes archivos de instalación por separado. Si actualizas, conserva la
-carpeta de partidas y sustituye sólo los archivos del paquete.
+When updating, replace the package files and keep your saves.
 
-## Controles
+## Controls
 
-| Botón | Acción |
+| Button | Action |
 | --- | --- |
-| Cruceta | Navegar |
-| B | Seleccionar / saltar; mantener para backflip |
-| Y | Atrás / cancelar |
-| Start | Pausar / continuar |
-| L1 / R1 | Cambiar página de ajustes |
-| F + Start | Guardar y salir |
+| D-pad | Navigate |
+| B | Select / jump; hold for a backflip |
+| Y | Back / cancel |
+| Start | Pause / resume |
+| L1 / R1 | Switch settings pages |
+| F + Start | Save and exit |
 
-En Ajustes, izquierda/derecha cambia el valor del slider seleccionado.
-Los servicios online, anuncios y compras no están disponibles.
-Partidas existentes: `/userdata/system/alto/`.
+In Settings, left/right adjusts the selected slider. Online services, ads and
+purchases are unavailable. Existing saves use `/userdata/system/alto/`.
 
-## Si no arranca
+## Troubleshooting
 
-Comprueba el nombre y la versión del archivo, y consulta `altosadventure/install.log`
-o `altosadventure/log.txt`. No se ha verificado compatibilidad con otras consolas o
-firmwares. No es una publicación oficial de PortMaster.
+Check the game-file name and version, then read `altosadventure/install.log` or
+`altosadventure/log.txt`. Compatibility has only been tested on RG35XX-H with KNULLI.
 
 <details>
-<summary>Identificar el archivo compatible (SHA-256)</summary>
+<summary>Supported game file SHA-256</summary>
 
 `efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0`
 
 </details>
 
-[Compilar desde código](BUILD.md) · [Validación técnica](VALIDATION.md) · [Créditos](../../ATTRIBUTION.md)
+[Build from source](BUILD.md) · [Technical validation](VALIDATION.md) · [Credits](../../ATTRIBUTION.md)
 
-Gracias a Snowman y Team Alto por crear el juego original.
+Thanks to Snowman and Team Alto for creating the original game.

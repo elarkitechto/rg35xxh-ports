@@ -1,32 +1,48 @@
-# Adaptación offline — Alto 1.8.8
+# Offline adaptation — Alto 1.8.8
 
-Esta revisión desactiva servicios Android que el port no proporciona y conserva las estadísticas locales de la partida.
+This revision disables unavailable Android services while retaining local game
+statistics.
 
-## Puntos adaptados
+## Adapted services
 
-- Unity Analytics: configuración local `enabled:false`, tracking limitado y exclusión explícita; métodos de eventos devuelven `AnalyticsDisabled`.
-- Flurry: inicio de sesión y eventos desactivados; la coroutine de arranque termina sin esperar servicios remotos.
-- GDPR: no se consulta la web de geolocalización ni se abre el diálogo. El getter de consentimiento sigue devolviendo false; no se registra una aceptación del usuario. El servicio se considera inicializado para que otras coroutines no esperen indefinidamente.
-- AdMob/NoodleNews: se conserva el singleton de anuncios pero se omiten los mediadores Android y su sondeo; no aparecen anuncios ni promociones de compra.
-- Google Billing: se conserva el singleton de compras y se ejecuta `LoadPurchasedCache`; se omiten el builder y la inicialización remota. No se alteran los getters de contenido comprado/desbloqueado.
-- RemoteSettings: desactivada la consulta remota; se usan los valores del juego local.
-- Red: `getaddrinfo` y `socket` del juego bloquean destinos externos/AF_INET/AF_INET6. También se aplica cuando el juego los resuelve mediante `dlsym`. Los sockets Unix y las bibliotecas Linux de PulseAudio permanecen disponibles.
-- Entrada: `ChangeInputType` usa Controller (2); Siri Remote (1) y su navegación no se activan. El sondeo InControl original se desactiva porque el port ya lee SDL y entrega acciones al juego.
+- Unity Analytics: local `enabled:false`, limited tracking and explicit opt-out; event methods return `AnalyticsDisabled`.
+- Flurry: sessions and events are disabled; the startup coroutine completes without waiting for remote services.
+- GDPR: no geolocation request or consent dialog. The consent getter remains false; user acceptance is not recorded. The service is marked initialized so dependent coroutines do not wait indefinitely.
+- AdMob/NoodleNews: retain the advertising singleton, but skip Android mediators and polling. Ads and purchase promotions are hidden.
+- Google Billing: retain the purchase singleton and `LoadPurchasedCache`; skip the builder and remote initialization. Purchased/unlocked content getters are unchanged.
+- RemoteSettings: skip remote requests and use local game values.
+- Networking: game `getaddrinfo` and `socket` calls block external/AF_INET/AF_INET6 destinations, including lookups through `dlsym`. Unix sockets and PulseAudio’s Linux libraries remain available.
+- Input: `ChangeInputType` uses Controller (2). Siri Remote (1) navigation is disabled. Original InControl polling is disabled because SDL already delivers game actions.
 
-## Reproducibilidad
+## Reproducibility
 
-`policy-patches.json` contiene las entradas con RVA e instrucciones originales; `src/alto_policy.c` comprueba las instrucciones antes de reemplazarlas. El APK y las bibliotecas en disco no se modifican: los parches se aplican en memoria.
+`policy-patches.json` records RVAs and original instructions. `src/alto_policy.c`
+checks the instructions before replacement. Patches apply in memory; APKs and
+libraries on disk remain unchanged.
 
-El instalador aplica la configuración local de Analytics antes del arranque. Los datos de progreso se conservan al actualizar.
+The data preparer applies local Analytics configuration before startup. Updates
+preserve progress.
 
-## Validación
+## Validation
 
-La revisión se prueba con el mismo recorrido de 1600 frames: introducción, título, partida de tutorial, confirmación de mensajes, audio PCM, guardado y salida. Se revisan excepciones, modo de entrada real y nuevos archivos en ArchivedEvents. La validación física de todos los botones y menús sigue pendiente; el modo Controller no equivale a haber validado todos los menús.
+The 1,600-frame diagnostic covers introduction, title, tutorial gameplay,
+message confirmation, PCM audio, saving and exit. Check exceptions, active input
+mode and new ArchivedEvents files. Controller mode alone does not establish that
+every physical button and menu has been verified.
 
-### Google Play Games
+## Google Play Games
 
-La invitación Google Play pertenece a AchievementManager, no a publicidad. Se anulan autenticación manual/automática, UI de logros y coroutine de consentimiento (MoveNext=false), y los getters de consentimiento/autenticación=false. Settings oculta signInButton (+0x180) y showGCButtons (+0x188) mediante GameObject.SetActive(false). La tabla contiene ahora 45 sitios con guards. No se escribe consentimiento, ni se modifica SaveManager.
+The Google Play invitation belongs to AchievementManager. Manual/automatic
+authentication, achievement UI and the consent coroutine are disabled
+(`MoveNext=false`); consent/authentication getters return false. Settings hides
+`signInButton` (+0x180) and `showGCButtons` (+0x188) through
+`GameObject.SetActive(false)`. The table contains 45 guarded patch sites.
+Consent is not written and SaveManager is unchanged.
 
-### Touch pause HUD
+## Touch pause HUD
 
-GuiGameplay.Update at 0x6f7234 originally has mov w1,#1 (0x320003e1) before pauseButton.SetActive. Guarded replacement mov w1,wzr (0x2a1f03e1) keeps this touch HUD button inactive every frame. SDL Start still changes GameManager Gameplay5/Pause6 directly. No extra gameplay scene enumeration is needed.
+`GuiGameplay.Update` at 0x6f7234 originally uses `mov w1,#1` (0x320003e1) before
+`pauseButton.SetActive`. The guarded replacement `mov w1,wzr` (0x2a1f03e1) keeps
+the touch button inactive each frame. SDL Start still switches GameManager
+between Gameplay5 and Pause6 directly. No additional gameplay scene enumeration
+is needed.

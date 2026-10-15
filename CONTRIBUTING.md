@@ -1,11 +1,14 @@
-# Contribuir
+# Contributing
 
-1. Abre una rama por cambio: `port/crossyroad-tema`, `fix/crossyroad-tema` o `docs/tema`.
-2. Haz commits pequeños y descriptivos: `feat(crossyroad): ...`, `fix(crossyroad): ...`, `docs: ...`, `chore: ...`.
-3. Ejecuta `sh tools/check-public-tree.sh` y valida el launcher e instalador con `bash -n` y `sh -n` antes de abrir una solicitud de cambios.
-4. Documenta el equipo, firmware, versión exacta del juego y pruebas realizadas. Una prueba en RG35XX-H/KNULLI no demuestra compatibilidad con otras consolas.
-5. Conserva los avisos de licencia y atribuye cualquier código ajeno. Añade solo archivos cuya publicación esté permitida.
+1. Use a focused branch for each change, such as `fix/crossyroad-input` or `docs/installation`.
+2. Write descriptive commits: `feat(crossyroad): ...`, `fix(threes): ...` or `docs: ...`.
+3. Run `sh .githooks/pre-commit` before submitting changes. Enable automatic checks with `git config core.hooksPath .githooks`.
+4. Record the device, firmware, exact game version and tests performed. Verify installation, updates, controls, audio, saves and exit behavior as applicable.
+5. Preserve license notices and credit upstream code. Keep public documentation in English.
 
-No subas APK, ROM, datos extraídos, saves, controladores, binarios compilados, logs de usuario ni archivos de `.local/`. Una vez que Git guarda un archivo en un commit, añadirlo a `.gitignore` no lo borra del historial.
+Do not commit APKs, extracted game data, saves, firmware drivers, compiled
+binaries, user logs or `.local/` files. See [attribution](ATTRIBUTION.md) for
+component ownership and licenses.
 
-La [guía de PortMaster](https://github.com/PortsMaster/PortMaster-New) exige una estructura, metadatos, licencias y pruebas más amplias para una propuesta oficial. Este repositorio no afirma cumplir todavía todos esos requisitos.
+See [PortMaster packaging](docs/PORTMASTER.md) for candidate preparation and
+submission checks.

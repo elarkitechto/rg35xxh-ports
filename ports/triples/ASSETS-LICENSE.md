@@ -14,7 +14,6 @@ Threes: Sirvo; game design by Asher Vollmer, artwork by Greg Wohlwend.
 The fork's synthesized sound effects and fonts are inherited from Triples,
 not extracted original Threes audio. Inter and Jua font notices are in `licenses/`.
 
-La versión privada también incluye dos pantallas de inicio derivadas de una
-ilustración promocional de Threes publicada en Steam, editadas para mostrar
-“Triples” y adaptar la orientación. Permanecen fuera de Git y no se
-redistribuyen en el paquete público.
+Local artwork builds also include two title screens derived from a Threes!
+promotional illustration published on Steam, edited to read “Triples” and fit
+each orientation. They are excluded from Git and from the public package.

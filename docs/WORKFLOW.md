@@ -1,15 +1,18 @@
-# Flujo de trabajo y entregas
+# Development and releases
 
-`main` contiene solo fuente y documentación revisadas. Cada port tiene su directorio y su propio estado de compatibilidad. Usa ramas cortas y una solicitud de cambios por port o corrección. Los commits siguen el formato descrito en `CONTRIBUTING.md`.
+Keep each port in its own directory and use a focused branch for each change.
+Follow the commit conventions in [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-Antes de cada commit, el hook local y CI ejecutan `tools/check-public-tree.sh`, comprueban sintaxis de scripts y validan JSON/XML. Para activar el hook en otro clon: `git config core.hooksPath .githooks`.
+Enable local checks with `git config core.hooksPath .githooks`. The hook checks
+tracked files, script syntax, metadata and launcher tests.
 
-Para preparar una entrega de un port:
+Before preparing a release:
 
-1. Confirma la procedencia y licencia de cada archivo que se va a publicar.
-2. Prueba instalación desde cero, actualización sin perder partidas, controles, audio, guardado y salida.
-3. Registra firmware, modelo, resolución, versión y hash del juego de prueba.
-4. Ejecuta la verificación local y revisa `git diff --cached --stat` y `git ls-files` antes del commit.
-5. Etiqueta una versión por port, por ejemplo `crossyroad-v0.1.0`, solo cuando el contenido publicado y sus limitaciones estén claros.
+1. Confirm the provenance and license of each distributed component.
+2. Test fresh installation, updates that preserve saves, controls, audio, saving and exit.
+3. Record the device, firmware, resolution, game version and game-file hash.
+4. Run local checks and review the staged changes.
+5. Tag each port separately once its package and compatibility limits are verified.
 
-El ZIP creado por `tools/build-crossyroad-local.sh` es **privado**. No se adjunta a una release pública mientras dependa de componentes excluidos y no tenga licencias y pruebas suficientes.
+Build instructions are in [BUILD.md](BUILD.md). PortMaster submission preparation
+is in [PORTMASTER.md](PORTMASTER.md).

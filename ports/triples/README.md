@@ -1,23 +1,18 @@
 # Triples
 
-**En desarrollo. No está listo para PortMaster.**
+An independent demake for **RG35XX-H / KNULLI**, based on
+[Triples by Christopher Wellons](https://github.com/skeeto/triples).
+**In development; not ready for PortMaster.** No Threes! APK is required.
 
-Demake independiente para **RG35XX-H / KNULLI**, basado en
-[Triples de Christopher Wellons](https://github.com/skeeto/triples).
-No necesita el APK de Threes!.
+## Run a development build
 
-## Instalar
+Extract the package into Ports and launch **Triples**. Keep `Triples.sh` beside
+the `threes-knulli/` folder; its existing name preserves save compatibility.
 
-Extrae el paquete en Ports y abre **Triples**. Deben quedar `Triples.sh` y la
-carpeta `threes-knulli/` juntos. La carpeta conserva ese nombre para mantener
-compatibilidad con las partidas anteriores.
+Use the D-pad or sticks to slide tiles. Enable **TATE** in the game menu and
+rotate the handheld 90° clockwise. **F + Start** saves and exits.
+Progress is stored in `threes-knulli/saves/`.
 
-Usa la cruceta o cualquiera de los sticks para deslizar fichas. El menú del
-juego permite activar **TATE**; gira la consola 90° hacia la derecha. **F + Start**
-sale del juego. El progreso se guarda en `threes-knulli/saves/`.
+[Threes!](../threes/README.md) is a separate port of the original Android game.
 
-La versión pública usa fichas dibujadas por el código del demake. Los recursos
-originales de Threes! no se incluyen. [Threes! original](../threes/README.md)
-es otro port y utiliza su propio archivo del juego y sus propios guardados.
-
-[Compilar](BUILD.md) · [Créditos](CREDITS.md) · [Licencias de recursos](ASSETS-LICENSE.md) · [Unlicense](UNLICENSE)
+[Build](BUILD.md) · [Credits](CREDITS.md) · [Artwork licenses](ASSETS-LICENSE.md) · [Unlicense](UNLICENSE)
