@@ -28,3 +28,6 @@ ports/triples/assets/fonts/*
 !ports/triples/assets/fonts/Jua-Regular.ttf
 __pycache__/
 .DS_Store
+
+# Local workspace instructions
+/AGENTS.md

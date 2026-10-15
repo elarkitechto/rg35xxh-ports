@@ -5,7 +5,7 @@ saves. Requires PortMaster and your **Threes! full 3.1.6144 ARM64** game file.
 
 ## Install
 
-1. Extract the port ZIP into **Ports**.
+1. Download [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) and extract it into **Ports**.
 2. Copy `threes-3.1.6144.apk` into `ports/threes/`.
 3. Launch **Threes!** from Ports. First-run setup is automatic.
 
@@ -46,6 +46,6 @@ Check the game-file name and version, then read `threes/install.log` or
 
 </details>
 
-Thanks to Sirvo for creating the original game.
+Credits and licenses: https://github.com/elarkitechto/rg35xxh-ports/blob/main/ATTRIBUTION.md
 
-Source and build instructions: https://github.com/elarkitechto/rg35xxh-ports/tree/main/ports/threes
+Thanks to Sirvo for creating the original game.

@@ -7,13 +7,13 @@ Android game ports for **RG35XX-H running KNULLI**, with controller support and 
 | Alto’s Adventure | Android 1.8.8 APK | [Install and play](ports/altosadventure/README.md) |
 | Crossy Road | Android 4.5.0 ARM64 APK | [Install and play](ports/crossyroad/README.md) |
 | Threes! | Full 3.1.6144 ARM64 APK | [Install and play](ports/threes/README.md) |
-| Triples | Standalone demake — in development | [Project](ports/triples/README.md) |
+| Triples | Standalone demake — unavailable | [Project](ports/triples/README.md) |
 
 ## How to use
 
-1. Get the port ZIP, or [build it from source](docs/BUILD.md).
+1. Download the game’s ZIP from [Releases](https://github.com/elarkitechto/rg35xxh-ports/releases/latest).
 2. Extract it into your handheld’s **Ports** folder.
-3. Copy the exact APK or XAPK listed in the game’s guide into its folder.
+3. Copy the exact APK listed in the game’s guide into its folder.
 4. Launch the game from **Ports**. First-run setup is automatic.
 
 See each game’s guide for controls, screen orientation and troubleshooting.

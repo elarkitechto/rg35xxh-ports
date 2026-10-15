@@ -5,7 +5,7 @@ saves. Requires PortMaster and your **Alto’s Adventure 1.8.8** game file.
 
 ## Install
 
-1. Extract the port ZIP into **Ports**.
+1. Download [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) and extract it into **Ports**.
 2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.
 3. Launch **Alto’s Adventure** from Ports. First-run setup is automatic.
 
@@ -37,6 +37,6 @@ Check the game-file name and version, then read `altosadventure/install.log` or
 
 </details>
 
-[Build from source](BUILD.md) · [Technical validation](VALIDATION.md) · [Credits](../../ATTRIBUTION.md)
+[Credits and licenses](../../ATTRIBUTION.md)
 
 Thanks to Snowman and Team Alto for creating the original game.
