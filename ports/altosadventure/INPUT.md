@@ -14,3 +14,7 @@ The original DialogBox distinguishes Wait=0, Dismiss=1, Confirm=2, RewardedAdPro
 The modal consumes input before general menu/gameplay handling. Closing a dismiss modal resets controller focus so a later press returns to the visible interface. Repeated close events are ignored during the original hide coroutine. The DialogBox singleton is read through IL2CPP reflection, rather than relying solely on a search that excludes inactive objects.
 
 `ALTO_DIALOG_SMOKE=1` is a diagnostic only. At Title after frame900 it opens the original Dismiss dialog twice, closes it once using confirm and once using back, and logs whether IsShown becomes false. It does not buy an upgrade or add/spend coins. Run with a copied preference directory, timeout and restoration of EmulationStation. The normal launcher unsets this flag.
+
+## Hidden offline actions
+
+The original scene objects carrying GuiSocialShareButton (Action.Share only), WatchVideoForCoinsButton and GuiDoubleCoinsButton are deactivated with GameObject.SetActive(false) before controller target collection. This removes labels/colliders together and keeps them outside navigation. Identification uses actual component types, independently of display language. Save-photo actions are not matched. Recheck on menu entry, periodically while in menus and before controller actions, because game refreshes may reactivate controls. No extra component enumeration runs during gameplay. Spending earned coins, revival and workshop upgrades are unaffected.
