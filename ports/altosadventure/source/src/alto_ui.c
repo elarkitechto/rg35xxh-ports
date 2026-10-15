@@ -15,6 +15,7 @@ struct target {void *go,*press,*slider;float x,y;int primary;char name[96];};
 static struct target targets[256];static int count,last_state=-1,last_click=-1000,last_refresh=-1000;
 static unsigned title_ready_at;
 static void *dialog_instance_field,*dialog_instance_getter;
+static void *share_type,*video_coins_type,*double_coins_type;
 static void *focus,*button_type,*click_type,*widget_type,*gui_class,*title_class,*pause_class,*slider_type,*dialog_class;
 static void *(*resolve_api)(const char*);
 static void *(*class_type)(void*),*(*type_object)(void*);
@@ -46,8 +47,30 @@ void alto_ui_init(void *(*resolver)(const char*)){
   void *(*method)(void*,const char*,int)=resolver("il2cpp_class_get_method_from_name");
   dialog_instance_getter=method(parent(dialog_class),"get_Instance",0);
  }
+ k=find_class("GuiSocialShareButton");share_type=k?type_object(class_type(k)):NULL;
+ k=find_class("WatchVideoForCoinsButton");video_coins_type=k?type_object(class_type(k)):NULL;
+ k=find_class("GuiDoubleCoinsButton");double_coins_type=k?type_object(class_type(k)):NULL;
  gui_class=find_class("GUIManager");title_class=find_class("GuiTitleScreen");
  fprintf(stderr,"[ALTO-UI] NGUI button and action types ready\n");
+}
+/* Remove unsupported actions from the original scene, including their labels
+ * and colliders. Match component types, never translated text or coin names. */
+static void hide_offline_actions(void *type,int share_only){
+ if(!type)return;
+ char *array=FN(0xb10d20,object_fn)(type,NULL);if(!array)return;
+ size_t n=*(size_t*)(array+0x18);if(n>4096)return;
+ for(size_t i=0;i<n;i++){
+  char *component=*(void**)(array+0x20+8*i);
+  if(!component || (share_only && *(int*)(component+0x18)!=0))continue;
+  void *go=FN(0xb420ac,object_fn)(component,NULL);
+  if(go && FN(0xb4aa1c,int(*)(void*,void*))(go,NULL)){
+   char name[96];object_name(go,name);
+   FN(0xb4a98c,void(*)(void*,int,void*))(go,0,NULL);
+   fprintf(stderr,"[ALTO-UI] offline action hidden: %s\n",name);
+   if(focus==go)focus=NULL;
+   last_refresh=-1000;
+  }
+ }
 }
 static void collect(void *type,int actions){
  if(!type)return;char *array=FN(0xb10d20,object_fn)(type,NULL);if(!array)return;
@@ -109,6 +132,18 @@ static void click(int index,int frame){
 }
 int alto_ui_tick(int frame,int state,void *manager,struct alto_ui_input in){
  if(!resolve_api)return 0;
+ if(getenv("ALTO_OFFLINE_UI_SMOKE")){
+  if(state==7 && frame%120==0)in.confirm=1;
+  if(state==9 && frame>=2100 && manager)
+   FN(0x6b57a0,void(*)(void*,int,float,void*))(manager,13,-1.0f,NULL);
+ }
+
+ if(state!=5 && (frame%12==0 || state!=last_state || in.confirm || in.back || in.dx || in.dy)){
+  hide_offline_actions(share_type,1);
+  hide_offline_actions(video_coins_type,0);
+  hide_offline_actions(double_coins_type,0);
+ }
+
  /* RefreshMenu may reactivate these: hide before collecting controller targets. */
  if(state==6 || state==12){
   char *pause=find_object(pause_class);
