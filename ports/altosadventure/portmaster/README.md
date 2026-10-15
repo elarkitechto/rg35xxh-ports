@@ -9,7 +9,7 @@ saves. Requires PortMaster and your **Alto’s Adventure 1.8.8** game file.
 2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.
 3. Launch **Alto’s Adventure** from Ports. First-run setup is automatic.
 
-When updating, replace the package files and keep your saves.
+Keep the APK in that folder. When updating, replace the package files and keep your saves.
 
 ## Controls
 

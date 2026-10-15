@@ -39,3 +39,41 @@ On RG35XX-H/KNULLI 640×480, the candidate launcher installed the pinned APK fro
 Direct candidate runtime test using the PortMaster-generated SDL mapping and that portable root: 1800frames, Gameplay5, save, exit0; next 1000-frame run loaded llamasSaved=4 and timesJumped=1 and exited0. Nonzero Pulse PCM recorded, no recorded underruns. Reinstallation exited0 and preserved a preference sentinel. Missing/wrong APK each exited1 with an actionable error. These tests used isolated data and did not replace the installed stable port or change the user's saves.
 
 Still pending: physical controller acceptance of the PortMaster-derived mapping, extended sessions, exact purchase/revival regression in this RC, physical vibration and all other CFW/device/resolution combinations. Historical feature tests above apply to the preceding stable revision; do not present them as fresh manual RC tests. Community test draft is prepared but no Discord post or upstream PR has been sent.
+
+## Installed launcher/preparer repair — 2026-10-15
+
+The device had a current launcher paired with an obsolete data preparer.
+Alto's old preparer populated the historical lab path while its launcher executed
+`ports/altosadventure/runtime/alto-loader`. Crossy's old preparer required a
+second positional argument that the current launcher does not supply.
+
+Replaced each installed preparer and matching runtime bundle together, retaining
+rollback scripts and all original save directories. The actual Alto launcher
+then rendered at least 570 frames in an 18-second bounded boot check using
+copied game data. EmulationStation was restored after the check. Timeout exit
+124 is expected here; this is a boot check, not a normal-exit or save-persistence
+claim. No new physical gameplay/audio acceptance is inferred from these runs.
+
+Launcher tests now include the real production preparer, verify that its runtime
+lands where the launcher executes, and reject an incomplete bundle before
+launch without changing the save sentinel. Ten tests pass for this port.
+
+## Clean-install audit — 2026-10-15
+
+The 0.2.0-rc2 package was built from source and installed by the official
+HarbourMaster CLI on RG35XX-H/KNULLI. An isolated empty-data installation,
+second launch and reinstall each reached the diagnostic frame target. The
+reinstall preserved a save sentinel and left no extraction staging directory.
+These are boot/install checks, not a new manual gameplay or audio assessment.
+
+All three ports passed the same nine-run audit. During final deployment,
+451 existing save files were compared byte-for-byte and remained unchanged.
+Installed runtime checksums passed. Development directories and duplicate
+payloads were removed after verifying private off-device backups. PortMaster
+metadata, collection artwork and the Triples demake were preserved.
+
+Launchers now use the standard PortMaster bootstrap and one bundled runtime.
+First-run APK/library validation remains necessary for version-specific patches;
+normal launches reuse installed data without copying binaries or running ldd.
+Diagnostics must clear game-specific environment overrides before restoring
+EmulationStation; its final environment was checked.

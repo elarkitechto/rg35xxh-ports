@@ -9,7 +9,7 @@ saves. Requires PortMaster and your **Crossy Road 4.5.0 ARM64** game file.
 2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.
 3. Launch **Crossy Road** from Ports. First-run setup is automatic.
 
-When updating, replace the package files and keep your saves.
+Keep the APK in that folder. When updating, replace the package files and keep your saves.
 
 ## Controls
 

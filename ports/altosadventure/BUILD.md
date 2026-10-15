@@ -24,4 +24,6 @@ Controller routing and supported modal types are documented in [INPUT.md](INPUT.
 
 ## PortMaster testing candidate
 
-[0.2.0-rc1 testing guide](TESTING.md) records the compatibility matrix and one-launch setup. [Discord draft](DISCORD-TESTING-DRAFT.md) is prepared but not posted. PortMaster integration is enabled; proprietary Mali backend dependencies and other CFWs remain to be validated.
+[0.2.0-rc2 testing guide](TESTING.md) records the compatibility matrix and one-launch setup. [Discord draft](DISCORD-TESTING-DRAFT.md) is prepared but not posted. PortMaster integration is enabled; proprietary Mali backend dependencies and other CFWs remain to be validated.
+
+SDL headers must declare `SDL_GameControllerHasRumble`; older SDK headers cannot build the haptic support. `SDL_INCLUDE_DIR` points to the directory containing `SDL2/`.

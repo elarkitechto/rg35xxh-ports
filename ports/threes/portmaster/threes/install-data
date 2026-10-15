@@ -1,13 +1,13 @@
 #!/bin/sh
 set -eu
 PORTDIR=${1:-$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)}
-XAPK="$PORTDIR/threes-free-3-1-24576.xapk"
-EXPECTED_XAPK=99dcba5f8dbcbc4294507c6b30d9f0719ae4127228186e9a471ecdb45a77c880
+APK="$PORTDIR/threes-3.1.6144.apk"
+EXPECTED_APK=7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a
 DATA="$PORTDIR/gamedata"
 RUNTIME="$PORTDIR/runtime"
-EXPECTED_IL2CPP=664d797207c38230c4b13bd1f9ed4c2ad17e208650c18902e7964dec346dd56a
-EXPECTED_UNITY=13d26518cddc59c58add20d71a6fb371b70381eb4dd1c6dae341ef6d4a5718b4
-if [ "$(cat "$DATA/.xapk.sha256" 2>/dev/null || true)" = "$EXPECTED_XAPK" ] \
+EXPECTED_IL2CPP=a3dff870ae850698a3de67d405728b8bafef42d352d088773cd3e71a3f546a9f
+EXPECTED_UNITY=7f91e8c5d6016e05019098b461690b7d2d45d2e10757959cffa3b78e5d4568fe
+if [ "$(cat "$DATA/.apk.sha256" 2>/dev/null || true)" = "$EXPECTED_APK" ] \
      && [ -s "$DATA/assets/bin/Data/globalgamemanagers" ] \
      && [ -s "$DATA/assets/bin/Data/Managed/Metadata/global-metadata.dat" ] \
      && [ -s "$RUNTIME/libil2cpp.so" ] && [ -s "$RUNTIME/libunity.so" ] \
@@ -15,16 +15,13 @@ if [ "$(cat "$DATA/.xapk.sha256" 2>/dev/null || true)" = "$EXPECTED_XAPK" ] \
   printf '%s\n' 'Game files already installed.'
   exit 0
 fi
-[ -f "$XAPK" ] || { echo "Missing threes-free-3-1-24576.xapk" >&2; exit 1; }
-ACTUAL=$(sha256sum "$XAPK" | cut -d ' ' -f 1)
-[ "$ACTUAL" = "$EXPECTED_XAPK" ] || { echo "Wrong XAPK SHA-256: $ACTUAL" >&2; exit 1; }
+[ -f "$APK" ] || { echo "Missing threes-3.1.6144.apk (full ARM64 edition)" >&2; exit 1; }
+ACTUAL=$(sha256sum "$APK" | cut -d ' ' -f 1)
+[ "$ACTUAL" = "$EXPECTED_APK" ] || { echo "Wrong APK SHA-256: $ACTUAL" >&2; exit 1; }
 STAGE=$(mktemp -d "$PORTDIR/.install.XXXXXX")
 trap 'rm -rf "$STAGE"' EXIT HUP INT TERM
-unzip -p "$XAPK" vo.threes.free.apk > "$STAGE/base.apk"
-unzip -p "$XAPK" config.arm64_v8a.apk > "$STAGE/arm64.apk"
-[ -s "$STAGE/base.apk" ] && [ -s "$STAGE/arm64.apk" ] || { echo 'XAPK is missing its base or ARM64 split.' >&2; exit 1; }
-unzip -oq "$STAGE/base.apk" 'assets/bin/Data/*' -d "$STAGE/base"
-unzip -oq "$STAGE/arm64.apk" 'lib/arm64-v8a/libil2cpp.so' 'lib/arm64-v8a/libunity.so' -d "$STAGE/arm64"
+unzip -oq "$APK" 'assets/bin/Data/*' -d "$STAGE/base"
+unzip -oq "$APK" 'lib/arm64-v8a/libil2cpp.so' 'lib/arm64-v8a/libunity.so' -d "$STAGE/arm64"
 [ -s "$STAGE/base/assets/bin/Data/globalgamemanagers" ] || { echo 'Unity data is missing.' >&2; exit 1; }
 [ -s "$STAGE/base/assets/bin/Data/Managed/Metadata/global-metadata.dat" ] || { echo 'IL2CPP metadata is missing.' >&2; exit 1; }
 for pair in \
@@ -38,14 +35,12 @@ for file in threes-loader libOpenSLES.so; do
 done
 mkdir -p "$DATA/assets/bin/Data" "$RUNTIME"
 cp -R "$STAGE/base/assets/bin/Data/." "$DATA/assets/bin/Data/"
-cp "$STAGE/base.apk" "$DATA/vo.threes.free.apk.next"
 cp "$STAGE/arm64/lib/arm64-v8a/libil2cpp.so" "$RUNTIME/libil2cpp.so.next"
 cp "$STAGE/arm64/lib/arm64-v8a/libunity.so" "$RUNTIME/libunity.so.next"
-mv "$DATA/vo.threes.free.apk.next" "$DATA/vo.threes.free.apk"
 mv "$RUNTIME/libil2cpp.so.next" "$RUNTIME/libil2cpp.so"
 mv "$RUNTIME/libunity.so.next" "$RUNTIME/libunity.so"
-printf '%s\n' "$EXPECTED_XAPK" > "$DATA/.xapk.sha256.next"
-mv "$DATA/.xapk.sha256.next" "$DATA/.xapk.sha256"
+printf '%s\n' "$EXPECTED_APK" > "$DATA/.apk.sha256.next"
+mv "$DATA/.apk.sha256.next" "$DATA/.apk.sha256"
 rm -rf "$STAGE"
 trap - EXIT HUP INT TERM
-printf '%s\n' 'Threes! 3.1 data installed.'
+printf '%s\n' 'Threes! full 3.1.6144 data installed.'

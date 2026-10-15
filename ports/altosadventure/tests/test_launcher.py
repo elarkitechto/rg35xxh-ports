@@ -36,6 +36,7 @@ mkdir -p "$ALTO_RUNTIME_DIR"
 cat > "$ALTO_RUNTIME_DIR/alto-loader" <<'LOADER'
 #!/bin/sh
 printf '%s\\n' "$ALTO_DATA_DIR" "$SDL_GAMECONTROLLERCONFIG" "$ALTO_RUNTIME_DIR" > "$RESULT"
+[ "$HK_PTHREAD_SHIM:$HK_NOSPOOF:$HK_SDLPAD" = "1:1:1" ] || exit 94
 [ -z "${ALTO_DIALOG_SMOKE:-}" ] || exit 91
 [ -z "${ALTO_AUTOPRESS:-}" ] || exit 92
 exit "${TEST_EXIT:-0}"
@@ -129,6 +130,52 @@ chmod +x "$ALTO_RUNTIME_DIR/alto-loader"
         self.assertIn('requires PortMaster', result.stderr)
         self.assertFalse((self.port / 'runtime').exists())
 
+
+
+    def prepare_real_installer(self):
+        """Exercise the production launcher/preparer contract, including runtime placement."""
+        import hashlib
+        shutil.copyfile(SOURCE.parent / 'altosadventure/install-data', self.port / 'install-data')
+        data = Path(self.env['ALTO_DATA_DIR'])
+        for relative in ['assets/bin/Data/data.unity3d',
+                         'assets/bin/Data/Managed/Metadata/global-metadata.dat', 'prefs/progress']:
+            path = data / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b'preserved game data')
+        (data / '.alto-apk.sha256').write_text('efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0\n')
+        runtime = self.port / 'runtime'
+        runtime.mkdir()
+        library_checksums = []
+        for name in ['libunity.so', 'libil2cpp.so']:
+            payload = b'installed library fixture'
+            (runtime / name).write_bytes(payload)
+            library_checksums.append(hashlib.sha256(payload).hexdigest() + '  ' + name + '\n')
+        (self.port / 'alto-libraries.sha256').write_text(''.join(library_checksums))
+        (runtime / 'alto-loader').write_text('#!/bin/sh\necho real-installer-started > "$RESULT"\n')
+        (runtime / 'alto-loader').chmod(0o755)
+        names = ['alto-loader', 'libOpenSLES.so']
+        for name in names[1:]:
+            (runtime / name).write_bytes(b'loader dependency fixture')
+        (runtime / 'runtime.sha256').write_text(''.join(
+            hashlib.sha256((runtime / name).read_bytes()).hexdigest() + '  ' + name + '\n'
+            for name in names))
+        return data, runtime
+
+    def test_real_preparer_places_runtime_where_launcher_executes(self):
+        data, runtime = self.prepare_real_installer()
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((self.root / 'result').read_text().strip(), 'real-installer-started')
+        self.assertEqual((runtime / 'alto-loader').read_text(), '#!/bin/sh\necho real-installer-started > "$RESULT"\n')
+        self.assertEqual((data / 'prefs/progress').read_bytes(), b'preserved game data')
+
+    def test_real_preparer_rejects_incomplete_bundle_before_launch(self):
+        data, runtime = self.prepare_real_installer()
+        (runtime / 'alto-loader').unlink()
+        result = self.run_launcher()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / 'result').exists())
+        self.assertEqual((data / 'prefs/progress').read_bytes(), b'preserved game data')
 
 if __name__ == '__main__':
     unittest.main()

@@ -23,3 +23,5 @@ jobs:
       - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/threes/portmaster/gameinfo.xml')"
       - run: python3 ports/threes/tests/test_install.py
       - run: python3 ports/threes/tests/test_launcher.py
+
+      - run: python3 -m unittest discover -s tools/tests

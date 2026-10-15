@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 INSTALL = Path(__file__).resolve().parents[1] / 'portmaster/threes/install-data'
-DIGEST = '99dcba5f8dbcbc4294507c6b30d9f0719ae4127228186e9a471ecdb45a77c880'
+DIGEST = '7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a'
 
 class SetupTests(unittest.TestCase):
     def setUp(self):
@@ -29,10 +29,10 @@ class SetupTests(unittest.TestCase):
         self.assertFalse((self.root / 'gamedata').exists())
 
     def test_wrong_archive_changes_no_game_data(self):
-        (self.root / 'threes-free-3-1-24576.xapk').write_bytes(b'wrong archive')
+        (self.root / 'threes-3.1.6144.apk').write_bytes(b'wrong archive')
         result = self.run_setup()
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('Wrong XAPK', result.stderr)
+        self.assertIn('Wrong APK', result.stderr)
         self.assertFalse((self.root / 'gamedata').exists())
 
     def test_installed_game_starts_without_reextracting_archive(self):
@@ -44,7 +44,7 @@ class SetupTests(unittest.TestCase):
             file.parent.mkdir(parents=True, exist_ok=True)
             file.write_bytes(b'installed fixture')
         (self.root / 'runtime/threes-loader').chmod(0o755)
-        marker = self.root / 'gamedata/.xapk.sha256'
+        marker = self.root / 'gamedata/.apk.sha256'
         marker.write_text(DIGEST + '\n')
         before = marker.stat().st_mtime_ns
         result = self.run_setup()

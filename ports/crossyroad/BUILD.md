@@ -1,4 +1,4 @@
-# Crossy Road — PortMaster candidate 0.2.0-rc1
+# Crossy Road — PortMaster candidate 0.2.0-rc2
 
 Android4.5.0 ARM64 adaptation, tested on RG35XX-H/KNULLI at640×480. Thanks to Hipster Whale for creating the game. The generic runtime retains Apache-2.0/upstream notices; adaptation by elarkitechto. No APK, extracted game assets or system GPU driver is in this repository.
 
@@ -10,7 +10,7 @@ Install Zig0.13.0, Python3, SDL2 development headers, pkg-config and zip. Provid
 CROSSY_LINK_LIBS=/path/to/target-libraries CROSSY_MEDIA_DIR=/path/to/private-media sh tools/build-crossyroad-local.sh
 ```
 
-This single command builds the loader, JNI/controller preload and OpenSL library from source, validates media, stages licenses/metadata and creates `.local/releases/crossyroad-0.2.0-rc1.zip` plus its checksum. The historical pinned loader/components are no longer needed. Firmware link inputs are not bundled.
+This single command builds the loader, JNI/controller preload and OpenSL library from source, validates media, stages licenses/metadata and creates `.local/releases/crossyroad-0.2.0-rc2.zip` plus its checksum. The historical pinned loader/components are no longer needed. Firmware link inputs are not bundled.
 
 On the handheld, extract into Ports, supply crossy-road-4-5-0.apk inside crossyroad/ and launch **Crossy Road** once. Setup is automatic; no manual subfolder script or handheld compilation. Required APK SHA-256: `1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb`.
 
