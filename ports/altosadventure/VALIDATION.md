@@ -25,3 +25,17 @@ On-device copied-profile test reached Gameplay5, GameOver7, activated Next, reac
 ## Hide touch pause icon
 
 GuiGameplay.Update pauseButton.SetActive argument changed from true to false at guarded RVA0x6f7234 (original0x320003e1). On-device 1800-frame copied-profile test exited0 and restored the frontend; scripted Start route produced Gameplay5→Pause6→Gameplay5. Frame1500 after resume was visually inspected: the corner pause icon is absent. No per-frame scene search or change to physical pause/resume is required.
+
+## PortMaster candidate 0.2.0-rc1
+
+Launcher now sources installed PortMaster control.txt/CFW mods, calls get_controls, uses its SDL mapping and runs pm_platform_helper/pm_finish. It handles child termination and preserves the loader exit code. Error messages stay visible briefly. No gptokeyb remapping is required for gameplay: the game consumes SDL controller events directly. Only the native Guide+Start exit path is currently verified; other CFW hotkey conventions need tester feedback.
+
+Fresh runtime/data are port-local; JNI assets, prefs, APK and userdata paths take the launcher's explicit environment. Existing KNULLI legacy prefs are selected in place instead of copied. Link/runtime dependencies remain KNULLI-oriented (including libmali.so.0); paths being portable does not establish other-CFW compatibility.
+
+Eight launcher fixture tests passed: controls/helpers/cleanup and paths containing spaces; CFW mod sourcing; fresh portable defaults; loader-error propagation; setup failure; unsupported architecture; missing PortMaster; signal cleanup without leaving a child. Shell syntax, JSON/XML and public-tree checks passed; both ARM64 executables built from source in the one-command package build.
+
+On RG35XX-H/KNULLI 640×480, the candidate launcher installed the pinned APK from scratch into an isolated portable root. An external 55-second test ended137 after the timeout's forced kill during save and was not counted as a graceful exit. A subsequent integration run of the same launcher with only frame/watchdog limits changed (1200/65) exited0, logged CFW=knulli, ARCH=aarch64 and the portable paths, and restored the frontend. No game child remained.
+
+Direct candidate runtime test using the PortMaster-generated SDL mapping and that portable root: 1800frames, Gameplay5, save, exit0; next 1000-frame run loaded llamasSaved=4 and timesJumped=1 and exited0. Nonzero Pulse PCM recorded, no recorded underruns. Reinstallation exited0 and preserved a preference sentinel. Missing/wrong APK each exited1 with an actionable error. These tests used isolated data and did not replace the installed stable port or change the user's saves.
+
+Still pending: physical controller acceptance of the PortMaster-derived mapping, extended sessions, exact purchase/revival regression in this RC, physical vibration and all other CFW/device/resolution combinations. Historical feature tests above apply to the preceding stable revision; do not present them as fresh manual RC tests. Community test draft is prepared but no Discord post or upstream PR has been sent.
