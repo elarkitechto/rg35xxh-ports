@@ -6,9 +6,10 @@ bad=0
 git ls-files | while IFS= read -r path; do
   case "$path" in
     ports/threes-knulli/assets/fonts/Inter-Bold.ttf|ports/threes-knulli/assets/fonts/Jua-Regular.ttf) ;;
-    *.apk|*.zip|*.7z|*.so|*.dat|*.sav|*.png|*.jpg|*.jpeg|*/userdata/*|*/prefs/*|*/assets/*|.local/*)
+    *.apk|*.xapk|*.ppm|*.zip|*.7z|*.so|*.dat|*.sav|*.png|*.jpg|*.jpeg|*/userdata/*|*/prefs/*|*/assets/*|.local/*)
       echo "Private or binary file staged: $path" >&2; exit 1;;
   esac
+  [ -f "$path" ] || continue
   size=$(wc -c < "$path")
   case "$path" in
     ports/threes-knulli/assets/fonts/Inter-Bold.ttf)

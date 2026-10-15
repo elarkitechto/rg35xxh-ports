@@ -34,3 +34,15 @@ SHA-256 de la portada de Alto: `68c67d8974fadc30b8642c1cae8a48b3296d46cd6e9d3154
 El candidato reutiliza la portada vertical ya instalada y aprobada en esta colección:1080×1683, sin deformación; se inspeccionó visualmente. La procedencia original debe confirmarse antes de redistribuir el arte a terceros. Se conserva una captura de gameplay640×480 separada. Portada/thumbnail del paquete: `./crossyroad/cover.png`. El empaquetador también valida ambas imágenes.
 
 SHA-256 de la portada: `227c1360c3893d164fc979f50aa0996368872c782cad3534475b1a5c01f61ed7`. Arte privado excluido del historial público de Git.
+
+## Threes! and Triples
+
+Threes! (original Android port) uses the formerly demake-assigned cover from
+console `images/boxart/threes.jpg`, 300×450, converted to PNG without resizing.
+Upstream provenance of that pre-existing image was not recorded. Triples uses
+a built-in ImageGen title edit of the same composition, 1024×1536, reading
+TRIPLES. Both are vertical 2:3 and were visually inspected. Private assets and
+the exact generation prompt are in `.local/threes-media/ARTWORK.md`; hashes
+are in `.local/threes-media/artwork.sha256`. Console image and thumbnail paths:
+`./images/boxart/threes.png` and `./images/boxart/triples.png`, respectively.
+Runtime/save folders remain threesandroid and threes-knulli.

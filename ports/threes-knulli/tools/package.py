@@ -36,7 +36,7 @@ manifest = {
     'runtime': 'system libSDL2-2.0.so.0 and glibc; highest referenced GLIBC version 2.27',
 }
 with zipfile.ZipFile(args.destination / f'threes-knulli-v{args.version}.zip', 'w') as z:
-    put(z, root / 'portmaster/Threes.sh', 'Threes.sh', True)
+    put(z, root / 'portmaster/Triples.sh', 'Triples.sh', True)
     put(z, args.arm, 'threes-knulli/threes', True)
     put(z, root / 'portmaster/threes.gptk', 'threes-knulli/threes.gptk')
     if args.private_skin:

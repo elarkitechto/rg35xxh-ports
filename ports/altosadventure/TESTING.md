@@ -6,7 +6,7 @@ This is a testing build, not an accepted PortMaster catalogue release. Thanks to
 
 1. Extract the ZIP into Ports, keeping `Alto's Adventure.sh` beside `altosadventure/`.
 2. Supply your own Android Alto **1.8.8 ARM64** APK as `altosadventure/altos-adventure-1-8-8.apk`.
-3. Open **Alto's Adventure**. The launcher loads PortMaster controls, verifies the APK, automatically extracts/prepares everything and starts the game. Do not run install.sh manually. No compiler is required on the handheld.
+3. Open **Alto's Adventure**. The launcher loads PortMaster controls, verifies the APK, automatically extracts/prepares everything and starts the game. Do not run install-data manually. No compiler is required on the handheld.
 
 APK SHA-256: `efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0`. APK/game assets are not included or downloaded. Other APK versions are not compatible. Contact the porter if that exact version is not available to you; do not submit logs or archives containing the APK or extracted game data.
 

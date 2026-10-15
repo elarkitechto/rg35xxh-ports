@@ -18,11 +18,20 @@ Alto's Adventure and its game assets belong to Snowman. The user supplies the An
 
 - APK 4.5.0 y bibliotecas `libunity.so`, `libil2cpp.so` y `libmain.so`: software de Hipster Whale/Unity aportado por cada usuario.
 - `libMali.so`: controlador extraído de la instalación de KNULLI del dispositivo de prueba; no se redistribuye aquí.
-- Loader precompilado de investigación y su parche, `libOpenSLES.so` y la biblioteca JNI compilada: el repositorio conserva fuente y hashes para reconstrucción local, pero no publica esos binarios. La procedencia y reproducibilidad del loader requieren más trabajo antes de una distribución pública.
+- Loader precompilado de investigación y su parche, `libOpenSLES.so` y la biblioteca JNI compilada: el repositorio conserva fuente y hashes para reconstrucción local, pero no publica esos binarios. Los paquetes se reconstruyen desde la fuente publicada.
 - Arte de portada, capturas, partidas y registros personales: no se publican.
 
 La licencia del código del repositorio no concede derechos sobre el juego, el controlador Mali ni otros binarios excluidos. Consulta también [el estado técnico del port](ports/crossyroad/README.md).
 
-## Triples / Threes
+## Triples
 
 El fork `ports/threes-knulli/` parte de [Triples de Christopher Wellons](https://github.com/skeeto/triples), commit `83e8286d15a1d3631d110dd47df88fd94d28c85a`, bajo Unlicense. Las adaptaciones para RG35XX-H son de elarkitechto. Las fuentes Inter y Jua se conservan con licencias OFL en `ports/threes-knulli/licenses/`. Los gráficos originales de Threes no están incluidos en el historial público; sus autores figuran en `ports/threes-knulli/CREDITS.md`.
+
+## Threes!
+
+Threes! y sus recursos pertenecen a Sirvo. El usuario aporta el XAPK original;
+no se redistribuyen APKs, bibliotecas Unity/IL2CPP ni recursos extraídos. El
+runtime reutiliza el framework Android ARM64 acreditado anteriormente y las
+adaptaciones de Alto/Crossy. Se conservan Apache-2.0 y los avisos en
+[LICENSE](ports/threes-android/LICENSE) y [NOTICE](ports/threes-android/NOTICE).
+Adaptación y empaquetado por elarkitechto; sin afiliación con Sirvo o PortMaster.

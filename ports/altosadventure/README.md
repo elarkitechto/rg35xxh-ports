@@ -1,27 +1,43 @@
-# Alto's Adventure for RG35XX-H / KNULLI
+# Alto’s Adventure
 
-This port runs the Android 1.8.8 release using an ARM64 compatibility layer. Supply your own APK; game assets are not included. See the [installation notes and controls](portmaster/README.md).
+Port comunitario para **RG35XX-H / KNULLI**, con mando y guardado local.
+Requiere PortMaster y tu archivo original de **Alto’s Adventure 1.8.8**.
 
-## Build
+## Instalar
 
-The build requires Zig 0.13.0, Python 3, SDL2 headers, `pkg-config`, `zip`, and link libraries from the target KNULLI firmware (`libSDL2.so`, `libmali.so`, `libz.so`). Point `ALTO_LINK_LIBS` to the directory holding those libraries. Set `ZIG_BIN` and `SDL_INCLUDE_DIR` if they are outside the normal search path.
+1. Extrae el ZIP del port en **Ports**.
+2. Copia `altos-adventure-1-8-8.apk` dentro de `ports/altosadventure/`.
+3. Abre **Alto’s Adventure** desde Ports. La primera ejecución prepara todo automáticamente.
 
-Supply `ALTO_MEDIA_DIR` with a distinct 4:3 `screenshot.png` (at least 640×480) and vertical box-art `cover.png`. See [cover guidelines](../../docs/COVERS.md). Then run from the repository root:
+No ejecutes archivos de instalación por separado. Si actualizas, conserva la
+carpeta de partidas y sustituye sólo los archivos del paquete.
 
-```sh
-ALTO_LINK_LIBS=/path/to/knulli-libraries ALTO_MEDIA_DIR=/path/to/media sh tools/build-alto-local.sh
-```
+## Controles
 
-The output is `.local/releases/altosadventure.zip`. Extract it into the handheld's Ports directory, add the APK as described above, and launch the game.
+| Botón | Acción |
+| --- | --- |
+| Cruceta | Navegar |
+| B | Seleccionar / saltar; mantener para backflip |
+| Y | Atrás / cancelar |
+| Start | Pausar / continuar |
+| L1 / R1 | Cambiar página de ajustes |
+| F + Start | Guardar y salir |
 
-## Source and status
+En Ajustes, izquierda/derecha cambia el valor del slider seleccionado.
+Los servicios online, anuncios y compras no están disponibles.
+Partidas existentes: `/userdata/system/alto/`.
 
-`source/` contains the loader, input integration and audio bridge. `policy-patches.json` records the guarded changes for the pinned APK. [Validation](VALIDATION.md) records the tested device and remaining limits; [offline patches](OFFLINE-PATCHES.md) records disabled online services.
+## Si no arranca
 
-This build has been tested on RG35XX-H / KNULLI for gameplay, menu navigation, audio output and local save/reload. Extended play and physical vibration need further testing. The original game and its assets belong to Snowman. The framework's upstream copyright and license notices are in `NOTICE` and `LICENSE`; port adaptation by [elarkitechto](https://github.com/elarkitechto).
+Comprueba el nombre y la versión del archivo, y consulta `altosadventure/install.log`
+o `altosadventure/log.txt`. No se ha verificado compatibilidad con otras consolas o
+firmwares. No es una publicación oficial de PortMaster.
 
-Controller routing and supported modal types are documented in [INPUT.md](INPUT.md), including the single-button Thanks dialog regression test.
+<details>
+<summary>Identificar el archivo compatible (SHA-256)</summary>
 
-## PortMaster testing candidate
+`efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0`
 
-[0.2.0-rc1 testing guide](TESTING.md) records the compatibility matrix and one-launch setup. [Discord draft](DISCORD-TESTING-DRAFT.md) is prepared but not posted. PortMaster integration is enabled; proprietary Mali backend dependencies and other CFWs remain to be validated.
+</details>
+
+[Compilar desde código](BUILD.md) · [Validación técnica](VALIDATION.md) · [Créditos](../../ATTRIBUTION.md)

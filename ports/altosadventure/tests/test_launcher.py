@@ -31,7 +31,7 @@ pm_finish() { echo cleanup >> "$TRACE"; }
 pm_platform_helper() { echo helper >> "$TRACE"; }
 pm_message() { echo "message:$*" >> "$TRACE"; }
 ''')
-        (self.port / 'install.sh').write_text('''#!/bin/sh
+        (self.port / 'install-data').write_text('''#!/bin/sh
 mkdir -p "$ALTO_RUNTIME_DIR"
 cat > "$ALTO_RUNTIME_DIR/alto-loader" <<'LOADER'
 #!/bin/sh
@@ -81,7 +81,7 @@ chmod +x "$ALTO_RUNTIME_DIR/alto-loader"
         self.assertEqual(self.trace.read_text().splitlines()[-1], 'cleanup')
 
     def test_missing_apk_setup_failure_reports_and_cleans(self):
-        (self.port / 'install.sh').write_text('#!/bin/sh\necho missing-apk >&2\nexit 1\n')
+        (self.port / 'install-data').write_text('#!/bin/sh\necho missing-apk >&2\nexit 1\n')
         self.assertEqual(self.run_launcher().returncode, 1)
         self.assertIn('missing-apk', (self.port / 'install.log').read_text())
         self.assertEqual(self.trace.read_text().splitlines()[-1], 'cleanup')
@@ -95,7 +95,7 @@ chmod +x "$ALTO_RUNTIME_DIR/alto-loader"
         self.assertEqual(self.trace.read_text().splitlines()[-1], 'cleanup')
 
     def test_signal_cleans_up_running_loader(self):
-        (self.port / 'install.sh').write_text("""#!/bin/sh
+        (self.port / 'install-data').write_text("""#!/bin/sh
 mkdir -p "$ALTO_RUNTIME_DIR"
 cat > "$ALTO_RUNTIME_DIR/alto-loader" <<'LOADER'
 #!/bin/sh
