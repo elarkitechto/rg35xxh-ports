@@ -16,7 +16,7 @@ ZIG_BIN=/path/to/zig sh tools/build-threes-local.sh
 ```
 
 This builds the loader and OpenSL bridge and creates
-`.local/releases/threesandroid-0.1.0-rc1.zip`, its checksum and `threesandroid.zip`.
+`.local/releases/threes-0.1.0-rc1.zip`, its checksum and `threes.zip`.
 The package includes the main launcher, automatic data preparer, compiled
 runtime, metadata, media and notices. It does not include the XAPK, extracted
 game data, Unity/IL2CPP libraries or firmware libraries.

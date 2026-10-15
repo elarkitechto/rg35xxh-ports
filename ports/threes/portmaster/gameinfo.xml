@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gameList><game><path>./Threes!.sh</path><name>Threes!</name>
 <desc>Slide and combine numbered cards.</desc><developer>Sirvo</developer><publisher>Sirvo</publisher><genre>Puzzle</genre>
-<image>./threesandroid/cover.png</image><thumbnail>./threesandroid/cover.png</thumbnail></game></gameList>
+<image>./threes/cover.png</image><thumbnail>./threes/cover.png</thumbnail></game></gameList>

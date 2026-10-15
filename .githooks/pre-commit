@@ -19,7 +19,7 @@ python3 "$root/ports/altosadventure/tests/test_launcher.py"
 sh -n "$root/ports/crossyroad/source/build_all.sh"
 python3 "$root/ports/crossyroad/tests/test_launcher.py"
 
-bash -n "$root/ports/threes-android/portmaster/Threes!.sh"
-sh -n "$root/ports/threes-android/portmaster/threesandroid/install-data" "$root/ports/threes-android/source/build.sh" "$root/tools/build-threes-local.sh"
-python3 -m json.tool "$root/ports/threes-android/portmaster/port.json" >/dev/null
-python3 -m unittest discover -s "$root/ports/threes-android/tests"
+bash -n "$root/ports/threes/portmaster/Threes!.sh"
+sh -n "$root/ports/threes/portmaster/threes/install-data" "$root/ports/threes/source/build.sh" "$root/tools/build-threes-local.sh"
+python3 -m json.tool "$root/ports/threes/portmaster/port.json" >/dev/null
+python3 -m unittest discover -s "$root/ports/threes/tests"

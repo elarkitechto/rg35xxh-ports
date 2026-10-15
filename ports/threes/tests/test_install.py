@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
-INSTALL = Path(__file__).resolve().parents[1] / 'portmaster/threesandroid/install-data'
+INSTALL = Path(__file__).resolve().parents[1] / 'portmaster/threes/install-data'
 DIGEST = '99dcba5f8dbcbc4294507c6b30d9f0719ae4127228186e9a471ecdb45a77c880'
 
 class SetupTests(unittest.TestCase):

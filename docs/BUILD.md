@@ -5,8 +5,8 @@ Esta página es para quien genera esos ZIP desde el código.
 
 - [Alto’s Adventure](../ports/altosadventure/BUILD.md)
 - [Crossy Road](../ports/crossyroad/BUILD.md)
-- [Threes!](../ports/threes-android/BUILD.md)
-- [Triples](../ports/threes-knulli/README.md)
+- [Threes!](../ports/threes/BUILD.md)
+- [Triples](../ports/triples/README.md)
 
 Cada comando de construcción prepara el runtime y el paquete completo. Los
 archivos originales de los juegos, bibliotecas de firmware y arte privado se

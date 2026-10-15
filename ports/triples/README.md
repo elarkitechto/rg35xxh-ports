@@ -1,5 +1,7 @@
 # Triples
 
+**En desarrollo. No está listo para PortMaster.**
+
 Demake independiente para **RG35XX-H / KNULLI**, basado en
 [Triples de Christopher Wellons](https://github.com/skeeto/triples).
 No necesita el APK de Threes!.
@@ -15,7 +17,7 @@ juego permite activar **TATE**; gira la consola 90° hacia la derecha. **F + Sta
 sale del juego. El progreso se guarda en `threes-knulli/saves/`.
 
 La versión pública usa fichas dibujadas por el código del demake. Los recursos
-originales de Threes! no se incluyen. [Threes! original](../threes-android/README.md)
+originales de Threes! no se incluyen. [Threes! original](../threes/README.md)
 es otro port y utiliza su propio archivo del juego y sus propios guardados.
 
 [Compilar](BUILD.md) · [Créditos](CREDITS.md) · [Licencias de recursos](ASSETS-LICENSE.md) · [Unlicense](UNLICENSE)

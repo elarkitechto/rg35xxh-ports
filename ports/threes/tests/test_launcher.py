@@ -13,7 +13,7 @@ class LauncherTests(unittest.TestCase):
             root = Path(directory)
             launcher = root / SOURCE.name
             shutil.copy2(SOURCE, launcher)
-            port = root / 'threesandroid'
+            port = root / 'threes'
             port.mkdir()
             control = root / 'PortMaster'
             control.mkdir()

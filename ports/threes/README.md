@@ -6,7 +6,7 @@ Requiere PortMaster y tu archivo original de **Threes! Free 3.1 (24576), con bas
 ## Instalar
 
 1. Extrae el ZIP del port en **Ports**.
-2. Copia `threes-free-3-1-24576.xapk` dentro de `ports/threesandroid/`.
+2. Copia `threes-free-3-1-24576.xapk` dentro de `ports/threes/`.
 3. Abre **Threes!** desde Ports. La primera ejecución prepara todo automáticamente.
 
 No ejecutes archivos de instalación por separado. Si actualizas, conserva la
@@ -31,7 +31,7 @@ aceptar/atrás. La vista horizontal conserva la proporción del tablero y extien
 el fondo. La firma de puntuación usa el nombre predeterminado.
 
 El tema nocturno conserva las fichas nocturnas originales. Threes! y el demake
-Triples son juegos y guardados separados.
+[Triples](../triples/README.md) son juegos y guardados separados.
 
 La versión Free mantiene sus restricciones originales de partidas. Los vídeos,
 servicios online y compras no están disponibles; este port no los desbloquea.
@@ -40,8 +40,8 @@ Partidas: `/userdata/system/threes-android/saves/`.
 
 ## Si no arranca
 
-Comprueba el nombre y la versión del archivo, y consulta `threesandroid/install.log`
-o `threesandroid/log.txt`. No se ha verificado compatibilidad con otras consolas o
+Comprueba el nombre y la versión del archivo, y consulta `threes/install.log`
+o `threes/log.txt`. No se ha verificado compatibilidad con otras consolas o
 firmwares. No es una publicación oficial de PortMaster.
 
 <details>
@@ -51,4 +51,6 @@ firmwares. No es una publicación oficial de PortMaster.
 
 </details>
 
-Más información: https://github.com/elarkitechto/rg35xxh-ports
+[Compilar desde código](BUILD.md) · [Validación técnica](STATUS.md) · [Créditos](../../ATTRIBUTION.md)
+
+Gracias a Sirvo por crear el juego original.

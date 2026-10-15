@@ -6,8 +6,12 @@ Ports para **RG35XX-H con KNULLI**. Instala PortMaster y consulta la guía del j
 | --- | --- | --- |
 | Alto’s Adventure | APK Android 1.8.8 | [Instalación y controles](ports/altosadventure/README.md) |
 | Crossy Road | APK Android 4.5.0 ARM64 | [Instalación y controles](ports/crossyroad/README.md) |
-| Threes! | XAPK Free 3.1 (24576), con split ARM64 | [Instalación y controles](ports/threes-android/README.md) |
-| Triples | No requiere APK; es un demake independiente | [Guía](ports/threes-knulli/README.md) |
+| Threes! | XAPK Free 3.1 (24576), con split ARM64 | [Instalación y controles](ports/threes/README.md) |
+
+
+**Triples** es un [demake independiente en desarrollo](ports/triples/README.md). No está listo para PortMaster.
+
+Los tres ports originales tienen [paquetes candidatos para PortMaster](docs/PORTMASTER.md).
 
 ## Instalación
 

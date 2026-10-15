@@ -45,4 +45,4 @@ TRIPLES. Both are vertical 2:3 and were visually inspected. Private assets and
 the exact generation prompt are in `.local/threes-media/ARTWORK.md`; hashes
 are in `.local/threes-media/artwork.sha256`. Console image and thumbnail paths:
 `./images/boxart/threes.png` and `./images/boxart/triples.png`, respectively.
-Runtime/save folders remain threesandroid and threes-knulli.
+Threes! packages use threes/; its existing system save path is preserved. Triples keeps threes-knulli/ on the device for save compatibility.

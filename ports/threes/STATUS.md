@@ -1,7 +1,7 @@
 # Threes! Android port status
 
 This is the original Android game, independent of the Triples demake in
-`ports/threes-knulli`. Crossy Road and Alto remain unchanged.
+`ports/triples`. Crossy Road and Alto remain unchanged.
 
 ## Candidate
 

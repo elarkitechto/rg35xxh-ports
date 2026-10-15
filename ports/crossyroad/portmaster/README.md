@@ -39,3 +39,5 @@ firmwares. No es una publicación oficial de PortMaster.
 </details>
 
 Más información: https://github.com/elarkitechto/rg35xxh-ports
+
+Gracias a Hipster Whale por crear el juego original.

@@ -41,3 +41,5 @@ firmwares. No es una publicación oficial de PortMaster.
 </details>
 
 [Compilar desde código](BUILD.md) · [Validación técnica](VALIDATION.md) · [Créditos](../../ATTRIBUTION.md)
+
+Gracias a Snowman y Team Alto por crear el juego original.
