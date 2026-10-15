@@ -1,9 +1,9 @@
 {
   "version": 4,
-  "name": "threesandroid.zip",
+  "name": "threes.zip",
   "items": [
     "Threes!.sh",
-    "threesandroid/"
+    "threes/"
   ],
   "items_opt": [],
   "attr": {
@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Slide and combine numbered cards. Original Android game adapted for RG35XX-H/KNULLI, with controller support, TATE and local saves.",
-    "inst": "Copy threes-free-3-1-24576.xapk into ports/threesandroid and launch Threes!. Setup is automatic. Requires Free 3.1 (24576), including the ARM64 split.",
+    "inst": "Copy threes-free-3-1-24576.xapk into ports/threes and launch Threes!. Setup is automatic. Requires Free 3.1 (24576), including the ARM64 split.",
     "genres": [
       "puzzle"
     ],

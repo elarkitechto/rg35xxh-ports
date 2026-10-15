@@ -25,7 +25,7 @@ La licencia del código del repositorio no concede derechos sobre el juego, el c
 
 ## Triples
 
-El fork `ports/threes-knulli/` parte de [Triples de Christopher Wellons](https://github.com/skeeto/triples), commit `83e8286d15a1d3631d110dd47df88fd94d28c85a`, bajo Unlicense. Las adaptaciones para RG35XX-H son de elarkitechto. Las fuentes Inter y Jua se conservan con licencias OFL en `ports/threes-knulli/licenses/`. Los gráficos originales de Threes no están incluidos en el historial público; sus autores figuran en `ports/threes-knulli/CREDITS.md`.
+El fork `ports/triples/` parte de [Triples de Christopher Wellons](https://github.com/skeeto/triples), commit `83e8286d15a1d3631d110dd47df88fd94d28c85a`, bajo Unlicense. Las adaptaciones para RG35XX-H son de elarkitechto. Las fuentes Inter y Jua se conservan con licencias OFL en `ports/triples/licenses/`. Los gráficos originales de Threes no están incluidos en el historial público; sus autores figuran en `ports/triples/CREDITS.md`.
 
 ## Threes!
 
@@ -33,5 +33,5 @@ Threes! y sus recursos pertenecen a Sirvo. El usuario aporta el XAPK original;
 no se redistribuyen APKs, bibliotecas Unity/IL2CPP ni recursos extraídos. El
 runtime reutiliza el framework Android ARM64 acreditado anteriormente y las
 adaptaciones de Alto/Crossy. Se conservan Apache-2.0 y los avisos en
-[LICENSE](ports/threes-android/LICENSE) y [NOTICE](ports/threes-android/NOTICE).
+[LICENSE](ports/threes/LICENSE) y [NOTICE](ports/threes/NOTICE).
 Adaptación y empaquetado por elarkitechto; sin afiliación con Sirvo o PortMaster.

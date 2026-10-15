@@ -20,11 +20,11 @@
 **/userdata/
 **/prefs/
 **/assets/
-!ports/threes-knulli/assets/
-ports/threes-knulli/assets/*
-!ports/threes-knulli/assets/fonts/
-ports/threes-knulli/assets/fonts/*
-!ports/threes-knulli/assets/fonts/Inter-Bold.ttf
-!ports/threes-knulli/assets/fonts/Jua-Regular.ttf
+!ports/triples/assets/
+ports/triples/assets/*
+!ports/triples/assets/fonts/
+ports/triples/assets/fonts/*
+!ports/triples/assets/fonts/Inter-Bold.ttf
+!ports/triples/assets/fonts/Jua-Regular.ttf
 __pycache__/
 .DS_Store

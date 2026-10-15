@@ -1,6 +1,6 @@
 #!/bin/bash
-# PORTMASTER: threesandroid.zip, Threes!.sh
-PORTDIR="$(CDPATH= cd -- "$(dirname -- "$0")/threesandroid" && pwd)" || exit 1
+# PORTMASTER: threes.zip, Threes!.sh
+PORTDIR="$(CDPATH= cd -- "$(dirname -- "$0")/threes" && pwd)" || exit 1
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 if [ -n "${THREES_PORTMASTER_DIR:-}" ]; then
   controlfolder="$THREES_PORTMASTER_DIR"
@@ -34,7 +34,7 @@ SAVE="${THREES_SAVE_DIR:-/userdata/system/threes-android/saves}"
 mkdir -p "$DATA" "$RUNTIME" "$SAVE" || exit 1
 if ! sh "$PORTDIR/install-data" "$PORTDIR" > "$PORTDIR/install.log" 2>&1; then
   cat "$PORTDIR/install.log" >&2
-  error_message 'Setup failed. See threesandroid/install.log; provide your Threes! 3.1 ARM64 XAPK and launch again.'
+  error_message 'Setup failed. See threes/install.log; provide your Threes! 3.1 ARM64 XAPK and launch again.'
   exit 1
 fi
 [ -z "${sdl_controllerconfig:-}" ] || export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
@@ -66,5 +66,5 @@ trap 'exit 143' TERM
 wait "$child_pid"
 status=$?
 child_pid=
-if [ "$status" -ne 0 ]; then error_message "Game stopped (exit $status). Check threesandroid/log.txt."; fi
+if [ "$status" -ne 0 ]; then error_message "Game stopped (exit $status). Check threes/log.txt."; fi
 exit "$status"

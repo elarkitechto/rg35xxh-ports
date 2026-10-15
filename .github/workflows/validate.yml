@@ -17,9 +17,9 @@ jobs:
       - run: python3 ports/altosadventure/tests/test_launcher.py
       - run: sh -n ports/crossyroad/source/build_all.sh
       - run: python3 ports/crossyroad/tests/test_launcher.py
-      - run: bash -n 'ports/threes-android/portmaster/Threes!.sh'
-      - run: sh -n ports/threes-android/source/build.sh ports/threes-android/portmaster/threesandroid/install-data tools/build-threes-local.sh
-      - run: python3 -m json.tool ports/threes-android/portmaster/port.json >/dev/null
-      - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/threes-android/portmaster/gameinfo.xml')"
-      - run: python3 ports/threes-android/tests/test_install.py
-      - run: python3 ports/threes-android/tests/test_launcher.py
+      - run: bash -n 'ports/threes/portmaster/Threes!.sh'
+      - run: sh -n ports/threes/source/build.sh ports/threes/portmaster/threes/install-data tools/build-threes-local.sh
+      - run: python3 -m json.tool ports/threes/portmaster/port.json >/dev/null
+      - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/threes/portmaster/gameinfo.xml')"
+      - run: python3 ports/threes/tests/test_install.py
+      - run: python3 ports/threes/tests/test_launcher.py
