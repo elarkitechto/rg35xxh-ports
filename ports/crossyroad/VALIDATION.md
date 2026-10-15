@@ -23,7 +23,7 @@ The diagnostic performed a synchronous encrypted save at exit and returned0; the
 
 On RG35XX-H / KNULLI Scarab, using the installed PortMaster2026.06.23-0015 control.txt and funcs.txt:
 
-- A fresh isolated package install extracted and verified the exact APK and game libraries through the top-level launcher; no manual install.sh invocation was required for first launch.
+- A fresh isolated package install extracted and verified the exact APK and game libraries through the top-level launcher; no manual install-data invocation was required for first launch.
 - The900-frame initial launch rendered, exercised pause/resume with the icon hidden, saved and returned0. Nonzero Pulse PCM with no logged underruns confirms generated audio; no new listening or physical haptic test is claimed.
 - Repeated installer execution preserved a sentinel in existing prefs. Missing and incorrect APKs were rejected in a separate empty destination.
 - Integration testing exposed preload inheritance into PortMaster cleanup helpers. The preload is now scoped to the game process only. Fixture coverage checks that helper/cleanup do not receive it.

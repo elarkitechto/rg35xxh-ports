@@ -4,7 +4,7 @@ Thanks to Hipster Whale for creating Crossy Road and to the upstream Android nat
 
 ## Install — one handheld entry point
 
-Extract the ZIP into Ports, copy your original `crossy-road-4-5-0.apk` into `crossyroad/`, and open **Crossy Road**. The launcher loads PortMaster configuration, verifies/extracts the APK and starts the game automatically. Do not execute install.sh manually. No second launcher or compiler is needed on the handheld. No APK/assets/GPU driver is included or downloaded.
+Extract the ZIP into Ports, copy your original `crossy-road-4-5-0.apk` into `crossyroad/`, and open **Crossy Road**. The launcher loads PortMaster configuration, verifies/extracts the APK and starts the game automatically. Do not execute install-data manually. No second launcher or compiler is needed on the handheld. No APK/assets/GPU driver is included or downloaded.
 
 Required Android ARM64 APK 4.5.0 SHA-256: `1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb`. Other APK versions do not work with these guarded addresses.
 

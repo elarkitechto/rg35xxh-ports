@@ -6,10 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash tools/check-public-tree.sh
-      - run: sh -n ports/crossyroad/portmaster/'Crossy Road.sh' ports/crossyroad/portmaster/crossyroad/install.sh ports/crossyroad/source/build_native.sh tools/build-crossyroad-local.sh
+      - run: sh -n ports/crossyroad/portmaster/'Crossy Road.sh' ports/crossyroad/portmaster/crossyroad/install-data ports/crossyroad/source/build_native.sh tools/build-crossyroad-local.sh
       - run: python3 -m json.tool ports/crossyroad/portmaster/port.json >/dev/null
       - run: python3 -m py_compile ports/crossyroad/source/patch_loader_sdl.py
-      - run: sh -n tools/build-alto-local.sh && sh -n ports/altosadventure/source/build.sh && sh -n ports/altosadventure/portmaster/altosadventure/install.sh
+      - run: sh -n tools/build-alto-local.sh && sh -n ports/altosadventure/source/build.sh && sh -n ports/altosadventure/portmaster/altosadventure/install-data
       - run: bash -n "ports/altosadventure/portmaster/Alto's Adventure.sh"
       - run: python3 -m json.tool ports/altosadventure/portmaster/port.json >/dev/null
       - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/altosadventure/portmaster/gameinfo.xml')"
@@ -17,3 +17,9 @@ jobs:
       - run: python3 ports/altosadventure/tests/test_launcher.py
       - run: sh -n ports/crossyroad/source/build_all.sh
       - run: python3 ports/crossyroad/tests/test_launcher.py
+      - run: bash -n 'ports/threes-android/portmaster/Threes!.sh'
+      - run: sh -n ports/threes-android/source/build.sh ports/threes-android/portmaster/threesandroid/install-data tools/build-threes-local.sh
+      - run: python3 -m json.tool ports/threes-android/portmaster/port.json >/dev/null
+      - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/threes-android/portmaster/gameinfo.xml')"
+      - run: python3 ports/threes-android/tests/test_install.py
+      - run: python3 ports/threes-android/tests/test_launcher.py

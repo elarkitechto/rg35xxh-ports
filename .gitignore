@@ -1,5 +1,7 @@
 /.local/
 *.apk
+*.xapk
+*.ppm
 *.zip
 *.7z
 *.tar

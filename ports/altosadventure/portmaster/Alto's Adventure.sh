@@ -58,7 +58,7 @@ fi
 export ALTO_APK_PATH="$PORTDIR/altos-adventure-1-8-8.apk"
 mkdir -p "$ALTO_RUNTIME_DIR" || exit 1
 export LD_LIBRARY_PATH="$ALTO_RUNTIME_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-if ! sh "$PORTDIR/install.sh" "$PORTDIR" > "$PORTDIR/install.log" 2>&1; then
+if ! sh "$PORTDIR/install-data" "$PORTDIR" > "$PORTDIR/install.log" 2>&1; then
  cat "$PORTDIR/install.log" >&2
  error_message "Setup failed. Check altosadventure/install.log; supply the exact Alto 1.8.8 APK and launch again."
  exit 1

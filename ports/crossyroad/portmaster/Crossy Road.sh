@@ -58,7 +58,7 @@ fi
 export CROSSY_APK_PATH="$PORTDIR/crossy-road-4-5-0.apk"
 mkdir -p "$CROSSY_RUNTIME_DIR" || exit 1
 export LD_LIBRARY_PATH="$CROSSY_RUNTIME_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-if ! sh "$PORTDIR/install.sh" "$PORTDIR" > "$PORTDIR/install.log" 2>&1; then
+if ! sh "$PORTDIR/install-data" "$PORTDIR" > "$PORTDIR/install.log" 2>&1; then
  cat "$PORTDIR/install.log" >&2
  error_message "Setup failed. Check crossyroad/install.log; supply the exact Crossy Road 4.5.0 APK and launch again."
  exit 1

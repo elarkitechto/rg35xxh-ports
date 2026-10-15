@@ -2,12 +2,12 @@
 set -eu
 root=$(git rev-parse --show-toplevel)
 sh "$root/tools/check-public-tree.sh"
-sh -n "$root/ports/crossyroad/portmaster/Crossy Road.sh" "$root/ports/crossyroad/portmaster/crossyroad/install.sh" "$root/ports/crossyroad/source/build_native.sh" "$root/tools/build-crossyroad-local.sh"
+sh -n "$root/ports/crossyroad/portmaster/Crossy Road.sh" "$root/ports/crossyroad/portmaster/crossyroad/install-data" "$root/ports/crossyroad/source/build_native.sh" "$root/tools/build-crossyroad-local.sh"
 python3 -m json.tool "$root/ports/crossyroad/portmaster/port.json" >/dev/null
 
 sh -n "$root/tools/build-alto-local.sh"
 sh -n "$root/ports/altosadventure/source/build.sh"
-sh -n "$root/ports/altosadventure/portmaster/altosadventure/install.sh"
+sh -n "$root/ports/altosadventure/portmaster/altosadventure/install-data"
 bash -n "$root/ports/altosadventure/portmaster/Alto's Adventure.sh"
 python3 -m json.tool "$root/ports/altosadventure/portmaster/port.json" >/dev/null
 python3 -c "import xml.etree.ElementTree as E; E.parse('$root/ports/altosadventure/portmaster/gameinfo.xml')"
@@ -18,3 +18,8 @@ python3 "$root/ports/altosadventure/tests/test_launcher.py"
 
 sh -n "$root/ports/crossyroad/source/build_all.sh"
 python3 "$root/ports/crossyroad/tests/test_launcher.py"
+
+bash -n "$root/ports/threes-android/portmaster/Threes!.sh"
+sh -n "$root/ports/threes-android/portmaster/threesandroid/install-data" "$root/ports/threes-android/source/build.sh" "$root/tools/build-threes-local.sh"
+python3 -m json.tool "$root/ports/threes-android/portmaster/port.json" >/dev/null
+python3 -m unittest discover -s "$root/ports/threes-android/tests"
