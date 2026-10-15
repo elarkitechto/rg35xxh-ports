@@ -1,3 +1,7 @@
+# Current candidate status
+
+Crossy Road0.2.0-rc1 now has a complete source-built bootstrap in runtime/main_crossy.c and build_all.sh. The historical pinned-loader limitations below describe the preceding stable research release. The candidate replaces fixed JNI executable addresses with exported discovery APIs and makes storage configurable. See ../README.md and ../VALIDATION.md for current build steps and evidence. The following historical field notes remain useful for game-specific input/save/audio decisions.
+
 # Reusing the Crossy Road work for other Android Unity games
 
 This is a field guide from the working Crossy Road 4.5.0 port on KNULLI RG35XX-H. It is a starting point for investigation, **not** a universal loader. The working code contains Crossy Road and Unity-version-specific addresses, JNI responses, UI methods, and save hooks. Do not run its preload against another game unchanged.

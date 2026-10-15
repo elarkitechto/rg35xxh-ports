@@ -8,5 +8,6 @@
     <publisher>Hipster Whale</publisher>
     <genre>Arcade</genre>
     <image>./crossyroad/cover.png</image>
+    <thumbnail>./crossyroad/cover.png</thumbnail>
   </game>
 </gameList>
