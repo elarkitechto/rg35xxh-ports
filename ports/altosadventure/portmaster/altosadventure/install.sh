@@ -2,9 +2,8 @@
 # Called automatically by the only top-level game launcher; never run manually.
 set -eu
 PORTDIR=$1
-SYSTEM_ROOT=${ALTO_SYSTEM_ROOT:-/userdata/system}
-LAB="$SYSTEM_ROOT/alto-lab"
-DATA="$SYSTEM_ROOT/alto"
+LAB=${ALTO_RUNTIME_DIR:-$PORTDIR/runtime}
+DATA=${ALTO_DATA_DIR:-$PORTDIR/gamedata}
 APK="$PORTDIR/altos-adventure-1-8-8.apk"
 EXPECTED=efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0
 fail() { echo "Alto's Adventure: $*" >&2; exit 1; }
@@ -18,7 +17,7 @@ if [ "$(cat "$DATA/.alto-apk.sha256" 2>/dev/null || true)" != "$EXPECTED" ] ||
    ! (cd "$LAB" && sha256sum -c "$PORTDIR/alto-libraries.sha256" >/dev/null 2>&1); then
  [ -f "$APK" ] || fail "copy altos-adventure-1-8-8.apk into $PORTDIR and launch again"
  [ "$(sha256sum "$APK" | cut -d ' ' -f 1)" = "$EXPECTED" ] || fail 'wrong APK; Alto 1.8.8 with the documented SHA-256 is required'
- STAGE=$(mktemp -d "$SYSTEM_ROOT/.alto-install.XXXXXX")
+ STAGE=$(mktemp -d "$PORTDIR/.alto-install.XXXXXX")
  trap 'rm -rf "$STAGE"' 0 HUP INT TERM
  unzip -oq "$APK" 'assets/*' 'lib/arm64-v8a/libil2cpp.so' 'lib/arm64-v8a/libunity.so' -d "$STAGE"
  [ -s "$STAGE/assets/bin/Data/data.unity3d" ] || fail 'Unity assets missing'

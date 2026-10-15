@@ -297,7 +297,8 @@ EGLBoolean egl_shim_SwapBuffers(EGLDisplay dpy, EGLSurface surface) {
       unsigned char *pixels=malloc((size_t)g_win_w*g_win_h*4);
       if(pixels){
         glReadPixels(0,0,g_win_w,g_win_h,GL_RGBA,GL_UNSIGNED_BYTE,pixels);
-        char name[100];snprintf(name,sizeof(name),"/userdata/system/alto-lab/frame-%d.ppm",g_swapcall);
+        const char *capture_dir=getenv("ALTO_RUNTIME_DIR");if(!capture_dir)capture_dir="/userdata/system/alto-lab";
+        char name[1200];snprintf(name,sizeof(name),"%s/frame-%d.ppm",capture_dir,g_swapcall);
         FILE *f=fopen(name,"wb");if(f){fprintf(f,"P6\n%d %d\n255\n",g_win_w,g_win_h);
           for(int y=g_win_h-1;y>=0;y--)for(int x=0;x<g_win_w;x++)fwrite(pixels+((size_t)y*g_win_w+x)*4,1,3,f);
           fclose(f);}free(pixels);

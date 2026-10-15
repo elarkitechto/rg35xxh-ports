@@ -84,11 +84,21 @@ static const char *resolve_jstring(void *jstr) {
   return "";
 }
 
-/* Crossy Road Android SharedPreferences stored in persistent userdata. */
+/* Launcher supplies a portable data root; default preserves lab compatibility. */
+static const char *alto_data_root(void) {
+  const char *dir=getenv("ALTO_DATA_DIR");
+  return dir && *dir ? dir : "/userdata/system/alto";
+}
+static void *alto_data_string(const char *suffix) {
+  char path[1200];snprintf(path,sizeof(path),"%s/%s",alto_data_root(),suffix);
+  return make_jstring(path);
+}
+/* Android SharedPreferences stored independently of extracted game assets. */
 static void pref_path(const char *key, char *out, size_t cap) {
   static const char hex[]="0123456789abcdef";
   const unsigned char *p=(const unsigned char *)(key?key:"");
-  const char *dir=getenv("ALTO_PREFS_DIR");if(!dir || !*dir)dir="/userdata/system/alto/prefs";
+  char default_dir[1200];snprintf(default_dir,sizeof(default_dir),"%s/prefs",alto_data_root());
+  const char *dir=getenv("ALTO_PREFS_DIR");if(!dir || !*dir)dir=default_dir;
   mkdir(dir, 0755);
   snprintf(out, cap, "%s/", dir);
   size_t n=strlen(out);
@@ -140,7 +150,7 @@ static const char *mid_name(void *tag) {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#define ASSET_BASE "/userdata/system/alto/assets/"
+
 
 static int g_assetmgr;   /* tag do objeto AssetManager */
 static int g_empty_list; /* tag de uma java.util.List vazia */
@@ -172,7 +182,7 @@ static struct astream g_astreams[MAX_ASTREAMS];
 static int g_astream_n = 0;
 static void *asset_open(const char *path) {
   char full[1200];
-  snprintf(full, sizeof(full), ASSET_BASE "%s", path ? path : "");
+  snprintf(full, sizeof(full), "%s/assets/%s", alto_data_root(), path ? path : "");
   FILE *fp = fopen(full, "rb");
   debugPrintf("asset: open(%s) -> %s\n", path ? path : "?",
               fp ? "OK" : "FALHOU (sem arquivo)");
@@ -402,8 +412,10 @@ static void *jni_CallObjectMethodV(void *env, void *obj, void *methodID,
       const char *key=resolve_jstring(va_arg(ap,void*));
       return make_jstring(key && strstr(key,"frames")?"192":"48000");
     }
-    if (strcmp(nm, "getPackageCodePath") == 0)
-      return make_jstring("/userdata/system/alto/game.apk");
+    if (strcmp(nm, "getPackageCodePath") == 0) {
+      const char *apk=getenv("ALTO_APK_PATH");
+      return apk && *apk ? make_jstring(apk) : alto_data_string("game.apk");
+    }
     if (strcmp(nm, "getPackageName") == 0)
       return make_jstring("com.noodlecake.altosadventure");
     /* AssetManager bridge */
@@ -432,7 +444,7 @@ static void *jni_CallObjectMethodV(void *env, void *obj, void *methodID,
         strcmp(nm, "getDataDir") == 0 || strcmp(nm, "getExternalStorageDirectory") == 0 ||
         strcmp(nm, "getPath") == 0 || strcmp(nm, "getAbsolutePath") == 0 ||
         strcmp(nm, "getCanonicalPath") == 0)
-      return make_jstring("/userdata/system/alto/userdata");
+      return alto_data_string("userdata");
     /* SharedPreferences.getString(key, default) -> loga a chave + retorna default */
     if (strcmp(nm, "getString") == 0) {
       void *keystr = va_arg(ap, void *);

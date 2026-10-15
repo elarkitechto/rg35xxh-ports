@@ -14,3 +14,4 @@ jobs:
       - run: python3 -m json.tool ports/altosadventure/portmaster/port.json >/dev/null
       - run: python3 -c "import xml.etree.ElementTree as E; E.parse('ports/altosadventure/portmaster/gameinfo.xml')"
       - run: python3 -m py_compile tools/validate-port-media.py
+      - run: python3 ports/altosadventure/tests/test_launcher.py

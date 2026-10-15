@@ -22,3 +22,7 @@ Left/right adjusts the selected Settings slider. Progress is saved locally. Onli
 ## Notes
 
 Tested on RG35XX-H with KNULLI at 640×480. Thanks to the authors of the Android compatibility framework credited in `NOTICE`. Port adaptation and packaging by [elarkitechto](https://github.com/elarkitechto). Alto's Adventure belongs to Snowman; this is an unofficial port.
+
+Thanks to Team Alto / Snowman for creating the game and Noodlecake for its Android release. Framework authors are credited in licenses/NOTICE.txt.
+
+Fresh installs store data in `altosadventure/gamedata/` and runtime in `altosadventure/runtime/`. Existing KNULLI saves under `/userdata/system/alto` are reused automatically. The launcher uses PortMaster control.txt, get_controls, CFW mods and cleanup. See the included TESTING.md for the compatibility matrix, dependency limits and test checklist. Logs are inside `altosadventure/`. Only RG35XX-H/KNULLI is verified; this candidate is not an official catalogue release.

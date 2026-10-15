@@ -21,3 +21,7 @@ The output is `.local/releases/altosadventure.zip`. Extract it into the handheld
 This build has been tested on RG35XX-H / KNULLI for gameplay, menu navigation, audio output and local save/reload. Extended play and physical vibration need further testing. The original game and its assets belong to Snowman. The framework's upstream copyright and license notices are in `NOTICE` and `LICENSE`; port adaptation by [elarkitechto](https://github.com/elarkitechto).
 
 Controller routing and supported modal types are documented in [INPUT.md](INPUT.md), including the single-button Thanks dialog regression test.
+
+## PortMaster testing candidate
+
+[0.2.0-rc1 testing guide](TESTING.md) records the compatibility matrix and one-launch setup. [Discord draft](DISCORD-TESTING-DRAFT.md) is prepared but not posted. PortMaster integration is enabled; proprietary Mali backend dependencies and other CFWs remain to be validated.
