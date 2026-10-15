@@ -21,7 +21,7 @@ void *dlsym(void *handle, const char *name) {
   if (!real_dlsym)
     real_dlsym = dlvsym(RTLD_NEXT, "dlsym", "GLIBC_2.17");
   void *result = real_dlsym ? real_dlsym(handle, name) : NULL;
-  if (name && (strncmp(name, "SL_IID_", 7) == 0 ||
+  if ((strncmp(name, "SL_IID_", 7) == 0 ||
                strcmp(name, "slCreateEngine") == 0))
     fprintf(stderr, "[CROSSY-AUDIO] dlsym(%s) -> %p\n", name, result);
   return result;
@@ -38,8 +38,12 @@ void *dlopen(const char *name, int flags) {
 }
 
 /* Addresses apply only to the pinned hollow-recon-no diagnostic executable. */
-#define ENV_TABLE ((uintptr_t *)0x49f6d0)
-#define ORIGINAL_FINDCLASS ((void *(*)(void *, const char *))0x409364)
+static uintptr_t *crossy_env_table=(uintptr_t *)0x49f6d0;
+static void *(*crossy_original_findclass)(void *,const char *)=(void *)0x409364;
+#define ENV_TABLE crossy_env_table
+#define ORIGINAL_FINDCLASS crossy_original_findclass
+static volatile int bridge_is_ready;
+int crossy_bridge_ready(void){return __atomic_load_n(&bridge_is_ready,__ATOMIC_ACQUIRE);}
 static int fake_activity;
 static void *(*original_static_object_field)(void *, void *, void *);
 static void *(*original_static_field_id)(void *, void *, const char *, const char *);
@@ -101,7 +105,9 @@ static float (*original_float_method_v)(void *, void *, void *, va_list);
 static void crossy_pref_path(const char *key, char *out, size_t cap) {
   static const char hex[] = "0123456789abcdef";
   const unsigned char *p = (const unsigned char *)(key ? key : "");
-  const char *dir = "/userdata/system/cr/prefs";
+  char base[1200];const char *root=getenv("CROSSY_DATA_DIR");
+  snprintf(base,sizeof(base),"%s/prefs",root&&*root?root:"/userdata/system/cr");
+  const char *dir=getenv("CROSSY_PREFS_DIR");if(!dir||!*dir)dir=base;
   mkdir(dir, 0755);
   size_t n = (size_t)snprintf(out, cap, "%s/", dir);
   while (*p && n + 3 < cap) { out[n++] = hex[*p >> 4]; out[n++] = hex[*p & 15]; ++p; }
@@ -143,6 +149,12 @@ static unsigned crossy_key_queries;
 static int crossy_auto_press_done;
 static struct timespec crossy_first_key_query;
 static void *crossy_global_controller;
+int crossy_bridge_save(void){
+ if(!crossy_global_controller)return 0;
+ void *controller=*(void**)((char*)crossy_global_controller+0x20);if(!controller)return 0;
+ ((void(*)(void*,void*))(0x500000000UL+0x9aab30UL))(controller,NULL);
+ fprintf(stderr,"[CROSSY-SAVE] frame-limit profile saved\n");return 1;
+}
 static volatile int crossy_sdl_pause_requested;
 static volatile int crossy_sdl_back_requested;
 static int crossy_sdl_start_down, crossy_sdl_guide_down;
@@ -493,6 +505,27 @@ static void crossy_hide_touch_hints(void *game) {
 static void crossy_game_update(void *self, void *method) {
   crossy_original_game_update(self, method);
   if (getenv("CROSSY_HAPTIC_ENVIRONMENT")) crossy_haptic_tick();
+  if(getenv("CROSSY_TEST_PAUSE_HUD")){
+    static int phase;static struct timespec start;
+    struct timespec now;clock_gettime(CLOCK_MONOTONIC,&now);if(!start.tv_sec)start=now;
+    long elapsed=now.tv_sec-start.tv_sec;
+    if(phase==0 && elapsed>=2){
+      ((void(*)(void*,int,int,int,void*))(0x500000000UL+0x150cd84UL))(self,1,0,2,NULL);phase++;
+    }else if(phase==1 && elapsed>=4){__atomic_store_n(&crossy_sdl_pause_requested,1,__ATOMIC_RELAXED);phase++;}
+    else if(phase==2 && elapsed>=5){
+      void *p=*(void**)((char*)self+0x30);int paused=p?((int(*)(void*,void*))(0x500000000UL+0x8d1d58UL))(p,NULL):0;
+      fprintf(stderr,"[CROSSY-HUD-TEST] paused=%d %s\n",paused,paused?"PASS":"FAIL");phase++;
+    }else if(phase==3 && elapsed>=7){__atomic_store_n(&crossy_sdl_pause_requested,1,__ATOMIC_RELAXED);phase++;}
+    else if(phase==4){
+      void *p=*(void**)((char*)self+0x30);int paused=p?((int(*)(void*,void*))(0x500000000UL+0x8d1d58UL))(p,NULL):1;
+      void *button=*(void**)((char*)self+0x38);void *go=button?((void*(*)(void*,void*))(0x500000000UL+0x102ee78UL))(button,NULL):NULL;
+      int visible=go?((int(*)(void*,void*))(0x500000000UL+0x1036b64UL))(go,NULL):1;
+      if((!paused&&!visible) || elapsed>=15){
+        fprintf(stderr,"[CROSSY-HUD-TEST] resumed=%d icon-active=%d active=%d started=%d %s\n",!paused,visible,*(unsigned char*)((char*)self+0x210),*(unsigned char*)((char*)self+0x211),!paused&&!visible?"PASS":"FAIL");phase++;
+      }
+    }
+  }
+
   if (getenv("CROSSY_NATIVE_INPUT")) {
     static unsigned native_frames;
     static int native_init_attempted;
@@ -1024,6 +1057,14 @@ static void crossy_install_game_update_hook(void) {
       fprintf(stderr, "[CROSSY-MENU] controller UI detection enabled\n");
     } else fprintf(stderr, "[CROSSY-MENU] controller detection opcode unexpected %08x\n", *controller_check);
   }
+  /* GameController.Update sets the touch pause icon active every frame.
+   * Keep Start's ButtonPause/PauseController route; hide only the HUD icon. */
+  uint32_t *pause_arg=(uint32_t *)(0x500000000UL+0x150cf80UL);
+  if(*pause_arg==0x12000101U){
+    *pause_arg=0x2a1f03e1U; /* mov w1,wzr instead of and w1,w8,#1 */
+    __builtin___clear_cache((char *)pause_arg,(char *)pause_arg+4);
+    fprintf(stderr,"[CROSSY-UI] touch pause icon hidden; Start retains pause\n");
+  }else {fprintf(stderr,"[CROSSY-UI] unexpected pause HUD opcode %08x\n",*pause_arg);_exit(26);}
   /* FirstTimeTutorial.Update re-enables the touch hand every frame. Direct
    * controller input bypasses that tutorial, so stop its visual update. */
   uint32_t *tutorial = (uint32_t *)(0x500000000UL + 0x9752acUL);
@@ -1440,7 +1481,8 @@ static void *crossy_object_method_v(void *env, void *obj, void *mid, va_list ap)
   if (mid && mid == package_code_path_mid) {
     static const char msg[] = "[CROSSY-JNI] supplying APK path\n";
     write(2, msg, sizeof(msg) - 1);
-    return original_new_string_utf(env, "/userdata/system/cr/game.apk");
+    const char *apk=getenv("CROSSY_APK_PATH");
+    return original_new_string_utf(env,apk&&*apk?apk:"/userdata/system/cr/game.apk");
   }
   return original_object_method_v(env, obj, mid, ap);
 }
@@ -1632,7 +1674,8 @@ static void *crossy_object_class(void *env, void *obj) {
 static unsigned char crossy_is_instance_of(void *env, void *obj, void *clazz) {
   unsigned char result = original_is_instance_of(env, obj, clazz);
   if (!result && getenv("CROSSY_FIX_INPUT_EVENT")) {
-    void *(*keyevent_object)(void) = (void *)0x40a074UL;
+    void *(*keyevent_object)(void)=dlsym(RTLD_DEFAULT,"hk_keyevent_object");
+    if(!keyevent_object)keyevent_object=(void *)0x40a074UL;
     if (obj == keyevent_object() &&
         clazz == ORIGINAL_FINDCLASS(env, "android/view/InputEvent")) {
       result = 1;
@@ -1698,6 +1741,9 @@ static void *monitor_egl_got(void *ignored) {
 
 static void *install_override(void *ignored) {
   (void)ignored;
+  uintptr_t *(*table_api)(void)=dlsym(RTLD_DEFAULT,"crossy_loader_env_table");
+  void *(*class_api)(void)=dlsym(RTLD_DEFAULT,"crossy_loader_find_class");
+  if(table_api && class_api){crossy_env_table=table_api();crossy_original_findclass=class_api();fprintf(stderr,"[CROSSY-LOADER] source-built loader API detected\n");}
   for (int attempt = 0; attempt < 15000; ++attempt) {
     if (ENV_TABLE[6] == (uintptr_t)ORIGINAL_FINDCLASS) {
       original_static_object_field = (void *)ENV_TABLE[145];
@@ -1895,6 +1941,7 @@ static void *install_override(void *ignored) {
           fprintf(stderr, "[CROSSY-INIT] unexpected instructions %08x %08x\n", *init_wait, *init_branch);
         }
       }
+      __atomic_store_n(&bridge_is_ready,1,__ATOMIC_RELEASE);
       return NULL;
     }
     usleep(1000);

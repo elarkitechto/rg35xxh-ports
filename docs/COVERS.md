@@ -27,3 +27,10 @@ El empaquetador de Alto ejecuta `tools/validate-port-media.py`: rechaza portada 
 Portada seleccionada: [LaunchBox, Fanart – Box – Front para Android](https://gamesdb.launchbox-app.com/games/images/101151-altos-adventure). Archivo original [PNG](https://images.launchbox-app.com/3583a3ee-f75a-4eeb-8563-09b0695d8b7f.png), 654×1024, conservado sin deformación. La captura real de la consola permanece a 640×480. El arte no se incluye en el historial público de Git.
 
 SHA-256 de la portada de Alto: `68c67d8974fadc30b8642c1cae8a48b3296d46cd6e9d3154092fc20f4aaf4b45`.
+
+
+## Crossy Road
+
+El candidato reutiliza la portada vertical ya instalada y aprobada en esta colección:1080×1683, sin deformación; se inspeccionó visualmente. La procedencia original debe confirmarse antes de redistribuir el arte a terceros. Se conserva una captura de gameplay640×480 separada. Portada/thumbnail del paquete: `./crossyroad/cover.png`. El empaquetador también valida ambas imágenes.
+
+SHA-256 de la portada: `227c1360c3893d164fc979f50aa0996368872c782cad3534475b1a5c01f61ed7`. Arte privado excluido del historial público de Git.

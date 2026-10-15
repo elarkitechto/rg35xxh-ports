@@ -11,8 +11,8 @@
     "porter": [
       "elarkitechto"
     ],
-    "desc": "Cross roads, rivers and train tracks in the original Android game.",
-    "inst": "Copy the exact Crossy Road 4.5.0 APK (SHA-256 1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb) to ports/crossyroad/crossy-road-4-5-0.apk. Launch Crossy Road; the first run extracts the APK and installs the tested ARM64 loader. KNULLI RG35XX-H only.",
+    "desc": "Testing candidate 0.2.0-rc1: Android Crossy Road 4.5.0, native SDL controller integration, offline local saves and haptics. Verified device scope: RG35XX-H/KNULLI; other CFWs need testing.",
+    "inst": "Copy your exact crossy-road-4-5-0.apk to ports/crossyroad and launch Crossy Road. The launcher automatically verifies and prepares the APK, then starts the game; no second script or handheld compiler is required. SHA-256: 1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb.",
     "genres": [
       "arcade"
     ],
@@ -25,7 +25,7 @@
       "video": null
     },
     "rtr": false,
-    "exp": false,
+    "exp": true,
     "runtime": [],
     "reqs": [],
     "arch": [
