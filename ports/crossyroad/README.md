@@ -5,7 +5,7 @@ saves. Requires PortMaster and your **Crossy Road 4.5.0 ARM64** game file.
 
 ## Install
 
-1. Extract the port ZIP into **Ports**.
+1. Download [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) and extract it into **Ports**.
 2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.
 3. Launch **Crossy Road** from Ports. First-run setup is automatic.
 
@@ -36,6 +36,6 @@ Check the game-file name and version, then read `crossyroad/install.log` or
 
 </details>
 
-[Build from source](BUILD.md) · [Technical validation](VALIDATION.md) · [Credits](../../ATTRIBUTION.md)
+[Credits and licenses](../../ATTRIBUTION.md)
 
 Thanks to Hipster Whale for creating the original game.
