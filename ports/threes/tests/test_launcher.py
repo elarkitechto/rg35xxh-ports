@@ -18,15 +18,18 @@ class LauncherTests(unittest.TestCase):
             control = root / 'PortMaster'
             control.mkdir()
             (control / 'control.txt').write_text('''
-CFW_NAME=TEST
+CFW_NAME=knulli
 DEVICE_ARCH=aarch64
 get_controls() { sdl_controllerconfig='verified-mapping'; }
+pm_platform_helper() { :; }
 pm_finish() { echo finished >> "$RESULT"; }
 ''')
             (port / 'install-data').write_text('''#!/bin/sh
 mkdir -p "$1/runtime"
 cat > "$1/runtime/threes-loader" <<'LOADER'
 #!/bin/sh
+[ "$HK_PTHREAD_SHIM:$HK_NOSPOOF:$THREES_SDLPAD:$THREES_GLES3" = "1:1:1:1" ] || exit 94
+[ "$SDL_VIDEODRIVER:$THREES_PULSE_DIRECT" = "mali:1" ] || exit 95
 [ -z "${THREES_TEST_INPUT:-}" ] || exit 90
 [ -z "${THREES_TEST_CONTROLS:-}" ] || exit 91
 [ -z "${THREES_TEST_ROTATE:-}" ] || exit 92

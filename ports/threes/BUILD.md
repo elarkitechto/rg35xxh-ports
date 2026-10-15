@@ -16,14 +16,18 @@ ZIG_BIN=/path/to/zig sh tools/build-threes-local.sh
 ```
 
 This builds the loader and OpenSL bridge and creates
-`.local/releases/threes-0.1.0-rc1.zip`, its checksum and `threes.zip`.
+`.local/releases/threes-0.2.0-rc2.zip`, its checksum and `threes.zip`.
 The package includes the main launcher, automatic data preparer, compiled
-runtime, metadata, media and notices. It does not include the XAPK, extracted
+runtime, metadata, media and notices. It does not include the APK, extracted
 game data, Unity/IL2CPP libraries or firmware libraries.
 
-The supported Free 3.1 XAPK must contain `vo.threes.free.apk` and
-`config.arm64_v8a.apk`. The installer verifies the whole archive and its native
-libraries. The main launcher runs that preparation before starting the game;
-there is no separate handheld build or manual setup command.
+The supported full 3.1.6144 APK includes ARM64 Unity and IL2CPP libraries.
+Name it `threes-3.1.6144.apk` and copy it into the package's `threes/` directory.
+The installer verifies the entire APK and its native libraries. The launcher
+runs data preparation automatically before starting the game.
+
+The package builder selects the paid profile. `THREES_EDITION=free` remains
+available only for rebuilding the historical Free runtime directly through
+`source/build.sh`; it is not compatible with the current package installer.
 
 [Device validation and implementation notes](STATUS.md) · [User guide](README.md)

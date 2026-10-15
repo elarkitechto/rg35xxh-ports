@@ -41,7 +41,7 @@ with ZipFile(a.output, 'w', compression=ZIP_DEFLATED) as z:
         info.external_attr = (0o100755 if executable else 0o100644) << 16
         info.compress_type = ZIP_DEFLATED
         z.writestr(info, source.read_bytes())
-    z.writestr('threes/version.txt', '0.1.0-rc1\n')
+    z.writestr('threes/version.txt', '0.2.0-rc2\n')
     checksums=''.join(hashlib.sha256((a.runtime / name).read_bytes()).hexdigest()+'  '+name+'\n' for name in ['threes-loader','libOpenSLES.so'])
     z.writestr('threes/runtime/runtime.sha256',checksums)
 print(a.output)

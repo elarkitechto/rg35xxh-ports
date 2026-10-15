@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Slide and combine numbered cards. Original Android game adapted for RG35XX-H/KNULLI, with controller support, TATE and local saves.",
-    "inst": "Copy threes-free-3-1-24576.xapk into ports/threes and launch Threes!. Setup is automatic. Requires Free 3.1 (24576), including the ARM64 split.",
+    "inst": "Copy the supported full-edition ARM64 APK as threes-3.1.6144.apk into ports/threes, then launch Threes!. Setup is automatic. Requires full 3.1.6144; Free editions are not compatible.",
     "genres": [
       "puzzle"
     ],

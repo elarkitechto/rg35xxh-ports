@@ -36,6 +36,7 @@ mkdir -p "$CROSSY_RUNTIME_DIR"
 cat > "$CROSSY_RUNTIME_DIR/crossy-loader" <<'LOADER'
 #!/bin/sh
 printf '%s\\n' "$CROSSY_DATA_DIR" "$SDL_GAMECONTROLLERCONFIG" "$CROSSY_RUNTIME_DIR" > "$RESULT"
+[ "$HK_PTHREAD_SHIM:$HK_SDLPAD:$CROSSY_NATIVE_INPUT" = "1:1:1" ] || exit 94
 [ -z "${CROSSY_TEST_PAUSE_HUD:-}" ] || exit 91
 [ -z "${CROSSY_AUTOPRESS_UP:-}" ] || exit 92
 exit "${TEST_EXIT:-0}"
@@ -129,6 +130,52 @@ chmod +x "$CROSSY_RUNTIME_DIR/crossy-loader"
         self.assertIn('requires PortMaster', result.stderr)
         self.assertFalse((self.port / 'runtime').exists())
 
+
+
+    def prepare_real_installer(self):
+        """Exercise the production launcher/preparer contract, including runtime placement."""
+        import hashlib
+        shutil.copyfile(SOURCE.parent / 'crossyroad/install-data', self.port / 'install-data')
+        data = Path(self.env['CROSSY_DATA_DIR'])
+        for relative in ['assets/bin/Data/data.unity3d',
+                         'assets/bin/Data/Managed/Metadata/global-metadata.dat', 'prefs/progress']:
+            path = data / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b'preserved game data')
+        (data / '.crossy-apk.sha256').write_text('1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb\n')
+        runtime = self.port / 'runtime'
+        runtime.mkdir()
+        library_checksums = []
+        for name in ['libunity.so', 'libil2cpp.so']:
+            payload = b'installed library fixture'
+            (runtime / name).write_bytes(payload)
+            library_checksums.append(hashlib.sha256(payload).hexdigest() + '  ' + name + '\n')
+        (self.port / 'crossy-libraries.sha256').write_text(''.join(library_checksums))
+        (runtime / 'crossy-loader').write_text('#!/bin/sh\necho real-installer-started > "$RESULT"\n')
+        (runtime / 'crossy-loader').chmod(0o755)
+        names = ['crossy-loader', 'libOpenSLES.so', 'libcrossy-jni-native.so']
+        for name in names[1:]:
+            (runtime / name).write_bytes(b'loader dependency fixture')
+        (runtime / 'runtime.sha256').write_text(''.join(
+            hashlib.sha256((runtime / name).read_bytes()).hexdigest() + '  ' + name + '\n'
+            for name in names))
+        return data, runtime
+
+    def test_real_preparer_places_runtime_where_launcher_executes(self):
+        data, runtime = self.prepare_real_installer()
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual((self.root / 'result').read_text().strip(), 'real-installer-started')
+        self.assertEqual((runtime / 'crossy-loader').read_text(), '#!/bin/sh\necho real-installer-started > "$RESULT"\n')
+        self.assertEqual((data / 'prefs/progress').read_bytes(), b'preserved game data')
+
+    def test_real_preparer_rejects_incomplete_bundle_before_launch(self):
+        data, runtime = self.prepare_real_installer()
+        (runtime / 'crossy-loader').unlink()
+        result = self.run_launcher()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / 'result').exists())
+        self.assertEqual((data / 'prefs/progress').read_bytes(), b'preserved game data')
 
 if __name__ == '__main__':
     unittest.main()

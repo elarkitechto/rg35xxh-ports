@@ -7,8 +7,8 @@ void threes_apply_unity_profile(uintptr_t base) {
   threes_install_audio(base);
   /* Unity 2022.3.26f1 waits here for a Java Handler readiness message.
      The Linux launcher owns the render loop; retain the mutex unlock path.
-     Valid only for the libunity SHA-256 pinned by the XAPK installer. */
-  uint32_t *ready = (uint32_t *)(base + 0x592a58);
+     Valid only for the libunity SHA-256 pinned by the matching data installer. */
+  uint32_t *ready = (uint32_t *)(base + THREES_UNITY_READY);
   if (*ready != 0xb50000a8) {
     fprintf(stderr, "[THREES-PROFILE] Unity readiness opcode mismatch\n");
     exit(20);
@@ -36,14 +36,14 @@ static void *import_function(const char *name) {
 }
 static void *linux_vsync(void *unused) {
   (void)unused;
-  /* Mirrors Unity's Choreographer callback at 0x592d40: increment sequence,
+  /* Mirrors the pinned Unity Choreographer callback: increment sequence,
      preserve the previous nanoTime, publish the current time, wake waiters.
      CLOCK_MONOTONIC matches Java System.nanoTime's clock source. */
-  volatile int64_t *sequence = (void *)(unity_base + 0xfea7e8);
-  volatile int64_t *current = (void *)(unity_base + 0xfea7f0);
-  volatile int64_t *previous = (void *)(unity_base + 0xfea7f8);
-  void *mutex = (void *)(unity_base + 0xfea790);
-  void *condition = (void *)(unity_base + 0xfea7b8);
+  volatile int64_t *sequence = (void *)(unity_base + THREES_UNITY_CLOCK + 0x58);
+  volatile int64_t *current = (void *)(unity_base + THREES_UNITY_CLOCK + 0x60);
+  volatile int64_t *previous = (void *)(unity_base + THREES_UNITY_CLOCK + 0x68);
+  void *mutex = (void *)(unity_base + THREES_UNITY_CLOCK);
+  void *condition = (void *)(unity_base + THREES_UNITY_CLOCK + 0x28);
   struct timespec deadline;
   clock_gettime(CLOCK_MONOTONIC, &deadline);
   while (atomic_load(&vsync_running)) {
@@ -64,8 +64,8 @@ static void *linux_vsync(void *unused) {
 void threes_start_vsync(uintptr_t base) {
   /* Validate both the callback's stores and wait's counter read before using
      this exact Unity layout; these are independent of game IL2CPP offsets. */
-  if (*(uint32_t *)(base + 0x592d88) != 0xf903f528 ||
-      *(uint32_t *)(base + 0x590158) != 0xf943f6d5) exit(20);
+  if (*(uint32_t *)(base + THREES_UNITY_CALLBACK_STORE) != THREES_UNITY_STORE_OPCODE ||
+      *(uint32_t *)(base + THREES_UNITY_WAIT_READ) != THREES_UNITY_READ_OPCODE) exit(20);
   unity_base = base;
   android_lock = import_function("pthread_mutex_lock");
   android_unlock = import_function("pthread_mutex_unlock");
@@ -105,7 +105,11 @@ static void *linux_locale(void *method) {
   return managed_string_new(locale && *locale ? locale : "en");
 }
 struct game_patch { const char *name; uintptr_t offset; uint32_t expected[4]; int mode; uintptr_t result; };
+#ifdef THREES_PAID_PROFILE
+#include "threes_paid_patches.h"
+#else
 #include "threes_game_patches.h"
+#endif
 void threes_apply_il2cpp_profile(uintptr_t base, void *string_new) {
   if (!string_new) exit(20);
   for (size_t i = 0; i < sizeof(game_patches)/sizeof(*game_patches); ++i) {
@@ -138,7 +142,7 @@ static void threes_install_audio(uintptr_t base) {
   /* Unique 32-byte match of the verified Crossy/Alto FMOD setOutput prologue. */
   const uint32_t expected[]={0xd10143ff,0xa90257f6,0xa9034ff4,0xa9047bfd,
                             0xb9001fe1,0x39408408,0x910103fd,0x340000e8};
-  uint32_t *entry=(void *)(base+0xbb0888);
+  uint32_t *entry=(void *)(base+THREES_UNITY_AUDIO);
   if(memcmp(entry,expected,sizeof(expected)))exit(20);
   unsigned char *trampoline=(void *)(base+0x7010000);
   memcpy(trampoline,entry,16);hook_arm64((uintptr_t)trampoline+16,(uintptr_t)entry+16);

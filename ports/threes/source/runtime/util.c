@@ -11,24 +11,14 @@
 
 #include "util.h"
 
-#define LOG_NAME "debug.log"
-
 int debugPrintf(const char *text, ...) {
   static int enabled=-1;
   if(enabled<0)enabled=getenv("THREES_DEBUG")!=NULL;
   if(!enabled)return 0;
   va_list list;
 
-  FILE *f = fopen(LOG_NAME, "a");
-  if (f) {
-    va_start(list, text);
-    vfprintf(f, text, list);
-    va_end(list);
-    fclose(f);
-  }
-
   va_start(list, text);
-  vprintf(text, list);
+  vfprintf(stderr, text, list);
   va_end(list);
 
   return 0;

@@ -1,15 +1,15 @@
 # Threes!
 
 Android port for **RG35XX-H running KNULLI**, with controller support and local
-saves. Requires PortMaster and your **Threes! Free 3.1 (24576), including the base APK and ARM64 split** game file.
+saves. Requires PortMaster and your **Threes! full 3.1.6144 ARM64** game file.
 
 ## Install
 
 1. Extract the port ZIP into **Ports**.
-2. Copy `threes-free-3-1-24576.xapk` into `ports/threes/`.
+2. Copy `threes-3.1.6144.apk` into `ports/threes/`.
 3. Launch **Threes!** from Ports. First-run setup is automatic.
 
-When updating, replace the package files and keep your saves.
+Keep the APK in that folder. When updating, replace the package files and keep your saves.
 
 ## Controls
 
@@ -29,8 +29,8 @@ preserves the board’s proportions and extends the background to fill the scree
 Score signing uses the default name.
 
 Night mode keeps the original night tiles. Threes! and the Triples demake use
-separate saves. The Free version retains its original play restrictions; videos,
-online services and purchases are unavailable and are not unlocked by this port.
+separate saves. This package uses the full edition; the Free APK/XAPK is not
+compatible with this runtime. Online services are unavailable.
 
 Saves: `/userdata/system/threes-android/saves/`.
 
@@ -42,7 +42,7 @@ Check the game-file name and version, then read `threes/install.log` or
 <details>
 <summary>Supported game file SHA-256</summary>
 
-`99dcba5f8dbcbc4294507c6b30d9f0719ae4127228186e9a471ecdb45a77c880`
+`7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a`
 
 </details>
 

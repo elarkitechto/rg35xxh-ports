@@ -55,7 +55,12 @@ enum {
 static int g_method_tags[16]; /* unique addresses used as method IDs */
 
 /* ---- Configurable package/OBB ---- */
-static const char *g_package_name = "vo.threes.free";
+#ifdef THREES_PAID_PROFILE
+#define THREES_PACKAGE "vo.threes.exclaim"
+#else
+#define THREES_PACKAGE "vo.threes.free"
+#endif
+static const char *g_package_name = THREES_PACKAGE;
 static int g_obb_version = 12;
 
 void jni_shim_set_package(const char *package_name, int obb_version) {
@@ -482,7 +487,7 @@ static void *jni_CallObjectMethodV(void *env, void *obj, void *methodID,
       return apk && *apk ? make_jstring(apk) : threes_data_string("game.apk");
     }
     if (strcmp(nm, "getPackageName") == 0)
-      return make_jstring("vo.threes.free");
+      return make_jstring(THREES_PACKAGE);
     /* AssetManager bridge */
     if (strcmp(nm, "getAssets") == 0) return &g_assetmgr;
     /* listas vazias (queryIntentActivities, etc.) + iterator vazio */

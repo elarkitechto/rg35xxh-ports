@@ -23,3 +23,5 @@ bash -n "$root/ports/threes/portmaster/Threes!.sh"
 sh -n "$root/ports/threes/portmaster/threes/install-data" "$root/ports/threes/source/build.sh" "$root/tools/build-threes-local.sh"
 python3 -m json.tool "$root/ports/threes/portmaster/port.json" >/dev/null
 python3 -m unittest discover -s "$root/ports/threes/tests"
+
+python3 -m unittest discover -s "$root/tools/tests"

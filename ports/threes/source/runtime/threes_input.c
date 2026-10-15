@@ -1,4 +1,5 @@
 #include "threes_input.h"
+#include "threes_profile.h"
 #include "threes_ui.h"
 #include "threes_display.h"
 #include "egl_shim.h"
@@ -81,7 +82,7 @@ void threes_input_init(so_module *il2cpp) {
   API(string_new,"il2cpp_string_new");API(format_exception,"il2cpp_format_exception");
 #undef API
   /* NativeInputSystem.currentTime, pinned to this IL2CPP image. */
-  input_time=(void *)(0x500000000UL+0xf314d0);
+  input_time=(void *)(0x500000000UL+THREES_INPUT_TIME);
   so_use(saved);free(saved);
   threes_ui_init(il2cpp);
   test_controls=getenv("THREES_TEST_CONTROLS")!=NULL;
@@ -99,6 +100,15 @@ static int attach_gamepad(void) {
   if(threes_class){
     state_field=field_get(threes_class,"state");moves_field=field_get(threes_class,"numMoves");
     score_field=field_get(threes_class,"score");nope_field=field_get(threes_class,"didNope");merge_field=field_get(threes_class,"lastHighestMerge");
+  }
+  for(size_t i=0;i<count;i++) {
+    void *logic=class_get(image_get(assemblies[i]),"","FreeLogic");
+    if(logic){
+      void *method=method_get(logic,"IsFree",0),*error=NULL;
+      void *value=method?invoke(method,NULL,NULL,&error):NULL;
+      if(value&&!error)fprintf(stderr,"[THREES-EDITION] original IsFree=%d\n",*(unsigned char *)((char *)value+16));
+      break;
+    }
   }
   class_init(input_class);
   void *add=method_get(input_class,"AddDevice",3);

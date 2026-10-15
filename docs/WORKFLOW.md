@@ -16,3 +16,13 @@ Before preparing a release:
 
 Build instructions are in [BUILD.md](BUILD.md). PortMaster submission preparation
 is in [PORTMASTER.md](PORTMASTER.md).
+
+When updating a handheld, deploy the launcher, automatic data preparer, runtime
+binaries and checksum manifests from the same package. Updating a launcher or
+renaming an older installer alone can leave incompatible paths or arguments.
+After deployment, run the installed launcher with isolated test data and verify
+its startup log before replacing a known working installation.
+
+After graphical diagnostics, clear game-specific environment variables before
+restarting EmulationStation. Otherwise the menu can pass temporary data/save
+paths into a later normal launch. Verify its process environment after restart.
