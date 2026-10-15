@@ -9,3 +9,9 @@ Tested on RG35XX-H with KNULLI at 640×480 using Android Alto's Adventure 1.8.8 
 - Longer play sessions, physical vibration and other devices or firmware builds have not been validated to the same extent.
 
 The offline policy is documented in [OFFLINE-PATCHES.md](OFFLINE-PATCHES.md). This is an independent port, not an official PortMaster catalogue release.
+
+## Single-button post-upgrade modal fix
+
+The controller bridge previously called ResponsePositive for every DialogBox. That method marks a response but does not start closing a Dismiss dialog; the game's one-button notices need Hide(response). The bridge now distinguishes modal types and routes B/Y to the original closing coroutine for Dismiss. Dialog lookup reads the original singleton field, including while its object is inactive. The normal launcher disables the diagnostic flag.
+
+On-device diagnostic with copied preferences and the original DialogBox.ShowDialog(Dismiss), label Thanks!: confirm shown=0 PASS; back shown=0 PASS. 2300-frame run exited0 and restored EmulationStation. No upgrade was purchased and no coins were changed. The installed loader and package loader hashes match. This verifies that modal type through the same dispatch used by SDL input; the user's exact purchased-upgrade flow still needs a physical retest. See [INPUT.md](INPUT.md).

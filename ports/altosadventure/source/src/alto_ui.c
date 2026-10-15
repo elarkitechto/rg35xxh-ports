@@ -14,6 +14,7 @@ typedef void *(*object_fn)(void*,void*);
 struct target {void *go,*press,*slider;float x,y;int primary;char name[96];};
 static struct target targets[256];static int count,last_state=-1,last_click=-1000,last_refresh=-1000;
 static unsigned title_ready_at;
+static void *dialog_instance_field,*dialog_instance_getter;
 static void *focus,*button_type,*click_type,*widget_type,*gui_class,*title_class,*pause_class,*slider_type,*dialog_class;
 static void *(*resolve_api)(const char*);
 static void *(*class_type)(void*),*(*type_object)(void*);
@@ -38,6 +39,13 @@ void alto_ui_init(void *(*resolver)(const char*)){
  k=find_class("UIWidget");widget_type=k?type_object(class_type(k)):NULL;
  k=find_class("UISlider");slider_type=k?type_object(class_type(k)):NULL;pause_class=find_class("GuiPauseMenu");
  dialog_class=find_class("DialogBox");
+ if(dialog_class){
+  void *(*parent)(void*)=resolver("il2cpp_class_get_parent");
+  void *(*field)(void*,const char*)=resolver("il2cpp_class_get_field_from_name");
+  dialog_instance_field=field(parent(dialog_class),"_instance");
+  void *(*method)(void*,const char*,int)=resolver("il2cpp_class_get_method_from_name");
+  dialog_instance_getter=method(parent(dialog_class),"get_Instance",0);
+ }
  gui_class=find_class("GUIManager");title_class=find_class("GuiTitleScreen");
  fprintf(stderr,"[ALTO-UI] NGUI button and action types ready\n");
 }
@@ -112,12 +120,57 @@ int alto_ui_tick(int frame,int state,void *manager,struct alto_ui_input in){
    }
   }
  }
- char *dialog=find_object(dialog_class);
+ char *dialog=NULL;
+ if(dialog_instance_field){
+  void (*get)(void*,void*)=resolve_api("il2cpp_field_static_get_value");
+  get(dialog_instance_field,&dialog);
+ }
+ if(!dialog)dialog=find_object(dialog_class);
+ if(!dialog && dialog_instance_getter && getenv("ALTO_DIALOG_SMOKE") && state==2 && frame>=900){
+  void *(*invoke)(void*,void*,void**,void**)=resolve_api("il2cpp_runtime_invoke");
+  void *exception=NULL;dialog=invoke(dialog_instance_getter,NULL,NULL,&exception);
+  if(exception){fprintf(stderr,"[ALTO-DIALOG-TEST] singleton exception\n");dialog=NULL;}
+ }
+ /* Explicit diagnostic only: reproduce the real one-button DialogBox without
+  * spending coins or touching purchased upgrades. Normal launcher unsets it. */
+ if(getenv("ALTO_DIALOG_SMOKE") && dialog && state==2 && frame>=900){
+  static int phase;static unsigned deadline;
+  unsigned now=SDL_GetTicks();
+  if((phase==0 || phase==3) && !*(unsigned char*)(dialog+0xd8)){
+   void *(*str)(const char*)=resolve_api("il2cpp_string_new");
+   FN(0x6be25c,void*(*)(void*,int,void*,void*,void*,void*,int,void*))
+    (dialog,1,str("Upgrade complete"),str("Controller dismiss test"),str("Thanks!"),str("Cancel"),0,NULL);
+   deadline=now+2500;phase++;
+  }else if((phase==1 || phase==4) && now>=deadline){
+   in.confirm=phase==1;in.back=phase==4;phase++;deadline=now+1500;
+  }else if((phase==2 || phase==5) && now>=deadline){
+   int shown=*(unsigned char*)(dialog+0xd8);
+   fprintf(stderr,"[ALTO-DIALOG-TEST] %s shown=%d %s\n",phase==2?"confirm":"back",shown,shown?"FAIL":"PASS");
+   phase=shown?6:phase+1;
+  }
+ }
  if(dialog && *(unsigned char*)(dialog+0xd8)){
-  if(in.confirm){fprintf(stderr,"[ALTO-UI] dialog accept\n");FN(0x6be5f4,void(*)(void*,void*))(dialog,NULL);}
-  else if(in.back){fprintf(stderr,"[ALTO-UI] dialog cancel\n");FN(0x6be694,void(*)(void*,void*))(dialog,NULL);}
+  /* Dismiss has no caller waiting to hide it after ResponsePositive. */
+  char *response=*(void**)(dialog+0xf0);
+  int type=response?*(int*)(response+0x14):-1;
+  void *dismiss=*(void**)(dialog+0x58);
+  int dismiss_visible=dismiss && FN(0xb4aa1c,int(*)(void*,void*))(dismiss,NULL);
+  if((type==1 || (type<0 && dismiss_visible)) && (in.confirm || in.back)){
+   if(frame-last_click>=12 && !*(void**)(dialog+0xe0)){
+    last_click=frame;focus=NULL;last_refresh=-1000;
+    fprintf(stderr,"[ALTO-UI] dialog dismiss type=%d\n",type);
+    FN(0x6be418,void(*)(void*,void*,void*))(dialog,response,NULL);
+   }
+  }else if(type==2 || type==3){
+   if(in.confirm){fprintf(stderr,"[ALTO-UI] dialog accept type=%d\n",type);FN(0x6be5f4,void(*)(void*,void*))(dialog,NULL);}
+   else if(in.back){fprintf(stderr,"[ALTO-UI] dialog cancel type=%d\n",type);FN(0x6be694,void(*)(void*,void*))(dialog,NULL);}
+  }else if(type==4 && in.back){
+   fprintf(stderr,"[ALTO-UI] dialog verify cancel\n");FN(0x6be694,void(*)(void*,void*))(dialog,NULL);
+  }
+  /* Wait/transition dialogs do not accept. Never forward modal input to shop. */
   return 1;
  }
+
  int menu=state!=0 && state!=1 && state!=5 && state!=10 && state!=11;
  if(state!=last_state){fprintf(stderr,"[ALTO-UI] screen state=%d\n",state);last_state=state;focus=NULL;last_refresh=-1000;if(state==2){float seconds=manager?*(float*)((char*)manager+0x4c):3.0f;if(seconds<2)seconds=2;title_ready_at=SDL_GetTicks()+(unsigned)(seconds*1000);}}
  if(state==2 && (SDL_GetTicks()<title_ready_at || !ready()))return 1;

@@ -19,3 +19,5 @@ The output is `.local/releases/altosadventure.zip`. Extract it into the handheld
 `source/` contains the loader, input integration and audio bridge. `policy-patches.json` records the guarded changes for the pinned APK. [Validation](VALIDATION.md) records the tested device and remaining limits; [offline patches](OFFLINE-PATCHES.md) records disabled online services.
 
 This build has been tested on RG35XX-H / KNULLI for gameplay, menu navigation, audio output and local save/reload. Extended play and physical vibration need further testing. The original game and its assets belong to Snowman. The framework's upstream copyright and license notices are in `NOTICE` and `LICENSE`; port adaptation by [elarkitechto](https://github.com/elarkitechto).
+
+Controller routing and supported modal types are documented in [INPUT.md](INPUT.md), including the single-button Thanks dialog regression test.
