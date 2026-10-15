@@ -21,3 +21,7 @@ On-device diagnostic with copied preferences and the original DialogBox.ShowDial
 The original GuiSocialShareButton(Action.Share), WatchVideoForCoinsButton and GuiDoubleCoinsButton GameObjects are disabled before collecting controller targets. Scene reactivation is checked on menu entry, periodically in menus and before navigation/confirm. No translated label matching or blanket coin-button filtering is used. Photo-save actions, coin-funded revival and workshop upgrades remain outside this filter.
 
 On-device copied-profile test reached Gameplay5, GameOver7, activated Next, reached EndOfRun9 and StoreEnd13. Logs confirmed hidden Button / Plus Button objects on these screens. The first 2000-frame pass exited0; the expanded 2800-frame pass also exited0 after the post-run/shop sequence and restored EmulationStation. Diagnostic ALTO_OFFLINE_UI_SMOKE advances to the results/shop without purchases; normal launcher unsets it. GameObject.SetActive(false) removes the widget/collider and excludes it from navigation. Physical layout review remains user-verifiable.
+
+## Hide touch pause icon
+
+GuiGameplay.Update pauseButton.SetActive argument changed from true to false at guarded RVA0x6f7234 (original0x320003e1). On-device 1800-frame copied-profile test exited0 and restored the frontend; scripted Start route produced Gameplay5→Pause6→Gameplay5. Frame1500 after resume was visually inspected: the corner pause icon is absent. No per-frame scene search or change to physical pause/resume is required.

@@ -26,3 +26,7 @@ La revisión se prueba con el mismo recorrido de 1600 frames: introducción, tí
 ### Google Play Games
 
 La invitación Google Play pertenece a AchievementManager, no a publicidad. Se anulan autenticación manual/automática, UI de logros y coroutine de consentimiento (MoveNext=false), y los getters de consentimiento/autenticación=false. Settings oculta signInButton (+0x180) y showGCButtons (+0x188) mediante GameObject.SetActive(false). La tabla contiene ahora 45 sitios con guards. No se escribe consentimiento, ni se modifica SaveManager.
+
+### Touch pause HUD
+
+GuiGameplay.Update at 0x6f7234 originally has mov w1,#1 (0x320003e1) before pauseButton.SetActive. Guarded replacement mov w1,wzr (0x2a1f03e1) keeps this touch HUD button inactive every frame. SDL Start still changes GameManager Gameplay5/Pause6 directly. No extra gameplay scene enumeration is needed.

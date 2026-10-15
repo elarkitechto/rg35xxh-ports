@@ -18,3 +18,5 @@ The modal consumes input before general menu/gameplay handling. Closing a dismis
 ## Hidden offline actions
 
 The original scene objects carrying GuiSocialShareButton (Action.Share only), WatchVideoForCoinsButton and GuiDoubleCoinsButton are deactivated with GameObject.SetActive(false) before controller target collection. This removes labels/colliders together and keeps them outside navigation. Identification uses actual component types, independently of display language. Save-photo actions are not matched. Recheck on menu entry, periodically while in menus and before controller actions, because game refreshes may reactivate controls. No extra component enumeration runs during gameplay. Spending earned coins, revival and workshop upgrades are unaffected.
+
+The touch HUD pause icon is hidden through `GuiGameplay.pauseButton` (+0x118) by changing the guarded SetActive argument in GuiGameplay.Update at 0x6f7234 from true to false. Physical Start continues to use the original GameManager state transitions (Gameplay5 ↔ Pause6), independently of that visual control.
