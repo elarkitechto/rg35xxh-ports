@@ -44,6 +44,14 @@ void alto_policy_apply(void *base){
   __builtin___clear_cache((char*)fn,(char*)fn+8);
   fprintf(stderr,"[ALTO-POLICY] %s\n",p->name);
  }
+ /* GuiGameplay.Update reactivates the touch-only pause icon each frame.
+  * Its physical Start route lives in the SDL bridge and remains independent. */
+ {uint32_t *site=(void*)((char*)base+0x6f7234);
+  if(*site!=0x320003e1){fprintf(stderr,"[ALTO-POLICY] wrong pause HUD opcode\n");exit(25);}
+  *site=0x2a1f03e1; /* mov w1,wzr: pauseButton.SetActive(false) */
+  __builtin___clear_cache((char*)site,(char*)site+4);
+  fprintf(stderr,"[ALTO-POLICY] touch pause HUD hidden; Start retains pause/resume\n");
+ }
  /* IAP: keep singleton and purchased cache, omit Google builder. */
  {uint32_t *site=(void*)((char*)base+0x70b524);if(*site!=0xb0006e68)exit(22);*site=0x17fffff8;__builtin___clear_cache((char*)site,(char*)site+4);}
  /* Ads: keep singleton, omit mediators. */
