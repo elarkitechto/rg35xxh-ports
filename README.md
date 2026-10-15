@@ -1,30 +1,19 @@
 # RG35XX-H Ports
 
-Ports para **RG35XX-H con KNULLI**. Instala PortMaster y consulta la guía del juego:
+Android game ports for **RG35XX-H running KNULLI**, with controller support and local saves. Requires PortMaster.
 
-| Juego | Archivo que debes aportar | Guía |
+| Game | Required game file | Guide |
 | --- | --- | --- |
-| Alto’s Adventure | APK Android 1.8.8 | [Instalación y controles](ports/altosadventure/README.md) |
-| Crossy Road | APK Android 4.5.0 ARM64 | [Instalación y controles](ports/crossyroad/README.md) |
-| Threes! | XAPK Free 3.1 (24576), con split ARM64 | [Instalación y controles](ports/threes/README.md) |
+| Alto’s Adventure | Android 1.8.8 APK | [Install and play](ports/altosadventure/README.md) |
+| Crossy Road | Android 4.5.0 ARM64 APK | [Install and play](ports/crossyroad/README.md) |
+| Threes! | Free 3.1 (24576) XAPK with ARM64 split | [Install and play](ports/threes/README.md) |
+| Triples | Standalone demake — in development | [Project](ports/triples/README.md) |
 
+## How to use
 
-**Triples** es un [demake independiente en desarrollo](ports/triples/README.md). No está listo para PortMaster.
+1. Get the port ZIP, or [build it from source](docs/BUILD.md).
+2. Extract it into your handheld’s **Ports** folder.
+3. Copy the exact APK or XAPK listed in the game’s guide into its folder.
+4. Launch the game from **Ports**. First-run setup is automatic.
 
-Los tres ports originales tienen [paquetes candidatos para PortMaster](docs/PORTMASTER.md).
-
-## Instalación
-
-1. Consigue el paquete del port. Este repositorio contiene el código y los scripts para [generar los paquetes](docs/BUILD.md); los ZIP no están incluidos en el árbol de archivos.
-2. Extrae el ZIP en la carpeta **Ports** de la consola.
-3. Copia tu APK o XAPK en la carpeta indicada por la guía del juego.
-4. Abre el juego desde **Ports**. La primera ejecución prepara los archivos automáticamente.
-
-No necesitas ejecutar instaladores de subcarpetas ni compilar en la consola.
-Usa la versión exacta indicada: las demás no son intercambiables.
-
-Probados en RG35XX-H/KNULLI. Son ports comunitarios y todavía no forman parte del catálogo oficial de PortMaster. El juego original y sus recursos no se distribuyen aquí.
-
-Para reportar un problema, indica juego, consola, firmware y lo que ocurrió en [Issues](https://github.com/elarkitechto/rg35xxh-ports/issues). Adjunta el log del port sin incluir archivos del juego ni datos personales.
-
-[Compilar](docs/BUILD.md) · [Contribuir](CONTRIBUTING.md) · [Créditos y licencias](ATTRIBUTION.md)
+See each game’s guide for controls, screen orientation and troubleshooting.

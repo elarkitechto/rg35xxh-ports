@@ -1,18 +1,17 @@
-# Candidatos de PortMaster
+# PortMaster candidates
 
-| Port | Carpeta y paquete | Estado |
+| Port | Directory / package | Status |
 | --- | --- | --- |
-| Alto’s Adventure | `altosadventure` / `altosadventure.zip` | Candidato de pruebas |
-| Crossy Road | `crossyroad` / `crossyroad.zip` | Candidato de pruebas |
-| Threes! original | `threes` / `threes.zip` | Candidato de pruebas |
-| Triples, demake | `ports/triples` | En desarrollo; excluido |
+| Alto’s Adventure | `altosadventure` / `altosadventure.zip` | Testing candidate |
+| Crossy Road | `crossyroad` / `crossyroad.zip` | Testing candidate |
+| Threes! original | `threes` / `threes.zip` | Testing candidate |
+| Triples demake | `ports/triples` | In development; excluded |
 
-Genera los paquetes con las instrucciones de [compilación](BUILD.md).
-Cada comando compila y empaqueta el runtime completo. El usuario aporta el APK
-compatible y abre el launcher; la preparación de datos ocurre automáticamente.
-No hay un segundo instalador que ejecutar en la consola.
+Follow the [build instructions](BUILD.md) to create each package. The build
+command compiles and packages the complete runtime. The player supplies the
+compatible APK or XAPK and opens the launcher; data setup runs automatically.
 
-Para preparar el árbol de entrega, desde la raíz del repositorio:
+Prepare the submission tree from the repository root:
 
 ```sh
 python3 tools/prepare-portmaster.py altosadventure
@@ -20,14 +19,13 @@ python3 tools/prepare-portmaster.py crossyroad
 python3 tools/prepare-portmaster.py threes
 ```
 
-La salida privada es `.local/portmaster/port/<nombre>/`. Incluye metadatos,
-README, captura, portada, launcher, runtime y licencias. El preparador valida los
-archivos obligatorios y rechaza APK/XAPK y partidas. No sobrescribe salidas
-anteriores: usa `--output` para preparar otra revisión.
+Output: `.local/portmaster/port/<name>/`. Each candidate includes metadata,
+README, screenshot, cover, launcher, runtime and licenses. The preparation tool
+checks required files and rejects APKs, XAPKs and saves. Use `--output` for a new
+revision; existing output directories are not overwritten.
 
-Estos candidatos siguen la [estructura de PortMaster](https://portmaster.games/packaging.html).
-Antes de solicitar su inclusión, hay que ejecutar también los checks oficiales
-del repositorio PortMaster-New sobre ese árbol y resolver su revisión de
-compatibilidad y licencias. Sólo se ha probado RG35XX-H con KNULLI; el runtime
-usa las bibliotecas gráficas del dispositivo. No se afirma compatibilidad con
-otros equipos ni aceptación oficial. No se redistribuyen los juegos originales.
+The candidates follow the [PortMaster package structure](https://portmaster.games/packaging.html).
+Before submitting, run the official PortMaster-New checks on the staged tree
+and complete compatibility and licensing review. Testing currently covers only
+RG35XX-H with KNULLI and uses the device’s graphics libraries. These ports are
+not yet included in the official PortMaster catalog.

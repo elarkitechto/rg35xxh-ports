@@ -1,15 +1,15 @@
-# Compilar los paquetes
+# Build the packages
 
-Las consolas sólo necesitan el ZIP del port y el archivo original del juego.
-Esta página es para quien genera esos ZIP desde el código.
+These instructions are for building port ZIPs from source. To install a package
+on your handheld, follow the game’s installation guide.
 
 - [Alto’s Adventure](../ports/altosadventure/BUILD.md)
 - [Crossy Road](../ports/crossyroad/BUILD.md)
 - [Threes!](../ports/threes/BUILD.md)
-- [Triples](../ports/triples/README.md)
+- [Triples — in development](../ports/triples/BUILD.md)
 
-Cada comando de construcción prepara el runtime y el paquete completo. Los
-archivos originales de los juegos, bibliotecas de firmware y arte privado se
-aportan fuera de Git. Los ZIP se escriben en `.local/releases/`.
+Each build command compiles the runtime and creates a complete package in
+`.local/releases/`. Supply the required game files, firmware link libraries and
+cover/screenshot inputs separately, as described in each build guide.
 
-[Guía de contribución](../CONTRIBUTING.md) · [Formato de portadas](COVERS.md)
+[Contributing](../CONTRIBUTING.md) · [Cover specifications](COVERS.md) · [PortMaster packaging](PORTMASTER.md)

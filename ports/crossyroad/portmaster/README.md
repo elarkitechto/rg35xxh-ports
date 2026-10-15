@@ -1,43 +1,41 @@
 # Crossy Road
 
-Port comunitario para **RG35XX-H / KNULLI**, con mando y guardado local.
-Requiere PortMaster y tu archivo original de **Crossy Road 4.5.0 ARM64**.
+Android port for **RG35XX-H running KNULLI**, with controller support and local
+saves. Requires PortMaster and your **Crossy Road 4.5.0 ARM64** game file.
 
-## Instalar
+## Install
 
-1. Extrae el ZIP del port en **Ports**.
-2. Copia `crossy-road-4-5-0.apk` dentro de `ports/crossyroad/`.
-3. Abre **Crossy Road** desde Ports. La primera ejecución prepara todo automáticamente.
+1. Extract the port ZIP into **Ports**.
+2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.
+3. Launch **Crossy Road** from Ports. First-run setup is automatic.
 
-No ejecutes archivos de instalación por separado. Si actualizas, conserva la
-carpeta de partidas y sustituye sólo los archivos del paquete.
+When updating, replace the package files and keep your saves.
 
-## Controles
+## Controls
 
-| Botón | Acción |
+| Button | Action |
 | --- | --- |
-| Cruceta / stick izquierdo | Mover / navegar |
-| B | Aceptar / continuar |
-| Y | Atrás |
-| Start | Pausar / continuar |
-| F + Start | Guardar y salir |
+| D-pad / left stick | Move / navigate |
+| B | Confirm / continue |
+| Y | Back |
+| Start | Pause / resume |
+| F + Start | Save and exit |
 
-Los servicios online y anuncios no están disponibles. El progreso se guarda
-localmente; se reutilizan las partidas existentes de `/userdata/system/cr/`.
+Online services and ads are unavailable. Progress is saved locally, using
+existing saves in `/userdata/system/cr/`.
 
-## Si no arranca
+## Troubleshooting
 
-Comprueba el nombre y la versión del archivo, y consulta `crossyroad/install.log`
-o `crossyroad/log.txt`. No se ha verificado compatibilidad con otras consolas o
-firmwares. No es una publicación oficial de PortMaster.
+Check the game-file name and version, then read `crossyroad/install.log` or
+`crossyroad/log.txt`. Compatibility has only been tested on RG35XX-H with KNULLI.
 
 <details>
-<summary>Identificar el archivo compatible (SHA-256)</summary>
+<summary>Supported game file SHA-256</summary>
 
 `1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb`
 
 </details>
 
-Más información: https://github.com/elarkitechto/rg35xxh-ports
+Thanks to Hipster Whale for creating the original game.
 
-Gracias a Hipster Whale por crear el juego original.
+Source and build instructions: https://github.com/elarkitechto/rg35xxh-ports/tree/main/ports/crossyroad
