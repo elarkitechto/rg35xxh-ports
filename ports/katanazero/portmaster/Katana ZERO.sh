@@ -18,7 +18,15 @@ export KATANA_LOCAL_SAVE_DIR="$GAMEDIR/save/local-slots"
 chmod +x ./gmloadernext.aarch64
 $GPTOKEYB "gmloadernext.aarch64" -c "$GAMEDIR/katana.gptk" &
 pm_platform_helper "$GAMEDIR/gmloadernext.aarch64"
-./gmloadernext.aarch64 -c "$GAMEDIR/gmloader.json"
+loader_hash=$(sha256sum ./gmloadernext.aarch64 | cut -d ' ' -f 1)
+engine_hash=$(sha256sum ./lib/arm64-v8a/libyoyo.so | cut -d ' ' -f 1)
+expected_loader=$(cat "$GAMEDIR/controller-mode.loader.sha256")
+if [ "$loader_hash" != "$expected_loader" ] || [ "$engine_hash" != "a7f8f231cc216dfc9c93d9ac61ba4f082a2332712528be0106234887898ef127" ]; then
+ echo "Runtime mismatch: reinstall the complete Katana ZERO package."
+ pm_finish
+ exit 1
+fi
+KATANA_CONTROLLER_MODE=1 LD_PRELOAD="$GAMEDIR/libkatana-controller-mode.so" ./gmloadernext.aarch64 -c "$GAMEDIR/gmloader.json"
 rc=$?
 printf 'KATANA_EXIT=%s\n' "$rc"
 pm_finish
