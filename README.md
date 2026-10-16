@@ -1,20 +1,25 @@
 # RG35XX-H Ports
 
-Android game ports for **RG35XX-H running KNULLI**, with controller support and local saves. Requires PortMaster.
+Game ports for **RG35XX-H running KNULLI**. Install PortMaster first.
+You supply the required game files; they are not included in the downloads.
 
-| Game | Required game file | Guide |
-| --- | --- | --- |
-| Alto’s Adventure | Android 1.8.8 APK | [Install and play](ports/altosadventure/README.md) |
-| Crossy Road | Android 4.5.0 ARM64 APK | [Install and play](ports/crossyroad/README.md) |
-| Threes! | Full 3.1.6144 ARM64 APK | [Install and play](ports/threes/README.md) |
-| Katana ZERO | Android Netflix 1.1.10 ARM64 XAPK — experimental | [Install and status](ports/katanazero/README.md) |
-| Triples | Standalone demake — unavailable | [Project](ports/triples/README.md) |
+## Download and play
 
-## How to use
+1. Download your game's **port ZIP** below — not GitHub's “Source code” ZIP.
+2. Extract it into the handheld's **Ports** folder.
+3. Add your game file following the game's install guide.
+4. Launch the game from **Ports**. Setup runs automatically on first launch.
 
-1. Download the game’s ZIP from [Releases](https://github.com/elarkitechto/rg35xxh-ports/releases/latest).
-2. Extract it into your handheld’s **Ports** folder.
-3. Copy the exact APK listed in the game’s guide into its folder.
-4. Launch the game from **Ports**. First-run setup is automatic.
+| Game | Download | Required game file | Install guide |
+| --- | --- | --- | --- |
+| Alto’s Adventure | [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) | Android 1.8.8 APK | [Instructions](ports/altosadventure/README.md) |
+| Crossy Road | [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) | Android 4.5.0 ARM64 APK | [Instructions](ports/crossyroad/README.md) |
+| Threes! | [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) | Full Android 3.1.6144 ARM64 APK | [Instructions](ports/threes/README.md) |
+| Katana ZERO | Not published yet | Netflix 1.1.10 ARM64 XAPK | [Status and instructions](ports/katanazero/README.md) |
 
-See each game’s guide for controls, screen orientation and troubleshooting.
+These are independent community packages; they are not currently in the official
+PortMaster catalog. Keep each port's save folder when updating.
+
+## Developers
+
+[Build and contribute](DEVELOPMENT.md) · [Attribution and licenses](ATTRIBUTION.md)
