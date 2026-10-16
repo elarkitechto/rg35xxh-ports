@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Slide and combine numbered cards. Original Android game adapted for RG35XX-H/KNULLI, with controller support, TATE and local saves.",
-    "inst": "Copy the supported full-edition ARM64 APK as threes-3.1.6144.apk into ports/threes, then launch Threes!. Setup is automatic. Requires full 3.1.6144; Free editions are not compatible.",
+    "inst": "Copy the supported full-edition ARM64 APK as threes-3.1.6144.apk into ports/threes, then launch Threes!. Setup is automatic. Requires full 3.1.6144; Free editions are not compatible. Required game file SHA-256: 7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a.",
     "genres": [
       "puzzle"
     ],
@@ -33,6 +33,6 @@
     ],
     "min_glibc": "",
     "availability": "partial",
-    "inst_md": "1. Download [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) and extract it into **Ports**.\n2. Copy `threes-3.1.6144.apk` into `ports/threes/`.\n3. Launch **Threes!** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
+    "inst_md": "**Required game file:** `threes-3.1.6144.apk`\n\n**SHA-256:**\n```text\n7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a\n```\n\n1. Download [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) and extract it into **Ports**.\n2. Copy `threes-3.1.6144.apk` into `ports/threes/`.\n3. Launch **Threes!** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
   }
 }

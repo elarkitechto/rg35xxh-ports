@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Testing candidate 0.2.0-rc1: Android Crossy Road 4.5.0, native SDL controller integration, offline local saves and haptics. Verified device scope: RG35XX-H/KNULLI; other CFWs need testing.",
-    "inst": "Copy your exact crossy-road-4-5-0.apk to ports/crossyroad and launch Crossy Road. The launcher automatically verifies and prepares the APK, then starts the game; no second script or handheld compiler is required. SHA-256: 1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb.",
+    "inst": "Copy your exact crossy-road-4-5-0.apk to ports/crossyroad and launch Crossy Road. The launcher automatically verifies and prepares the APK, then starts the game; no second script or handheld compiler is required. SHA-256: 1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb. Required game file SHA-256: 1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb.",
     "genres": [
       "arcade"
     ],
@@ -33,6 +33,6 @@
     ],
     "min_glibc": "",
     "availability": "partial",
-    "inst_md": "1. Download [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) and extract it into **Ports**.\n2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.\n3. Launch **Crossy Road** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
+    "inst_md": "**Required game file:** `crossy-road-4-5-0.apk`\n\n**SHA-256:**\n```text\n1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb\n```\n\n1. Download [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) and extract it into **Ports**.\n2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.\n3. Launch **Crossy Road** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
   }
 }
