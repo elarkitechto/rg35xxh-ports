@@ -42,9 +42,10 @@ The official XAPK clean-install path reached the title and opening scene.
 The player reports gameplay with Bloom and shaders enabled; Bloom is not a
 mandatory disable setting. Full-game stability and the exit fault remain open.
 
-## Release gate
+## Release status
 
-The repository currently has no published katanazero.zip asset. Before publishing:
-verify packaged controller adapter, preserve complete corresponding GPL source
-for distributed loader/dependencies, confirm library redistribution notices, and
-finish clean-exit/audio acceptance. Do not add a download URL for a missing asset.
+The player package is distributed in GitHub Releases with the corresponding
+GMLoader source in a separate archive. Players install only katanazero.zip and
+supply their own official 1.1.10 ARM64 XAPK. Controller-mode presentation was
+confirmed on the handheld after the boolean-type fix. The package remains
+experimental because audio warnings and an exit fault are unresolved.

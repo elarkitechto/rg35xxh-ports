@@ -3,7 +3,7 @@
 Android port for **RG35XX-H running KNULLI**, with controller support and local
 saves. Requires PortMaster and your **Threes! full 3.1.6144 ARM64** game file.
 
-## Install
+## How to install
 
 1. Download [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) and extract it into **Ports**.
 2. Copy `threes-3.1.6144.apk` into `ports/threes/`.
@@ -28,24 +28,23 @@ move tiles during TATE gameplay; menus keep A/B as confirm/back. Landscape
 preserves the board’s proportions and extends the background to fill the screen.
 Score signing uses the default name.
 
-Night mode keeps the original night tiles. Threes! and the Triples demake use
-separate saves. This package uses the full edition; the Free APK/XAPK is not
+This package uses the full edition; the Free APK/XAPK is not
 compatible with this runtime. Online services are unavailable.
 
 Saves: `/userdata/system/threes-android/saves/`.
+
+## Saves and updates
+
+Keep the game file and your save folder when updating. Replace the port package
+files, then launch the game normally. Game data is prepared automatically.
 
 ## Troubleshooting
 
 Check the game-file name and version, then read `threes/install.log` or
 `threes/log.txt`. Compatibility has only been tested on RG35XX-H with KNULLI.
 
-<details>
-<summary>Supported game file SHA-256</summary>
 
-`7d28059f0993285382da108324f844d146b375b64a1600fac4b8e6f5cf3c482a`
 
-</details>
-
-Credits and licenses: https://github.com/elarkitechto/rg35xxh-ports/blob/main/ATTRIBUTION.md
+[Credits and licenses](https://github.com/elarkitechto/rg35xxh-ports/blob/main/ATTRIBUTION.md)
 
 Thanks to Sirvo for creating the original game.

@@ -3,7 +3,7 @@
 Android port for **RG35XX-H running KNULLI**, with controller support and local
 saves. Requires PortMaster and your **Alto’s Adventure 1.8.8** game file.
 
-## Install
+## How to install
 
 1. Download [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) and extract it into **Ports**.
 2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.
@@ -25,17 +25,17 @@ Keep the APK in that folder. When updating, replace the package files and keep y
 In Settings, left/right adjusts the selected slider. Online services, ads and
 purchases are unavailable. Existing saves use `/userdata/system/alto/`.
 
+## Saves and updates
+
+Keep the game file and your save folder when updating. Replace the port package
+files, then launch the game normally. Game data is prepared automatically.
+
 ## Troubleshooting
 
 Check the game-file name and version, then read `altosadventure/install.log` or
 `altosadventure/log.txt`. Compatibility has only been tested on RG35XX-H with KNULLI.
 
-<details>
-<summary>Supported game file SHA-256</summary>
 
-`efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0`
-
-</details>
 
 [Credits and licenses](../../ATTRIBUTION.md)
 

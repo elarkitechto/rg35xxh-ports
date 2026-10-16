@@ -15,7 +15,7 @@ You supply the required game files; they are not included in the downloads.
 | Alto’s Adventure | [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) | Android 1.8.8 APK | [Instructions](ports/altosadventure/README.md) |
 | Crossy Road | [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) | Android 4.5.0 ARM64 APK | [Instructions](ports/crossyroad/README.md) |
 | Threes! | [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) | Full Android 3.1.6144 ARM64 APK | [Instructions](ports/threes/README.md) |
-| Katana ZERO | Not published yet | Netflix 1.1.10 ARM64 XAPK | [Status and instructions](ports/katanazero/README.md) |
+| Katana ZERO | [katanazero.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/katanazero.zip) | Netflix 1.1.10 ARM64 XAPK | [Status and instructions](ports/katanazero/README.md) |
 
 These are independent community packages; they are not currently in the official
 PortMaster catalog. Keep each port's save folder when updating.

@@ -5,7 +5,7 @@ Port for **RG35XX-H with KNULLI and PortMaster**. Requires your own
 
 ## How to install
 
-1. Download **katanazero.zip** from this project's [Releases](https://github.com/elarkitechto/rg35xxh-ports/releases).
+1. Download [katanazero.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/katanazero.zip).
 2. Extract it into your handheld's **Ports** folder.
 3. Rename your **Katana ZERO Netflix 1.1.10 ARM64 XAPK** to
    **katana-zero-1.1.10.xapk** and copy it into **ports/katanazero/**.
