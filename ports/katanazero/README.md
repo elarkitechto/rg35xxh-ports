@@ -43,8 +43,9 @@ and full progression persistence still require validation. A SIGSEGV was observe
 after saving options on exit. Earlier termination was not proven to be an OOM.
 
 The official 1.1.10 XAPK has byte-identical native engine and game data to the
-runtime used during development. The preparer accepts those verified components;
-that alone does not prove the complete official-XAPK installation path works.
+runtime used during development. Fresh on-device setup from the official XAPK was verified through the title
+and opening scene using the packaged launcher, without a seed save. Gameplay,
+audible output and F+Start still need acceptance on this clean installation.
 See `install.log` for setup errors and `log.txt` for runtime errors. Unsupported
 versions are rejected before replacing game files. Modified APK files are not a
 supported installation input.
