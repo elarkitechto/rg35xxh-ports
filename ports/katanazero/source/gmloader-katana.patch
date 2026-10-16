@@ -1,0 +1,242 @@
+diff --git a/gmloader/classes/RunnerJNILib.cpp b/gmloader/classes/RunnerJNILib.cpp
+index 0ccb55d..a94705d 100755
+--- a/gmloader/classes/RunnerJNILib.cpp
++++ b/gmloader/classes/RunnerJNILib.cpp
+@@ -1,4 +1,10 @@
+ #include <stdio.h>
++#include <cstdlib>
++#include <cstring>
++#include <fstream>
++#include <string>
++#include <sys/stat.h>
++#include <cctype>
+ #include <vector>
+ 
+ #include "so_util.h"
+@@ -197,7 +203,86 @@ jdouble RunnerJNILib::VideoIsLooping(JNIEnv *env, jclass clz)
+ 
+ #endif // VIDEO_SUPPORT
+ 
++struct KatanaDouble : Object {
++    static Class clazz;
++    double value;
++    explicit KatanaDouble(double v): value(v) {}
++    Class *_getClass() override { return &clazz; }
++    static jdouble doubleValue(JNIEnv*, jobject obj) { return ((KatanaDouble*)obj)->value; }
++};
++static const ManagedMethod KatanaDoubleMethods[] = {
++    ManagedMethod::Register<&KatanaDouble::doubleValue>(KatanaDouble::clazz, "doubleValue", "()D"),
++    {NULL}
++};
++Class KatanaDouble::clazz = {
++    .classpath = "java/lang/Double",
++    .classname = "Double",
++    .managed_methods = KatanaDoubleMethods,
++    .instance_size = sizeof(KatanaDouble)
++};
++static const int registered_katana_double = ClassRegistry::register_class(KatanaDouble::clazz);
++
++jobject RunnerJNILib::KatanaExtensionTrace(JNIEnv *env, jclass clz, jstring extension, jstring method, jint argc, jdoubleArray numbers, jobjectArray objects)
++{
++    if (getenv("KATANA_EXTENSION_TRACE")) {
++        const char *ext = extension ? env->GetStringUTFChars(extension, NULL) : "<null>";
++        const char *name = method ? env->GetStringUTFChars(method, NULL) : "<null>";
++        fprintf(stderr, "KATANA_EXTENSION %s.%s argc=%d\n", ext, name, argc);
++    }
++    if (getenv("KATANA_UNLOCKED_COMPAT") && extension && method) {
++        const char *ext = env->GetStringUTFChars(extension, NULL);
++        const char *name = env->GetStringUTFChars(method, NULL);
++        if (!strcmp(ext, "NetflixIntegration")) {
++            if (!strcmp(name, "NfxaShowUI")) {
++                int map = CreateDsMap(0);
++                dsMapAddString(map, "type", "Nfx_onPlayerAccessRequest");
++                dsMapAddString(map, "playerID", "local");
++                CreateAsynEventWithDSMap(map, 70);
++                return NULL;
++            }
++            if (!strcmp(name, "NfxaCloudRead") || !strcmp(name, "NfxaCloudWrite")) {
++                jobject keyobj = objects && argc > 0 ? env->GetObjectArrayElement(objects, 0) : NULL;
++                const char *key = keyobj ? env->GetStringUTFChars((jstring)keyobj, NULL) : "";
++                std::string safe;
++                for (const unsigned char c : std::string(key)) safe += (isalnum(c) || c == '_' || c == '-') ? char(c) : '_';
++                const char *root = getenv("KATANA_LOCAL_SAVE_DIR");
++                std::string dir = root ? root : "save/katana-local";
++                mkdir(dir.c_str(), 0755);
++                std::string path = dir + "/" + safe + ".dat";
++                bool writing = !strcmp(name, "NfxaCloudWrite");
++                int error = 0;
++                std::string data;
++                if (safe.empty()) error = -1;
++                else if (writing) {
++                    jobject value = objects && argc > 1 ? env->GetObjectArrayElement(objects, 1) : NULL;
++                    const char *text = value ? env->GetStringUTFChars((jstring)value, NULL) : "";
++                    std::ofstream file(path + ".tmp", std::ios::binary | std::ios::trunc);
++                    file << text;
++                    file.close();
++                    if (!file || rename((path + ".tmp").c_str(), path.c_str())) error = -1;
++                } else {
++                    std::ifstream file(path, std::ios::binary);
++                    data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
++                }
++                fprintf(stderr, "KATANA_LOCAL_SAVE %s slot=%s error=%d bytes=%zu\n", writing ? "write" : "read", safe.c_str(), error, data.size());
++                int map = CreateDsMap(0);
++                dsMapAddString(map, "type", writing ? "Nfx_cloudWrite" : "Nfx_cloudRead");
++                dsMapAddDouble(map, "error", error);
++                if (!writing) dsMapAddString(map, "string", data.c_str());
++                CreateAsynEventWithDSMap(map, 70);
++                return (jobject)new KatanaDouble(1.0);
++            }
++            if (!strcmp(name, "NfxaInit")) return (jobject)new KatanaDouble(1.0);
++            if (!strcmp(name, "NfxaGetPlayerID")) return (jobject)new String("local");
++            if (!strcmp(name, "NfxaGetLocale")) return (jobject)new String("en");
++            if (!strcmp(name, "NfxaGetGameHandle")) return (jobject)new String("Player");
++        }
++    }
++    return NULL;
++}
++
+ const ManagedMethod RunnerJNILibManagedMethods[] = {
++    ManagedMethod::RegisterStatic<&RunnerJNILib::KatanaExtensionTrace>(RunnerJNILib::clazz, "CallExtensionFunction", "(Ljava/lang/String;Ljava/lang/String;I[D[Ljava/lang/Object;)Ljava/lang/Object;"),
+     REGISTER_STATIC_METHOD(RunnerJNILib, OsGetInfo, "()I"),
+     REGISTER_STATIC_METHOD(RunnerJNILib, GamepadAxesValues, "(I)[F"),
+     REGISTER_STATIC_METHOD(RunnerJNILib, MoveTaskToBack, "()V"),
+diff --git a/gmloader/classes/RunnerJNILib.h b/gmloader/classes/RunnerJNILib.h
+index 02da204..b26bccf 100755
+--- a/gmloader/classes/RunnerJNILib.h
++++ b/gmloader/classes/RunnerJNILib.h
+@@ -50,5 +50,6 @@ public:
+     static double VideoIsLooping(JNIEnv *env, jclass clz);
+    
+ 
++    static jobject KatanaExtensionTrace(JNIEnv*, jclass, jstring, jstring, jint, jdoubleArray, jobjectArray);
+     static double mGameSpeedControl;
+ };
+diff --git a/gmloader/libyoyo.cpp b/gmloader/libyoyo.cpp
+index a2f3648..3020a37 100755
+--- a/gmloader/libyoyo.cpp
++++ b/gmloader/libyoyo.cpp
+@@ -283,7 +283,7 @@ void patch_libyoyo(so_module *mod)
+     ENSURE_SYMBOL(mod, CreateAsynEventWithDSMap, "_Z24CreateAsynEventWithDSMapii");
+     ENSURE_SYMBOL(mod, CreateDsMap, "_Z11CreateDsMapiz", "dsMapCreate");
+     ENSURE_SYMBOL(mod, dsMapAddString, "dsMapAddString");
+-    // ENSURE_SYMBOL(mod, dsMapAddDouble, "dsMapAddDouble");
++    ENSURE_SYMBOL(mod, dsMapAddDouble, "dsMapAddDouble");
+     ENSURE_SYMBOL(mod, dsMapAddInt, "dsMapAddInt");
+     ENSURE_SYMBOL(mod, Current_Room, "Current_Room");
+     ENSURE_SYMBOL(mod, Function_Add, "_Z12Function_AddPKcPFvR6RValueP9CInstanceS4_iPS1_Eib", "_Z12Function_AddPcPFvR6RValueP9CInstanceS3_iPS0_Eib");
+diff --git a/jni/jni.cpp b/jni/jni.cpp
+index 62631dc..5abae03 100755
+--- a/jni/jni.cpp
++++ b/jni/jni.cpp
+@@ -24,8 +24,9 @@ ABI_ATTR static jobjectArray iface_NewObjectArray(JNIEnv *env, jsize len, jclass
+     Class *clazz = (Class*)clz;
+     Object *first_elem = (Object*)init;
+ 
+-    if (clazz->instance_size == 0)
+-        return NULL;
++    if (!clazz) return NULL;
++    const bool references = strcmp(clazz->classpath, "java/lang/Object") == 0;
++    if (clazz->instance_size == 0 && !references) return NULL;
+ 
+     ArrayObject *arr = (ArrayObject*)calloc(1, sizeof(ArrayObject));
+     if (arr == NULL)
+@@ -33,21 +34,23 @@ ABI_ATTR static jobjectArray iface_NewObjectArray(JNIEnv *env, jsize len, jclass
+ 
+     arr->instance_clazz = clazz;
+     arr->count = len;
+-    arr->element_size = clazz->instance_size;
+-    arr->elements = (Object*)malloc(clazz->instance_size * len);
++    arr->element_size = references ? sizeof(jobject) : clazz->instance_size;
++    arr->elements = (Object*)malloc(arr->element_size * len);
+ 
+     if (arr->elements == NULL) {
+         free(arr);
+         return NULL;
+     }
+ 
+-    if (first_elem) {
++    if (references) {
++        for (jsize i = 0; i < len; ++i) ((jobject*)arr->elements)[i] = init;
++    } else if (first_elem) {
+         for (jsize i = 0; i < len; i++) {
+             uintptr_t offs = (uintptr_t)arr->elements + (arr->element_size * i);
+             memcpy((void*)offs, first_elem, arr->element_size);
+         }
+     } else {
+-        memset(arr->elements, 0, clazz->instance_size * len);
++        memset(arr->elements, 0, arr->element_size * len);
+     }
+ 
+     return (jobjectArray)arr;
+@@ -197,8 +200,9 @@ ABI_ATTR static jobject iface_AllocObject(JNIEnv *env, jclass jclazz)
+ ABI_ATTR static jobject iface_NewObject(JNIEnv *env, jclass jclazz, jmethodID methodID, ...)
+ {
+     Class *clazz = (Class*)jclazz;
+-    if (clazz->instance_size == 0)
+-        return NULL;
++    if (!clazz) return NULL;
++    const bool references = strcmp(clazz->classpath, "java/lang/Object") == 0;
++    if (clazz->instance_size == 0 && !references) return NULL;
+  
+     jobject obj = (jobject)calloc(1, clazz->instance_size);
+     va_list va;
+@@ -214,8 +218,9 @@ ABI_ATTR static jobject iface_NewObjectV(JNIEnv *env, jclass jclazz, jmethodID m
+     if (clazz == NULL)
+         return NULL;
+ 
+-    if (clazz->instance_size == 0)
+-        return NULL;
++    if (!clazz) return NULL;
++    const bool references = strcmp(clazz->classpath, "java/lang/Object") == 0;
++    if (clazz->instance_size == 0 && !references) return NULL;
+ 
+     jobject obj = (jobject)calloc(1, clazz->instance_size);
+     iface_CallNonVirtualMethodV<void>(env, obj, jclazz, methodID, args);
+@@ -225,8 +230,9 @@ ABI_ATTR static jobject iface_NewObjectV(JNIEnv *env, jclass jclazz, jmethodID m
+ ABI_ATTR static jobject iface_NewObjectA(JNIEnv *env, jclass jclazz, jmethodID methodID, const jvalue* args)
+ {
+     Class *clazz = (Class*)jclazz;
+-    if (clazz->instance_size == 0)
+-        return NULL;
++    if (!clazz) return NULL;
++    const bool references = strcmp(clazz->classpath, "java/lang/Object") == 0;
++    if (clazz->instance_size == 0 && !references) return NULL;
+ 
+     jobject obj = (jobject)calloc(1, clazz->instance_size);
+     iface_CallNonVirtualMethodA<void>(env, obj, jclazz, methodID, args);
+@@ -407,6 +413,8 @@ ABI_ATTR static jsize iface_GetArrayLength(JNIEnv *env, jarray jarr)
+ ABI_ATTR static jobject iface_GetObjectArrayElement(JNIEnv *env, jobjectArray jarr, jsize index)
+ {
+     ArrayObject* arr = (ArrayObject*)jarr;
++    if (!arr || index < 0 || index >= arr->count) return NULL;
++    if (!strcmp(arr->instance_clazz->classpath, "java/lang/Object")) return ((jobject*)arr->elements)[index];
+     uintptr_t offs = (uintptr_t)arr->elements + (index * arr->element_size);
+     return (jobject)(offs);
+ }
+@@ -414,8 +422,8 @@ ABI_ATTR static jobject iface_GetObjectArrayElement(JNIEnv *env, jobjectArray ja
+ ABI_ATTR static void iface_SetObjectArrayElement(JNIEnv *env, jobjectArray jarr, jsize index, jobject jobj)
+ {
+     ArrayObject* arr = (ArrayObject*)jarr;
+-    if (jarr == NULL)
+-        return;
++    if (!arr || index < 0 || index >= arr->count) return;
++    if (!strcmp(arr->instance_clazz->classpath, "java/lang/Object")) { ((jobject*)arr->elements)[index] = jobj; return; }
+ 
+     uintptr_t offs = (intptr_t)arr->elements + (arr->element_size * index);
+     memcpy((void*)offs, (void*)jobj, arr->element_size);
+diff --git a/jni/classes/object.cpp b/jni/classes/object.cpp
+new file mode 100644
+--- /dev/null
++++ b/jni/classes/object.cpp
+@@ -0,0 +1,11 @@
++#include "jni.h"
++#include "jni_internals.h"
++
++static Class object_class = {
++    .classpath = "java/lang/Object",
++    .classname = "Object",
++    .managed_methods = {NULL},
++    .fields = {NULL},
++    .instance_size = 0
++};
++static const int registered = ClassRegistry::register_class(object_class);

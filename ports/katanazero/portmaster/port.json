@@ -1,0 +1,37 @@
+{
+  "version": 4,
+  "name": "katanazero.zip",
+  "items": [
+    "Katana ZERO.sh",
+    "katanazero/"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Katana ZERO",
+    "porter": [
+      "elarkitechto"
+    ],
+    "desc": "Experimental Android 1.1.10 compatibility port for RG35XX-H / KNULLI. Native controls and local saves; full-game, audio and clean-exit validation pending.",
+    "inst": "Supply your Katana ZERO Netflix 1.1.10 ARM64 XAPK as ports/katanazero/katana-zero-1.1.10.xapk. Launch Katana ZERO for automatic setup. Disable Bloom.",
+    "genres": [
+      "action"
+    ],
+    "image": {
+      "screenshot": "screenshot.png",
+      "covers": [
+        "cover.png"
+      ],
+      "thumbnail": null,
+      "video": null
+    },
+    "rtr": false,
+    "exp": true,
+    "runtime": [],
+    "reqs": [],
+    "arch": [
+      "aarch64"
+    ],
+    "min_glibc": "2.38",
+    "availability": "partial"
+  }
+}
