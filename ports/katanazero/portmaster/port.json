@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Experimental Android 1.1.10 compatibility port for RG35XX-H / KNULLI. Native controls and local saves; full-game, audio and clean-exit validation pending.",
-    "inst": "Supply your Katana ZERO Netflix 1.1.10 ARM64 XAPK as ports/katanazero/katana-zero-1.1.10.xapk. Launch Katana ZERO for automatic setup. Disable Bloom.",
+    "inst": "Extract katanazero.zip into Ports. Copy your Katana ZERO Netflix 1.1.10 ARM64 XAPK to ports/katanazero/katana-zero-1.1.10.xapk. Launch Katana ZERO; first-time setup is automatic.",
     "genres": [
       "action"
     ],
@@ -32,6 +32,7 @@
       "aarch64"
     ],
     "min_glibc": "2.38",
-    "availability": "partial"
+    "availability": "partial",
+    "inst_md": "1. Extract **katanazero.zip** into **Ports**.\n2. Copy your **Katana ZERO Netflix 1.1.10 ARM64 XAPK** to `ports/katanazero/katana-zero-1.1.10.xapk`.\n3. Launch **Katana ZERO**; first-time setup is automatic."
   }
 }

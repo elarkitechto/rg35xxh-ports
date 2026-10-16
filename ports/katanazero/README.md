@@ -1,69 +1,58 @@
 # Katana ZERO
 
-Community Android compatibility port for **RG35XX-H / KNULLI**, using
-[GMLoader-next](https://github.com/JohnnyonFlame/gmloader-next). Experimental;
-not yet accepted into the PortMaster catalog.
+Port for **RG35XX-H with KNULLI and PortMaster**. Requires your own
+**Katana ZERO Netflix 1.1.10 ARM64 XAPK**. Game files are not included.
 
-## Install
+## Download
 
-1. Extract the built `katanazero.zip` into your **Ports** folder.
-2. Supply your **Katana ZERO Netflix 1.1.10 ARM64 XAPK**, named
-   `katana-zero-1.1.10.xapk`, in `ports/katanazero/`.
-3. Launch **Katana ZERO**. The launcher validates and prepares the game files
-   automatically. No additional setup script or handheld compiler is needed.
+**The Katana ZERO package is not published yet.** There is no player download
+available in Releases at this time. The repository's “Source code” ZIP is not
+an installable port. This community port is not in the official PortMaster catalog.
 
-The XAPK must contain the base APK, `config.arm64_v8a.apk` and
-`DynamicAssetDeliveryFiles.apk`. Setup verifies the native engine, game data and
-options by SHA-256. Game files are not included or downloaded by this project.
-A valid copy and applicable game/subscription rights remain the player's responsibility.
+## How to install
 
-## Controls and display
+Once `katanazero.zip` is published:
 
-Native controller input is enabled. The loader maintains controller presentation
-on startup and after loading; pressing R3 to hide touch controls is unnecessary. Follow the game's button prompts.
-The gptokeyb profile explicitly disables duplicate keyboard/mouse gameplay
-translations, including the default L3/R3 mouse clicks. It is retained for exit.
-**F + Start** uses the standard PortMaster exit combination. Keep the original
-widescreen framing: filling 4:3 by cropping hides level geometry and HUD elements.
-The loader's placeholder pattern is replaced by black until the game logo.
-Disable **Bloom** in the game's graphics options; two complete levels were
-reported playable with it disabled. This does not establish full-game stability.
+1. Download **katanazero.zip** from this project's [Releases](https://github.com/elarkitechto/rg35xxh-ports/releases).
+2. Extract it into your handheld's **Ports** folder.
+3. Rename your **Katana ZERO Netflix 1.1.10 ARM64 XAPK** to
+   **katana-zero-1.1.10.xapk** and copy it into **ports/katanazero/**.
+4. Open **Katana ZERO** from Ports. First-time setup runs automatically; wait
+   for it to finish. No compiler or second setup script is needed.
 
-## Saves
+After copying, the files should be arranged like this:
 
-Progress and options remain under `katanazero/save/`, with local slot storage in
-`save/local-slots/`. Keep that directory when updating. No initial save is shipped.
-The bridge uses a local profile. Netflix login, cloud synchronization, leaderboards
-and other online services are not implemented. The local bridge is adapted from
-behavior observed in a modified Android distribution; it does not execute that
-APK's Java implementation or perform genuine Netflix authentication.
+```text
+ports/
+├── Katana ZERO.sh
+└── katanazero/
+    ├── katana-zero-1.1.10.xapk   ← your game file
+    └── …                       ← files supplied by the port ZIP
+```
 
-## Compatibility and troubleshooting
+Other game versions and Windows/Switch files are not supported by this installer.
 
-User-confirmed: native controls and two levels. Initial data write/read and
-checksums were verified. Audio has unresolved OGG/OpenAL warnings; clean shutdown
-and full progression persistence still require validation. A SIGSEGV was observed
-after saving options on exit. Earlier termination was not proven to be an OOM.
+## Controls
 
-The official 1.1.10 XAPK has byte-identical native engine and game data to the
-runtime used during development. Fresh on-device setup from the official XAPK was verified through the title
-and opening scene using the packaged launcher, without a seed save. Gameplay,
-audible output and F+Start still need acceptance on this clean installation.
-See `install.log` for setup errors and `log.txt` for runtime errors. Unsupported
-versions are rejected before replacing game files. Modified APK files are not a
-supported installation input.
+Use the D-pad/sticks and the game's controller button prompts.
+**F + Start** exits to Ports. Touch controls are hidden automatically.
 
-## Build
+## Saves and updates
 
-See [source and packaging](source/README.md). This repository contains source,
-patches and package metadata; it does not contain game files, saves or runtime
-binaries. No release download is advertised until the package passes acceptance.
+Keep **ports/katanazero/save/** when updating. Replace the port files without
+removing that folder. Progress is saved locally; Netflix online/cloud features
+are unavailable.
 
-## Credits and license
+## Troubleshooting
 
-Katana ZERO is by Askiisoft, published by Devolver Digital. Android distribution
-and SDK are associated with Netflix. GMLoader-next is by JohnnyonFlame and its
-contributors, GPLv2. Loader patches, integration and packaging: **elarkitechto**.
-This independent community project is not endorsed by those parties or PortMaster.
-The loader patch is GPLv2; see [LICENSE](LICENSE). Game assets and branding are
-excluded from that license.
+- **Setup fails:** check the XAPK version, filename and folder, then see `katanazero/install.log`.
+- **The game closes or has audio problems:** see `katanazero/log.txt`. This is an experimental port; audio warnings and an exit crash remain under investigation.
+- **Performance drops:** try disabling Bloom in the game's graphics settings.
+
+## Credits
+
+Game: **Askiisoft / Devolver Digital**. Android distribution: **Netflix**.
+Loader: [GMLoader-next](https://github.com/JohnnyonFlame/gmloader-next) by
+JohnnyonFlame and contributors. Port: **elarkitechto**.
+
+[Licenses and attribution](../../ATTRIBUTION.md) · [Developer documentation](source/README.md)
