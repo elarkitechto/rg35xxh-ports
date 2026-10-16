@@ -7,7 +7,7 @@ from pathlib import Path, PurePosixPath
 from zipfile import ZipFile
 
 p = argparse.ArgumentParser(description=__doc__)
-p.add_argument('port', choices=['altosadventure', 'crossyroad', 'threes'])
+p.add_argument('port', choices=['altosadventure', 'crossyroad', 'threes', 'katanazero'])
 p.add_argument('--package', type=Path)
 p.add_argument('--check-only', action='store_true', help='validate without extracting')
 p.add_argument('--output', type=Path, default=Path('.local/portmaster/port'))
@@ -40,7 +40,8 @@ with ZipFile(archive) as z:
         elif item not in names:
             p.error('missing launcher: ' + item)
     source = Path(__file__).resolve().parents[1] / 'ports' / a.port / 'portmaster'
-    for name in [i for i in items if i.endswith('.sh')] + [a.port + '/install-data']:
+    preparer = '/prepare.py' if a.port == 'katanazero' else '/install-data'
+    for name in [i for i in items if i.endswith('.sh')] + [a.port + preparer]:
         if name not in names or z.read(name) != (source / name).read_bytes():
             p.error('stale or missing launcher/preparer; rebuild the complete package: ' + name)
     if a.check_only:

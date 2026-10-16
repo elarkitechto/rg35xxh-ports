@@ -3,7 +3,7 @@
 Android port for **RG35XX-H running KNULLI**, with controller support and local
 saves. Requires PortMaster and your **Crossy Road 4.5.0 ARM64** game file.
 
-## Install
+## How to install
 
 1. Download [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) and extract it into **Ports**.
 2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.
@@ -24,18 +24,18 @@ Keep the APK in that folder. When updating, replace the package files and keep y
 Online services and ads are unavailable. Progress is saved locally, using
 existing saves in `/userdata/system/cr/`.
 
+## Saves and updates
+
+Keep the game file and your save folder when updating. Replace the port package
+files, then launch the game normally. Game data is prepared automatically.
+
 ## Troubleshooting
 
 Check the game-file name and version, then read `crossyroad/install.log` or
 `crossyroad/log.txt`. Compatibility has only been tested on RG35XX-H with KNULLI.
 
-<details>
-<summary>Supported game file SHA-256</summary>
 
-`1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb`
 
-</details>
-
-Credits and licenses: https://github.com/elarkitechto/rg35xxh-ports/blob/main/ATTRIBUTION.md
+[Credits and licenses](https://github.com/elarkitechto/rg35xxh-ports/blob/main/ATTRIBUTION.md)
 
 Thanks to Hipster Whale for creating the original game.

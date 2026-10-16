@@ -33,6 +33,6 @@
     ],
     "min_glibc": "2.38",
     "availability": "partial",
-    "inst_md": "1. Extract **katanazero.zip** into **Ports**.\n2. Copy your **Katana ZERO Netflix 1.1.10 ARM64 XAPK** to `ports/katanazero/katana-zero-1.1.10.xapk`.\n3. Launch **Katana ZERO**; first-time setup is automatic."
+    "inst_md": "1. Download [katanazero.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/katanazero.zip).\n2. Extract it into your handheld's **Ports** folder.\n3. Rename your **Katana ZERO Netflix 1.1.10 ARM64 XAPK** to\n   **katana-zero-1.1.10.xapk** and copy it into **ports/katanazero/**.\n4. Open **Katana ZERO** from Ports. First-time setup runs automatically; wait\n   for it to finish. No compiler or second setup script is needed."
   }
 }

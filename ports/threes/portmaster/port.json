@@ -32,6 +32,7 @@
       "aarch64"
     ],
     "min_glibc": "",
-    "availability": "partial"
+    "availability": "partial",
+    "inst_md": "1. Download [threes.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/threes.zip) and extract it into **Ports**.\n2. Copy `threes-3.1.6144.apk` into `ports/threes/`.\n3. Launch **Threes!** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
   }
 }
