@@ -35,3 +35,12 @@ licenses in `ports/triples/licenses/`. See the demake’s
 
 Package layouts follow [PortMaster](https://github.com/PortsMaster/PortMaster-New).
 The ports have not yet been accepted into its official catalog.
+
+## Katana ZERO
+
+GMLoader-next by JohnnyonFlame and contributors, GPLv2, pinned revision
+`522d964025e8ecb739c5aeb0f57afaf6f7927849`. Katana-specific loader patches and
+packaging by elarkitechto, GPLv2; see [license](ports/katanazero/LICENSE).
+Katana ZERO belongs to Askiisoft / Devolver Digital; Android SDK and services
+are associated with Netflix. Proprietary game files and artwork are excluded.
+The root Apache-2.0 framework license does not relicense this component.
