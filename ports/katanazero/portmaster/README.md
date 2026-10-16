@@ -20,6 +20,8 @@ A valid copy and applicable game/subscription rights remain the player's respons
 ## Controls and display
 
 Native controller input is enabled. Follow the game's button prompts.
+The gptokeyb profile explicitly disables duplicate keyboard/mouse gameplay
+translations, including the default L3/R3 mouse clicks. It is retained for exit.
 **F + Start** uses the standard PortMaster exit combination. Keep the original
 widescreen framing: filling 4:3 by cropping hides level geometry and HUD elements.
 The loader's placeholder pattern is replaced by black until the game logo.
