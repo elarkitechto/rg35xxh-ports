@@ -12,7 +12,10 @@ def main():
  source = ROOT / 'katana-zero-1.1.10.xapk'
  if not source.is_file():
   raise RuntimeError('Copy your Katana ZERO Netflix 1.1.10 XAPK here as katana-zero-1.1.10.xapk.')
- digest=hashlib.sha256(source.read_bytes()).hexdigest()
+ hasher=hashlib.sha256()
+ with source.open('rb') as stream:
+  for block in iter(lambda: stream.read(1024*1024), b''): hasher.update(block)
+ digest=hasher.hexdigest()
  marker=ROOT/'prepared.json'
  if marker.exists() and json.loads(marker.read_text()).get('source_sha256')==digest and (ROOT/'katana.port').exists(): return
  with zipfile.ZipFile(source) as outer:
