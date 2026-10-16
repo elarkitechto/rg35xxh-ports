@@ -19,7 +19,8 @@ A valid copy and applicable game/subscription rights remain the player's respons
 
 ## Controls and display
 
-Native controller input is enabled. Follow the game's button prompts.
+Native controller input is enabled. The loader maintains controller presentation
+on startup and after loading; pressing R3 to hide touch controls is unnecessary. Follow the game's button prompts.
 The gptokeyb profile explicitly disables duplicate keyboard/mouse gameplay
 translations, including the default L3/R3 mouse clicks. It is retained for exit.
 **F + Start** uses the standard PortMaster exit combination. Keep the original

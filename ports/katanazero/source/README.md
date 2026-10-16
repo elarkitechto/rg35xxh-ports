@@ -13,7 +13,16 @@ The local compatibility path is gated by `KATANA_UNLOCKED_COMPAT=1`. The histori
 name identifies the implementation behavior; installation accepts the verified
 original XAPK components. No Java/Dex VM or real Netflix authentication is provided.
 
-Use `package.py --loader PATH --libm PATH --cover COVER.png --screenshot SCREENSHOT.png --output PATH`.
+Build the presentation adapter on ARM64 Linux:
+`source/build-controller-mode.sh PATH_TO_LOADER libkatana-controller-mode.so`.
+It derives loader offsets from its symbol table and writes a matching SHA-256
+sidecar. Do not strip the loader before this step. `CC` and `NM` may select a
+cross toolchain. The engine address/slot is pinned to the verified 1.1.10 engine.
+The launcher rejects mismatched loader/engine files before using the adapter.
+The adapter checks the scalar `gamepadMode` as real or boolean and sets it to
+controller mode without synthetic input; save files are not edited.
+
+Use `package.py --controller-shim libkatana-controller-mode.so --loader PATH --libm PATH --cover COVER.png --screenshot SCREENSHOT.png --output PATH`.
 Supply a vertical cover and a separate gameplay screenshot with appropriate
 redistribution rights. They are not stored in the public source tree. The loader must be built
 from the pinned source plus this patch. Supply the upstream ARM64 Android `libm.so`
