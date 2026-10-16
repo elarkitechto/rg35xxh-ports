@@ -5,6 +5,14 @@ saves. Requires PortMaster and your **Crossy Road 4.5.0 ARM64** game file.
 
 ## How to install
 
+
+**Required game file:** `crossy-road-4-5-0.apk`
+
+**SHA-256:**
+```text
+1ad8bed1353b36a953c020c1562a519adceda02e4b4e98afa8eaf0db87643afb
+```
+
 1. Download [crossyroad.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/crossyroad.zip) and extract it into **Ports**.
 2. Copy `crossy-road-4-5-0.apk` into `ports/crossyroad/`.
 3. Launch **Crossy Road** from Ports. First-run setup is automatic.

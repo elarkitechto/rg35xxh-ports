@@ -12,7 +12,7 @@
       "elarkitechto"
     ],
     "desc": "Testing candidate 0.2.0-rc1: Android Alto 1.8.8 with offline controller adaptation. Verified only on RG35XX-H/KNULLI; other devices and CFWs need testing.",
-    "inst": "Copy your exact Alto 1.8.8 APK as altos-adventure-1-8-8.apk into ports/altosadventure, then launch Alto's Adventure. First launch verifies and installs everything automatically; no terminal or second script is needed. APK SHA-256: efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0.",
+    "inst": "Copy your exact Alto 1.8.8 APK as altos-adventure-1-8-8.apk into ports/altosadventure, then launch Alto's Adventure. First launch verifies and installs everything automatically; no terminal or second script is needed. APK SHA-256: efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0. Required game file SHA-256: efb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0.",
     "genres": [
       "arcade"
     ],
@@ -33,6 +33,6 @@
     ],
     "min_glibc": "",
     "availability": "partial",
-    "inst_md": "1. Download [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) and extract it into **Ports**.\n2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.\n3. Launch **Alto\u2019s Adventure** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
+    "inst_md": "**Required game file:** `altos-adventure-1-8-8.apk`\n\n**SHA-256:**\n```text\nefb8eb2054e6c66173fc1638e6d005f048b48446b6029c4fdcb8aa8b9dcaaae0\n```\n\n1. Download [altosadventure.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/latest/download/altosadventure.zip) and extract it into **Ports**.\n2. Copy `altos-adventure-1-8-8.apk` into `ports/altosadventure/`.\n3. Launch **Alto\u2019s Adventure** from Ports. First-run setup is automatic.\n\nKeep the APK in that folder. When updating, replace the package files and keep your saves."
   }
 }
