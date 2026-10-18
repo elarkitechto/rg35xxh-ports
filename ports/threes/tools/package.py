@@ -3,6 +3,8 @@
 import argparse
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
@@ -44,4 +46,5 @@ with ZipFile(a.output, 'w', compression=ZIP_DEFLATED) as z:
     z.writestr('threes/version.txt', '0.2.0-rc2\n')
     checksums=''.join(hashlib.sha256((a.runtime / name).read_bytes()).hexdigest()+'  '+name+'\n' for name in ['threes-loader','libOpenSLES.so'])
     z.writestr('threes/runtime/runtime.sha256',checksums)
+subprocess.run([sys.executable, str(root.parents[1] / "tools/sanitize-release.py"), str(a.output)], check=True)
 print(a.output)

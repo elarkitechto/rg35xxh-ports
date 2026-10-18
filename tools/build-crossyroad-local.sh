@@ -26,6 +26,7 @@ chmod +x "$STAGE/Crossy Road.sh" "$STAGE/crossyroad/runtime/crossy-loader"
 mkdir -p "$ROOT/.local/releases"
 rm -f "$ROOT/.local/releases/crossyroad.zip"
 (cd "$STAGE" && zip -qr "$ROOT/.local/releases/crossyroad.zip" . -x '*/._*' '._*')
+python3 "$ROOT/tools/sanitize-release.py" "$ROOT/.local/releases/crossyroad.zip"
 cp "$ROOT/.local/releases/crossyroad.zip" "$ROOT/.local/releases/crossyroad-0.2.0-rc2.zip"
 (cd "$ROOT/.local/releases" && shasum -a 256 crossyroad-0.2.0-rc2.zip > crossyroad-0.2.0-rc2.zip.sha256)
 echo "Built $ROOT/.local/releases/crossyroad-0.2.0-rc2.zip"

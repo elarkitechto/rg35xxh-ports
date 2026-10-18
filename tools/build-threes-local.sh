@@ -8,6 +8,7 @@ export THREES_EDITION=paid
 export THREES_BUILD_DIR=${THREES_BUILD_DIR:-$ROOT/.local/threes-android-build}
 sh "$ROOT/ports/threes/source/build.sh"
 python3 "$ROOT/ports/threes/tools/package.py" --runtime "$THREES_BUILD_DIR" --media "$THREES_MEDIA_DIR" --output "$ROOT/.local/releases/threes-0.2.0-rc2.zip"
+python3 "$ROOT/tools/sanitize-release.py" "$ROOT/.local/releases/threes-0.2.0-rc2.zip"
 cp "$ROOT/.local/releases/threes-0.2.0-rc2.zip" "$ROOT/.local/releases/threes.zip"
 (cd "$ROOT/.local/releases" && shasum -a 256 threes-0.2.0-rc2.zip > threes-0.2.0-rc2.zip.sha256)
 

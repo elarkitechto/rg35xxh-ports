@@ -16,14 +16,14 @@ case "${THREES_EDITION:-paid}" in
   free) ;;
   *) echo 'THREES_EDITION must be free or paid' >&2; exit 1 ;;
 esac
-"$ZIG" cc $PROFILE_FLAGS -target aarch64-linux-gnu -O2 -g -fno-pie -no-pie -rdynamic -Wl,--allow-shlib-undefined \
+"$ZIG" cc $PROFILE_FLAGS -ffile-prefix-map="$ROOT"=/build/ports/threes -fdebug-prefix-map="$HOME"=/build/home -target aarch64-linux-gnu -O2 -g -fno-pie -no-pie -rdynamic -Wl,--allow-shlib-undefined \
   -I runtime -I runtime/include -I "$SDK/include" -I "$SDK/include/aarch64-linux-gnu" \
   runtime/main_threes.c runtime/threes_profile.c runtime/threes_display.c runtime/threes_input.c runtime/threes_ui.c runtime/threes_offline.c runtime/so_util.c runtime/jni_shim.c runtime/imports_unity.gen.c \
   runtime/jni_idx_stubs.gen.c runtime/recon_egl.c runtime/pthread_shim.c runtime/egl_shim.c \
   runtime/util.c runtime/error.c runtime/opensles_shim.c runtime/crossy_opensl_entry.c "$THREES_LINK_LIBS/libSDL2.so" \
   "$THREES_LINK_LIBS/libmali.so" "$THREES_LINK_LIBS/libz.so" -lm -ldl -lpthread \
   -o "$OUT/threes-loader"
-"$ZIG" cc $PROFILE_FLAGS -target aarch64-linux-gnu -shared -fPIC -O2 -I runtime -I runtime/include \
+"$ZIG" cc $PROFILE_FLAGS -ffile-prefix-map="$ROOT"=/build/ports/threes -fdebug-prefix-map="$HOME"=/build/home -target aarch64-linux-gnu -shared -fPIC -O2 -I runtime -I runtime/include \
   -I "$SDK/include" runtime/opensles_shim.c runtime/crossy_opensl_entry.c "$THREES_LINK_LIBS/libSDL2.so" \
   -ldl -lpthread -o "$OUT/libOpenSLES.so"
 printf 'Built %s and libOpenSLES.so\n' "$OUT/threes-loader"

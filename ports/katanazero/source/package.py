@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, zipfile, hashlib
+import argparse, zipfile, hashlib, subprocess, sys
 from pathlib import Path
 p=argparse.ArgumentParser()
 p.add_argument('--loader',type=Path,required=True)
@@ -25,4 +25,5 @@ with zipfile.ZipFile(a.output,'w',zipfile.ZIP_DEFLATED) as z:
  z.write(sidecar,'katanazero/controller-mode.loader.sha256')
  z.write(a.libm,'katanazero/lib/arm64-v8a/libm.so')
  z.write(root/'LICENSE','katanazero/LICENSE')
+subprocess.run([sys.executable, str(root.parents[1] / "tools/sanitize-release.py"), str(a.output)], check=True)
 print(a.output)

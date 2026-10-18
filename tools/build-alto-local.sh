@@ -27,6 +27,7 @@ mkdir -p "$ROOT/.local/releases"
 # Replace old archive, so removed files cannot survive an update.
 rm -f "$ROOT/.local/releases/altosadventure.zip"
 (cd "$STAGE" && zip -qr "$ROOT/.local/releases/altosadventure.zip" . -x '*/._*' '._*')
+python3 "$ROOT/tools/sanitize-release.py" "$ROOT/.local/releases/altosadventure.zip"
 cp "$ROOT/.local/releases/altosadventure.zip" "$ROOT/.local/releases/altosadventure-0.2.0-rc2.zip"
 (cd "$ROOT/.local/releases" && shasum -a 256 altosadventure-0.2.0-rc2.zip > altosadventure-0.2.0-rc2.zip.sha256)
 echo "Built: $ROOT/.local/releases/altosadventure-0.2.0-rc2.zip"
