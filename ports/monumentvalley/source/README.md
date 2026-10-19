@@ -45,3 +45,8 @@ accumulated travel, excluding blocked input and forced resets. AutoRotator.Updat
 observes actual target-angle changes during StartMove/StartReverseMove, with a
 short renewable pulse window; idle and constant rotators are not hooked. CameraShaker supplies procedural shake lifetime
 and explicit stun events; ordinary camera translation does not imply rumble.
+
+The fixed-controller profile preserves the storyteller page's existing
+FullScreenContinueButton in portrait as well as landscape. Its native input
+binding, input acceptance, raycast and dialogue sequences remain in charge.
+Other UIDisableInLandscape layouts retain their original orientation rules.

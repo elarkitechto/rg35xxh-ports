@@ -5,7 +5,7 @@ Android port for **RG35XX-H with KNULLI and PortMaster**. Supply your own
 
 ## Install
 
-1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.3/monumentvalley.zip) and extract it into **Ports**.
+1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.4/monumentvalley.zip) and extract it into **Ports**.
 2. Rename the compatible APK to **monument-valley-3.10.114.apk** and copy it into **ports/monumentvalley/**.
 3. Open **Monument Valley** from Ports. First-run conversion is automatic; no compiler or separate setup launcher is needed. Keep the APK in that folder.
 
@@ -25,6 +25,7 @@ This is the Android game with its original landscape layout, not the PC edition.
 | Left stick / D-pad | Move the cursor or navigate menus |
 | Right stick in TATE | Move the cursor; left stick remains available |
 | A, B, X, Y | Follow the game's prompts: physical letters match game letters |
+| A or B during storyteller dialogue | Continue, in landscape or TATE |
 | L2 + R2 | Toggle landscape / TATE |
 | F + Start | Save and exit to Ports |
 

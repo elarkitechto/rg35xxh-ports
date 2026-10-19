@@ -95,6 +95,34 @@ void monument_stop_vsync(void) {
 
 #include "so_util.h"
 static void *(*resolve_icall)(const char*);
+/* The Android portrait layout disables the full-screen storyteller button:
+   its replacement is touch-only. Keep the existing gamepad-bound button alive
+   on this fixed-controller port in either orientation. All acceptance, fade,
+   raycast and sequence handling still belongs to the original button. */
+static void *(*ui_game_object)(void*,void*),*(*ui_transform)(void*,void*),*(*ui_parent)(void*,void*),*(*ui_name)(void*,void*);
+static void (*ui_set_active)(void*,int,void*),(*ui_null_reference)(void);
+static int ui_named(void *object,const char *name){
+ if(!object)return 0;
+ void *text=ui_name(object,NULL);if(!text)return 0;
+ size_t n=strlen(name);if(*(int*)((char*)text+16)!=(int)n)return 0;
+ const uint16_t *chars=(void*)((char*)text+20);
+ for(size_t i=0;i<n;i++)if(chars[i]!=(unsigned char)name[i])return 0;
+ return 1;
+}
+static void controller_orientation_layout(void *self,void *layout,void *method){
+ (void)method;
+ if(!layout || !*(void**)((char*)layout+0x50)){ui_null_reference();return;}
+ void *root=*(void**)((char*)layout+0x50);
+ int portrait=*(float*)((char*)root+0x24)<=*(float*)((char*)root+0x2c);
+ int active=portrait ^ (*(int*)((char*)self+0x20)==1);
+ void *object=ui_game_object(layout,NULL);
+ if(!object){ui_null_reference();return;}
+ if(ui_named(object,"FullScreenContinueButton")){
+  void *transform=ui_transform(layout,NULL),*parent=transform?ui_parent(transform,NULL):NULL;
+  if(ui_named(parent,"StorytellerPage"))active=1;
+ }
+ ui_set_active(object,active,NULL);
+}
 void monument_init_il2cpp_bridge(uintptr_t base) {
  if(getenv("MONUMENT_FIXED_PAD")) {
   /* Fixed native controller: bypass only automatic device-usage discovery.
@@ -106,6 +134,15 @@ void monument_init_il2cpp_bridge(uintptr_t base) {
   if(type[0]!=0xa9be57fe || type[1]!=0xa9014ff4 || type[2]!=0xb000c7b5)exit(23);
   type[0]=0x7100041f;type[1]=0x1a9f17e0;type[2]=0xd65f03c0; /* Xbox supported */
   __builtin___clear_cache((char*)type,(char*)(type+3));
+  /* UIDisableInLandscape.SetupLayout, including its original layout-size test.
+     Pin the root UILayout fields and original helper call sites to this build. */
+  uint32_t *layout=(void*)(base+0x12f3fc0);
+  if(layout[0]!=0x6dbe23e9 || layout[1]!=0xa9014ffe || layout[2]!=0xb4000281 || layout[3]!=0xf9402828)exit(23);
+  ui_game_object=(void*)(base+0x265bd00);ui_transform=(void*)(base+0x265bcc4);
+  ui_parent=(void*)(base+0x26671a0);ui_name=(void*)(base+0x2661ec8);
+  ui_set_active=(void*)(base+0x265e710);ui_null_reference=(void*)(base+0x11711b4);
+  hook_arm64((uintptr_t)layout,(uintptr_t)controller_orientation_layout);
+  __builtin___clear_cache((char*)layout,(char*)(layout+4));
   fprintf(stderr,"[MONUMENT-INPUT] fixed Xbox backend replaces device-usage discovery\n");
  }
  if(getenv("MONUMENT_LANDSCAPE")) {

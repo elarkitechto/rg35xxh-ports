@@ -43,7 +43,7 @@ with ZipFile(a.output, 'w', compression=ZIP_DEFLATED) as z:
         info.external_attr = (0o100755 if executable else 0o100644) << 16
         info.compress_type = ZIP_DEFLATED
         z.writestr(info, source.read_bytes())
-    z.writestr('monumentvalley/version.txt', '0.1.3\n')
+    z.writestr('monumentvalley/version.txt', '0.1.4\n')
     checksums=''.join(hashlib.sha256((a.runtime / name).read_bytes()).hexdigest()+'  '+name+'\n' for name in ['monument-loader','libOpenSLES.so'])
     z.writestr('monumentvalley/runtime/runtime.sha256',checksums)
 subprocess.run([sys.executable, str(root.parents[1] / "tools/sanitize-release.py"), str(a.output)], check=True)
