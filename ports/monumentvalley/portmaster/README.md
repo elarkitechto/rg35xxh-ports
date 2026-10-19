@@ -5,7 +5,7 @@ Android port for **RG35XX-H with KNULLI and PortMaster**. Supply your own
 
 ## Install
 
-1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.2/monumentvalley.zip) and extract it into **Ports**.
+1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.3/monumentvalley.zip) and extract it into **Ports**.
 2. Rename the compatible APK to **monument-valley-3.10.114.apk** and copy it into **ports/monumentvalley/**.
 3. Open **Monument Valley** from Ports. First-run conversion is automatic; no compiler or separate setup launcher is needed. Keep the APK in that folder.
 
@@ -35,7 +35,8 @@ and rotates the output; the original game handles its layouts and interactions.
 
 Short pulses accompany accepted menu actions, pressure buttons, conversation
 starts and level completion. Turning a handle clicks at the game's own notch
-transitions; sliders pulse during effective interactive movement. Camera shake
+transitions; sliders and the totem pulse during effective movement. Authored
+building rotations pulse while their target angle changes. Camera shake
 and stun effects drive rumble as well, including authored scripted tremors.
 Explosion/collapse sequences stop on completion, cancellation or scene teardown.
 

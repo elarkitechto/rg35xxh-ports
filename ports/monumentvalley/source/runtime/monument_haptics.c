@@ -25,7 +25,8 @@ static struct {void *iterator;uint32_t start;} sequences[4];
 static uint32_t last_event[9];
 static unsigned seen_events;
 static int enabled,reported;
-static uint32_t shake_until,shake_start;
+static uint32_t shake_until,shake_start,rotation_until,rotation_start;
+static void (*original_rotator)(void*,void*);
 static void (*original_motion)(void*,float,int,int,int,void*);
 static void (*original_shake)(void*,float,void*);
 static void *(*original_stun)(void*,void*);
@@ -106,7 +107,7 @@ static void start_pulse(enum effect kind){
 static void end_sequence(void *iterator){
  for(size_t i=0;i<4;i++)if(sequences[i].iterator==iterator)sequences[i].iterator=NULL;
 }
-static void clear_sequences(void){memset(sequences,0,sizeof(sequences));shake_until=0;}
+static void clear_sequences(void){memset(sequences,0,sizeof(sequences));shake_until=0;rotation_until=0;}
 static void menu_action(void *self,void *method){original_menu(self,method);start_pulse(MENU);}
 static void *talk_started(void *self,void *method){void *result=original_talk(self,method);start_pulse(TALK);return result;}
 static void level_ended(void *self,void *method){start_pulse(LEVEL_END);original_end(self,method);}
@@ -140,10 +141,29 @@ static void quit_level(void *self,void *method){monument_haptics_stop();original
    thresholds are invented for manivels; a pulse follows a new authored notch. */
 static void motion_update(void *self,float value,int moving,int force,int snapping,void *method){
  float before=*(float*)((char*)self+0x88);
+ float distance_before=*(float*)((char*)self+0x50);
  original_motion(self,value,moving,force,snapping,method);
  int type=*(int*)((char*)self+0x44);
  if(moving && !force && type==3 && before!=*(float*)((char*)self+0x88))start_pulse(NOTCH);
+ else if(moving && !force && type==4 && isfinite(value) && value-distance_before>.00001f)start_pulse(SLIDE);
  else if(moving && !force && (type==2 || type==5) && fabsf(value)>.001f)start_pulse(SLIDE);
+}
+/* AutoRotator is the authored StartMove/StartReverseMove path, separate from
+   interactive and constant rotators. Observe its target's accepted angle after
+   Update, including the final frame that clears snapping/reverting. */
+static void building_rotation(void *self,void *method){
+ void *target=*(void**)((char*)self+0x20);
+ int moving=*(unsigned char*)((char*)self+0x48) || *(unsigned char*)((char*)self+0x49);
+ float before=target?*(float*)((char*)target+0xa4):0;
+ original_rotator(self,method);
+ if(moving && target && target==*(void**)((char*)self+0x20)){
+  float after=*(float*)((char*)target+0xa4);
+  if(isfinite(before) && isfinite(after) && fabsf(after-before)>.00001f){
+   uint32_t now=SDL_GetTicks();
+   if(!rotation_until || (int32_t)(rotation_until-now)<=0){rotation_start=now;fprintf(stderr,"[MONUMENT-HAPTIC] building rotation\n");}
+   rotation_until=now+80;
+  }
+ }
 }
 static void camera_shake(void *self,float delta,void *method){
  original_shake(self,delta,method);
@@ -178,6 +198,10 @@ void monument_haptics_tick(void){
   uint32_t phase=(now-shake_start)%180;
   if(phase<90 && strength<strengths[SHAKE]){strength=strengths[SHAKE];remaining=90-phase;}
  }
+ if(rotation_until && (int32_t)(rotation_until-now)>0){
+  uint32_t phase=(now-rotation_start)%180;
+  if(phase<70 && strength<strengths[TALK]){strength=strengths[TALK];remaining=70-phase;}
+ }
  uint32_t deadline=now+remaining;
  if(strength!=output_strength || (strength && (int32_t)(output_deadline-now)<=0)){
   int result=motor_submit(strength,remaining)?0:SDL_GameControllerRumble(pad,strength,strength,remaining);
@@ -210,6 +234,7 @@ void monument_haptics_init(uintptr_t base){
  const char *setting=getenv("MONUMENT_HAPTICS");
  if(setting && !strcmp(setting,"0"))return;
  struct detour hooks[]={
+  {0x12862a4,(uintptr_t)building_rotation,&original_rotator,{0x6dbd23e9,0xf9000bfe,0xa9024ff4,0x9000cbb4}},
   {0x129a17c,(uintptr_t)motion_update,&original_motion,{0xd10283ff,0x6d023bef,0x6d0333ed,0x6d042beb}},
   {0x1264d84,(uintptr_t)camera_shake,&original_shake,{0xfc1c0fec,0x6d012beb,0x6d0223e9,0xa9034ffe}},
   {0x1264f9c,(uintptr_t)camera_stun,&original_stun,{0xa9be57fe,0xa9014ff4,0xd000ccb4,0x396a9688}},

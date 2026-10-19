@@ -40,5 +40,8 @@ The H700 native motor worker owns sysfs output and a monotonic off timer. It
 does not sleep the rendering or audio threads. Normal shutdown joins the worker
 and turns the motor off; fatal signal/watchdog paths also request motor-off.
 MoverAudio.UpdateValue supplies the game's own rotation-notch transitions and
-interactive slider movement. CameraShaker supplies procedural shake lifetime
+interactive slider movement. Totem feedback requires an increase in its mover's
+accumulated travel, excluding blocked input and forced resets. AutoRotator.Update
+observes actual target-angle changes during StartMove/StartReverseMove, with a
+short renewable pulse window; idle and constant rotators are not hooked. CameraShaker supplies procedural shake lifetime
 and explicit stun events; ordinary camera translation does not imply rumble.
