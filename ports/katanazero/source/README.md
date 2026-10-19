@@ -1,5 +1,7 @@
 # Source and packaging
 
+See [Compatibility](COMPATIBILITY.md) for supported files and known limitations.
+
 Upstream: https://github.com/JohnnyonFlame/gmloader-next
 Pinned revision: `522d964025e8ecb739c5aeb0f57afaf6f7927849`.
 Apply `gmloader-katana.patch` using `build.sh`. Build on Linux ARM64 with the
