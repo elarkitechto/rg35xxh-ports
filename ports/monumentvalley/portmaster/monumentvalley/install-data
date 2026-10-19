@@ -1,0 +1,46 @@
+#!/bin/sh
+set -eu
+PORTDIR=${1:-$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)}
+APK="$PORTDIR/monument-valley-3.10.114.apk"
+EXPECTED_APK=6a786c9cc65a196abb45e29dd01c400dfcf547d42fe004e3b084f235ac5fa301
+EXPECTED_IL2CPP=477e24443ceabd7d88876d18539f19e83a7c479c68f43a22e4ef23f2bc427a22
+EXPECTED_UNITY=ddc495a6a44508df0c2e377cd4116292ff25aece4f2509714337f279293a2552
+DATA="$PORTDIR/gamedata"
+RUNTIME="$PORTDIR/runtime"
+check_libraries() {
+ [ -s "$RUNTIME/libil2cpp.so" ] && [ -s "$RUNTIME/libunity.so" ] || return 1
+ (cd "$RUNTIME" && printf '%s\n' "$EXPECTED_IL2CPP  libil2cpp.so" "$EXPECTED_UNITY  libunity.so" | sha256sum -c -)
+}
+if [ "$(cat "$DATA/.apk.sha256" 2>/dev/null || true)" = "$EXPECTED_APK" ] &&
+ [ -s "$DATA/assets/bin/Data/data.unity3d" ] &&
+ [ -s "$DATA/assets/bin/Data/datapack.unity3d" ] &&
+ [ -s "$DATA/assets/bin/Data/Managed/Metadata/global-metadata.dat" ] && check_libraries; then
+ echo 'Game data is ready.'
+ exit 0
+fi
+[ -f "$APK" ] || { echo 'Missing monument-valley-3.10.114.apk (ARM64).'; exit 1; }
+ACTUAL=$(sha256sum "$APK" | cut -d ' ' -f 1)
+[ "$ACTUAL" = "$EXPECTED_APK" ] || { echo 'Unsupported APK: see README for the required SHA-256.'; exit 1; }
+STAGE=$(mktemp -d "$PORTDIR/.install.XXXXXX")
+cleanup() {
+ if [ ! -d "$DATA" ] && [ -d "$STAGE/previous" ]; then mv "$STAGE/previous" "$DATA"; fi
+ rm -rf "$STAGE"
+}
+trap cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' HUP TERM
+unzip -oq "$APK" 'assets/bin/Data/*' -d "$STAGE/data"
+unzip -oq "$APK" 'lib/arm64-v8a/libil2cpp.so' 'lib/arm64-v8a/libunity.so' -d "$STAGE/libraries"
+for file in data.unity3d datapack.unity3d Managed/Metadata/global-metadata.dat; do
+ [ -s "$STAGE/data/assets/bin/Data/$file" ] || { echo 'Required Unity data missing.'; exit 1; }
+done
+(cd "$STAGE/libraries/lib/arm64-v8a" && printf '%s\n' "$EXPECTED_IL2CPP  libil2cpp.so" "$EXPECTED_UNITY  libunity.so" | sha256sum -c -)
+mkdir -p "$RUNTIME"
+for file in libil2cpp.so libunity.so; do
+ cp "$STAGE/libraries/lib/arm64-v8a/$file" "$RUNTIME/$file.next"
+ mv "$RUNTIME/$file.next" "$RUNTIME/$file"
+done
+printf '%s\n' "$EXPECTED_APK" > "$STAGE/data/.apk.sha256"
+if [ -e "$DATA" ]; then mv "$DATA" "$STAGE/previous"; fi
+mv "$STAGE/data" "$DATA"
+echo 'Monument Valley 3.10.114 ARM64 data installed.'

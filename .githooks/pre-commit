@@ -25,3 +25,9 @@ python3 -m json.tool "$root/ports/threes/portmaster/port.json" >/dev/null
 python3 -m unittest discover -s "$root/ports/threes/tests"
 
 python3 -m unittest discover -s "$root/tools/tests"
+
+# Monument Valley final package sources and metadata.
+bash -n "$root/ports/monumentvalley/portmaster/Monument Valley.sh"
+sh -n "$root/ports/monumentvalley/portmaster/monumentvalley/install-data" "$root/ports/monumentvalley/source/build.sh" "$root/tools/build-monumentvalley-local.sh"
+python3 -m json.tool "$root/ports/monumentvalley/portmaster/port.json" >/dev/null
+python3 -c "import xml.etree.ElementTree as E; E.parse('$root/ports/monumentvalley/portmaster/gameinfo.xml')"

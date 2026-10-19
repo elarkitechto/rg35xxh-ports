@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameList><game><path>./Monument Valley.sh</path><name>Monument Valley</name>
+<desc>Guide Ida through impossible architecture.</desc><developer>ustwo games</developer><publisher>ustwo games</publisher><genre>Puzzle</genre>
+<image>./monumentvalley/cover.png</image><thumbnail>./monumentvalley/cover.png</thumbnail></game></gameList>

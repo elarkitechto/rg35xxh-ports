@@ -19,6 +19,8 @@ controller support, save integration, installers and packaging are by
 - **Crossy Road** and its assets belong to [Hipster Whale](https://www.crossyroad.com/). Its JNI bridge includes game-specific adaptations. Framework notices: [LICENSE](LICENSE), [NOTICE](NOTICE).
 - **Threes!** and its assets belong to Sirvo. This port reuses the framework and Alto/Crossy adaptations. Notices: [LICENSE](ports/threes/LICENSE), [NOTICE](ports/threes/NOTICE).
 
+- **Monument Valley** and its assets belong to ustwo games. Compatibility framework notices: [LICENSE](ports/monumentvalley/LICENSE), [NOTICE](ports/monumentvalley/NOTICE).
+
 Players supply their own compatible game files. The repository license does not
 grant rights to the games, Unity libraries, game artwork or firmware drivers.
 These community ports are independent of the original developers and PortMaster.

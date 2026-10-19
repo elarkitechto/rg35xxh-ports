@@ -7,7 +7,7 @@ from pathlib import Path, PurePosixPath
 from zipfile import ZipFile
 
 p = argparse.ArgumentParser(description=__doc__)
-p.add_argument('port', choices=['altosadventure', 'crossyroad', 'threes', 'katanazero'])
+p.add_argument('port', choices=['altosadventure', 'crossyroad', 'threes', 'katanazero', 'monumentvalley'])
 p.add_argument('--package', type=Path)
 p.add_argument('--check-only', action='store_true', help='validate without extracting')
 p.add_argument('--output', type=Path, default=Path('.local/portmaster/port'))

@@ -1,0 +1,28 @@
+nextos_ports_android
+Copyright 2026 felc18-blip
+
+Este produto inclui código derivado de:
+  - syberia_arm64  (https://github.com/mtojek/syberia_arm64)
+  - lswtcs_arm64   (https://github.com/mtojek/lswtcs_arm64)
+  Copyright mtojek, licenciado sob Apache License 2.0.
+
+Mudanças: o núcleo (so_util, egl_shim, opensles_shim, util, error) foi
+extraído como framework reutilizável; adicionada ferramenta de scaffolding
+(tools/new-port.sh) e suporte ao toolchain NextOS / GPUs Mali.
+
+Alto's Adventure adaptation: 2026 elarkitechto.
+Changes include game-specific offline policy, NGUI controller navigation,
+haptic event hooks, frame-budget pacing, automatic APK installation and packaging.
+Alto's Adventure and its original game data remain property of their creators.
+Khronos headers retain the licenses in their respective files.
+
+Threes! Android adaptation: 2026 elarkitechto.
+Changes include Unity 2022 ELF loading, Linux frame synchronization, native
+Unity Input System controller events, TATE presentation, offline boundaries,
+PlayerPrefs persistence and automatic split-XAPK installation.
+Threes! and its original data remain property of their respective creators.
+
+Monument Valley adaptation: 2026 elarkitechto.
+Changes include Unity 2022.3 compatibility, native gamepad input, landscape/TATE
+layout, local save integration, audio buffering and automatic APK installation.
+Monument Valley belongs to ustwo games. No game data is included.
