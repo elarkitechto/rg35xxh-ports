@@ -5,7 +5,7 @@ Android port for **RG35XX-H with KNULLI and PortMaster**. Supply your own
 
 ## Install
 
-1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.0/monumentvalley.zip) and extract it into **Ports**.
+1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.1/monumentvalley.zip) and extract it into **Ports**.
 2. Rename the compatible APK to **monument-valley-3.10.114.apk** and copy it into **ports/monumentvalley/**.
 3. Open **Monument Valley** from Ports. First-run conversion is automatic; no compiler or separate setup launcher is needed. Keep the APK in that folder.
 
@@ -31,11 +31,20 @@ This is the Android game with its original landscape layout, not the PC edition.
 The game starts in landscape. TATE changes the logical resolution to portrait
 and rotates the output; the original game handles its layouts and interactions.
 
+## Haptic feedback
+
+Short pulses accompany accepted menu actions, pressure-button down animations,
+conversation starts and level completion. Authored explosion and collapse
+sequences pulse while their original coroutine runs, stopping on completion,
+cancellation or scene teardown. Other animations and camera pans stay silent.
+Feedback uses the controller's rumble API and adds no render/audio delays.
+Set `MONUMENT_HAPTICS=0` before launching to disable it.
+
 ## Saves and updates
 
 Saves remain in `/userdata/system/monument-valley/saves/`. Keep that folder
 when updating; replace the package files and keep your APK. The installer never
-seeds or replaces saves. Online services and haptic feedback are unavailable in this build.
+seeds or replaces saves. Online services are unavailable.
 
 ## Troubleshooting
 

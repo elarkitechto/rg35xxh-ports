@@ -16,6 +16,7 @@
 #include "egl_shim.h"
 #include "monument_display.h"
 #include "monument_input.h"
+#include "monument_haptics.h"
 
 FILE *stderr_fake;
 so_module *g_m_il2cpp, *g_m_unity;
@@ -142,6 +143,7 @@ int main(void) {
   fprintf(stderr, "[MONUMENT-BOOT] entering nativeRender loop\n");
 
   monument_input_init(g_m_il2cpp);
+  monument_haptics_init(0x500000000UL);
   monument_start_vsync(0x540000000UL);
 
   long frame_limit = getenv("MONUMENT_FRAMES") ? atol(getenv("MONUMENT_FRAMES")) : 0;
@@ -153,6 +155,7 @@ int main(void) {
      else monument_display_request_resize();
     }
     ((unsigned char (*)(void *, void *))render)(env, &activity);
+    monument_haptics_tick();
     if(frame==0)monument_configure_frame_pacing();
     if(orientation_pending){
      --orientation_pending;
@@ -161,6 +164,7 @@ int main(void) {
     }
   }
   alarm(5); /* Bound shutdown even after a requested exit. */
+  monument_haptics_stop();
   monument_input_save();
   monument_stop_vsync();
   monument_prefs_shutdown();

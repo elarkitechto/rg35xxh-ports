@@ -28,3 +28,10 @@ The release cover uses ustwo games' [Monument Valley Steam library art](https://
 resized proportionally to 600×900 without embedded author/device metadata.
 The screenshot is 640×480 gameplay from this Android port. Artwork and game
 content retain their respective owners' rights.
+
+Haptic hooks use one-instruction ARM64 detours with pinned prologue guards.
+Only the first non-PC-relative instruction is copied to each trampoline; the
+remaining original function executes unchanged. Scene sequence feedback matches
+three explicit authored explosion/collapse names, not arbitrary substrings.
+Effects expire in hardware; sequence cancellation and a safety timeout prevent
+a stalled coroutine from leaving rumble active.
