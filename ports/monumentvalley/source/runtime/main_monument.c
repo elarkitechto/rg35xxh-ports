@@ -50,6 +50,7 @@ static void register_unwind(const char *name,uintptr_t base){
 }
 
 static void crash(int sig, siginfo_t *info, void *context) {
+  monument_haptics_emergency_stop();
   ucontext_t *u = context;
   fprintf(stderr, "[MONUMENT-CRASH] signal=%d address=%p pc=%lx lr=%lx il2cpp+%lx unity+%lx\n",
           sig, info->si_addr, (unsigned long)u->uc_mcontext.pc,
@@ -58,7 +59,7 @@ static void crash(int sig, siginfo_t *info, void *context) {
           (unsigned long)u->uc_mcontext.pc - 0x540000000UL);
   _exit(128 + sig);
 }
-static void watchdog(int sig) { (void)sig; if(exit_requested)_exit(124); exit_requested=1; alarm(5); }
+static void watchdog(int sig) { (void)sig; if(exit_requested){monument_haptics_emergency_stop();_exit(124);} exit_requested=1; alarm(5); }
 
 static so_module *load_module(const char *path, uintptr_t base) {
   size_t size = 128UL * 1024 * 1024;
@@ -164,7 +165,7 @@ int main(void) {
     }
   }
   alarm(5); /* Bound shutdown even after a requested exit. */
-  monument_haptics_stop();
+  monument_haptics_shutdown();
   monument_input_save();
   monument_stop_vsync();
   monument_prefs_shutdown();

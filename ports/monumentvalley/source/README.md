@@ -35,3 +35,10 @@ remaining original function executes unchanged. Scene sequence feedback matches
 three explicit authored explosion/collapse names, not arbitrary substrings.
 Effects expire in hardware; sequence cancellation and a safety timeout prevent
 a stalled coroutine from leaving rumble active.
+
+The H700 native motor worker owns sysfs output and a monotonic off timer. It
+does not sleep the rendering or audio threads. Normal shutdown joins the worker
+and turns the motor off; fatal signal/watchdog paths also request motor-off.
+MoverAudio.UpdateValue supplies the game's own rotation-notch transitions and
+interactive slider movement. CameraShaker supplies procedural shake lifetime
+and explicit stun events; ordinary camera translation does not imply rumble.

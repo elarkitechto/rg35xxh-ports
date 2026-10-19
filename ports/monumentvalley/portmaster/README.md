@@ -5,7 +5,7 @@ Android port for **RG35XX-H with KNULLI and PortMaster**. Supply your own
 
 ## Install
 
-1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.1/monumentvalley.zip) and extract it into **Ports**.
+1. Download [monumentvalley.zip](https://github.com/elarkitechto/rg35xxh-ports/releases/download/monumentvalley-v0.1.2/monumentvalley.zip) and extract it into **Ports**.
 2. Rename the compatible APK to **monument-valley-3.10.114.apk** and copy it into **ports/monumentvalley/**.
 3. Open **Monument Valley** from Ports. First-run conversion is automatic; no compiler or separate setup launcher is needed. Keep the APK in that folder.
 
@@ -33,12 +33,16 @@ and rotates the output; the original game handles its layouts and interactions.
 
 ## Haptic feedback
 
-Short pulses accompany accepted menu actions, pressure-button down animations,
-conversation starts and level completion. Authored explosion and collapse
-sequences pulse while their original coroutine runs, stopping on completion,
-cancellation or scene teardown. Other animations and camera pans stay silent.
-Feedback uses the controller's rumble API and adds no render/audio delays.
-Set `MONUMENT_HAPTICS=0` before launching to disable it.
+Short pulses accompany accepted menu actions, pressure buttons, conversation
+starts and level completion. Turning a handle clicks at the game's own notch
+transitions; sliders pulse during effective interactive movement. Camera shake
+and stun effects drive rumble as well, including authored scripted tremors.
+Explosion/collapse sequences stop on completion, cancellation or scene teardown.
+
+On KNULLI/H700, feedback uses the native motor endpoint with an independent
+off timer; the built-in motor is binary, so duration and duty cycle distinguish
+effects. SDL rumble is retained as a fallback. Ordinary camera pans stay silent.
+Set `MONUMENT_HAPTICS=0` before launching to disable feedback.
 
 ## Saves and updates
 
