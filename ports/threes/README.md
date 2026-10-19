@@ -31,8 +31,9 @@ Keep the APK in that folder. When updating, replace the package files and keep y
 | L2 + R2 | Toggle TATE / landscape |
 | F + Start or Select + Start | Save and exit |
 
-The game starts in TATE: rotate the handheld 90° clockwise. Face buttons also
-move tiles during TATE gameplay; menus keep A/B as confirm/back. Landscape
+The game starts in landscape. Press L2 + R2 to toggle TATE, then rotate the
+handheld 90° clockwise. Face buttons also move tiles during TATE gameplay;
+menus keep A/B as confirm/back. Landscape
 preserves the board’s proportions and extends the background to fill the screen.
 Score signing uses the default name.
 

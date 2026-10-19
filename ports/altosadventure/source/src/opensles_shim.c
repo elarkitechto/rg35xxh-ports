@@ -15,6 +15,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "audio_gain.h"
 #include "opensles_shim.h"
 #include "so_util.h"
 #include "util.h"
@@ -449,7 +450,7 @@ static void sdl_audio_callback(void *userdata, Uint8 *stream, int len) {
   }
 
   /* Soft-clip using tanh-style limiter - smooth, no discontinuities */
-  const float master_gain = 0.30f;
+  const float master_gain = port_audio_master_gain();
   const float threshold = 28000.0f;
   const float knee = 4000.0f;  /* transition zone */
   static int16_t prev_left = 0, prev_right = 0;
@@ -535,7 +536,7 @@ static void ensure_audio_initialized(void) {
       PulseBufferAttr attr = {UINT32_MAX, (uint32_t)(SDL_OUTPUT_RATE * 4 * buffer_ms / 1000),
                               UINT32_MAX, UINT32_MAX, UINT32_MAX};
       int error = 0;
-      g_pulse_stream = new_stream("unix:/var/run/pulse/native", "Crossy Road", 1,
+      g_pulse_stream = new_stream("unix:/var/run/pulse/native", "Alto's Adventure", 1,
                                   NULL, "Game audio", &spec, NULL, &attr, &error);
       if (g_pulse_stream) {
         fprintf(stderr, "[SL] Pulse stream open 48000Hz stereo S16LE buffer=%dms\n", buffer_ms);

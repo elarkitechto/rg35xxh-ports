@@ -15,6 +15,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "audio_gain.h"
 #include "opensles_shim.h"
 #include "so_util.h"
 #include "util.h"
@@ -449,7 +450,7 @@ static void sdl_audio_callback(void *userdata, Uint8 *stream, int len) {
   }
 
   /* Soft-clip using tanh-style limiter - smooth, no discontinuities */
-  const float master_gain = 0.30f;
+  const float master_gain = port_audio_master_gain();
   const float threshold = 28000.0f;
   const float knee = 4000.0f;  /* transition zone */
   static int16_t prev_left = 0, prev_right = 0;

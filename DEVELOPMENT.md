@@ -7,8 +7,7 @@ implementation and build instructions. Compiled player packages belong in Releas
 - [Alto’s Adventure](ports/altosadventure/source/)
 - [Crossy Road](ports/crossyroad/source/)
 - [Threes!](ports/threes/source/)
-- [Katana ZERO build](ports/katanazero/source/README.md)
-- [Katana ZERO validation and release gate](ports/katanazero/source/COMPATIBILITY.md)
+- [Katana ZERO](ports/katanazero/source/README.md)
 - [Monument Valley](ports/monumentvalley/source/README.md)
 - [Triples demake source](ports/triples/) — no player release
 
